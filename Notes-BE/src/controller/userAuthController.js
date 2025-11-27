@@ -50,7 +50,9 @@ const loginUser = async (req, res) => {
     }
 
     const payload = { id: checkUser._id, email: checkUser.email };
-    const jwtToken = jwt.sign(payload, "pujeeta", { expiresIn: "15m" });
+    const jwtToken = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "15m",
+    });
 
     res.cookie("token", jwtToken, {
       httpOnly: true,
