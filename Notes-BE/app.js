@@ -11,7 +11,7 @@ const app = express();
 // middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN,
     credentials: true,
   })
 );
@@ -28,7 +28,7 @@ const start = async () => {
     await connectDB();
     console.log("Connected to DB");
 
-    app.listen(3000, () => {
+    app.listen(process.env.Port, () => {
       console.log("Server running on 3000");
     });
   } catch (err) {
