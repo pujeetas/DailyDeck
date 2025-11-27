@@ -20,7 +20,11 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.post("http://localhost:3000/logout");
+      const res = await axios.post(
+        "http://localhost:3000/logout",
+        {},
+        { withCredentials: true }
+      );
       console.log(res.data);
       navigate("/");
     } catch (error) {

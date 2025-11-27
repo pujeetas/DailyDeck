@@ -2,6 +2,12 @@ const { userSigninValidation } = require("../validation/userValidation");
 const UserModel = require("../schema/userSchema");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const {
+  findUserByEmail,
+  compareHashedPassword,
+  hashPassword,
+} = require("../services/userServices");
+const { createToken } = require("../services/authServices");
 
 // signup user
 const signupUser = async (req, res) => {
@@ -11,7 +17,8 @@ const signupUser = async (req, res) => {
       return res.status(400).json({ message: error.details[0].message });
     }
 
-    const hashedPassword = await bcrypt.hash(value.password, 10);
+    const hashedPassword = await hashPassword(value.password);
+
     if (!hashedPassword) {
       return res.status(400).json({ message: "Something went wrong" });
     }
@@ -39,25 +46,26 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const checkUser = await UserModel.findOne({ email });
+    const checkUser = await findUserByEmail(email);
+
     if (!checkUser) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    const isMatch = await bcrypt.compare(password, checkUser.password);
+    const isMatch = await compareHashedPassword(password, checkUser.password);
+
     if (!isMatch) {
       return res.status(400).json({ message: "Incorrect password" });
     }
 
     const payload = { id: checkUser._id, email: checkUser.email };
-    const jwtToken = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "15m",
-    });
+    const jwtToken = createToken(payload);
 
     res.cookie("token", jwtToken, {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
+      path: "/",
     });
 
     return res.status(200).json({
@@ -81,6 +89,7 @@ const logoutUser = (req, res) => {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
+      path: "/",
     });
 
     return res.status(200).json({ message: "User logged out" });

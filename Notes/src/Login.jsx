@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -8,9 +9,32 @@ export default function Login() {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/main");
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/login",
+        {
+          email: form.email,
+          password: form.password,
+        },
+        { withCredentials: true }
+      );
+
+      navigate("/main");
+    } catch (error) {
+      if (error.response) {
+        // Server responded but with an error code
+        alert(error.response.data.message || "Something went wrong.");
+      } else if (error.request) {
+        // Server didn't respond at all
+        alert("No response from server. Check your backend.");
+      } else {
+        // Something else happened (network, Axios config, etc.)
+        alert("Request failed: " + error.message);
+      }
+    }
   };
 
   return (
