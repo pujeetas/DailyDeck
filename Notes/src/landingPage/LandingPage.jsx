@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import FeatureShowcase from "./FeatureShowcase";
-import FAQ from "./FAQ";
-import ScreenshotSection from "./ScreenshotSection";
-import WhyDailyDeck from "./WhyDailyDeck";
-import Hero from "./Hero";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
+import FeatureShowcase from "./components/FeatureShowcase";
+import FAQ from "./components/FAQ";
+import ScreenshotSection from "./components/ScreenshotSection";
+import WhyDailyDeck from "./components/WhyDailyDeck";
+import Hero from "./components/Hero";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 export default function LandingPage() {
   const navigate = useNavigate();

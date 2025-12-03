@@ -1,158 +1,63 @@
-import React, { useEffect, useState } from "react";
+import { BlockNoteView } from "@blocknote/mantine";
+import "@blocknote/mantine/style.css";
+import { useCreateBlockNote } from "@blocknote/react";
+import { codeBlockOptions } from "@blocknote/code-block";
+import "@blocknote/react/style.css";
+import { Divider, Typography } from "antd";
+import { useState } from "react";
+import { BlockNoteSchema, createCodeBlockSpec } from "@blocknote/core";
 
-export default function Editor({ note, newNoteMode, onSave, onDelete }) {
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [image, setImage] = useState(null);
-  const [file, setFile] = useState(null);
-  const [menu, setMenu] = useState(false);
+const Editor = ({ value, onChange, onTitleChange, title }) => {
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
 
-  useEffect(() => {
-    if (newNoteMode) {
-      setTitle("");
-      setBody("");
-      setImage(null);
-      setFile(null);
-      return;
-    }
+  const initialContent = (() => {
+    if (!value) return [{ type: "paragraph", content: "" }];
+    return value || [{ type: "paragraph", content: "" }];
+  })();
 
-    setTitle(note?.title || "");
-    setBody(note?.body || "");
-    setImage(note?.image || null);
-    setFile(note?.file || null);
-  }, [note, newNoteMode]);
+  const codeSchema = BlockNoteSchema.create().extend({
+    blockSpecs: {
+      codeBlock: createCodeBlockSpec(codeBlockOptions),
+    },
+  });
 
-  if (!note && !newNoteMode) {
-    return <div className="text-gray-500">Select or create a note.</div>;
-  }
-
-  function save() {
-    const data = { title: title.trim(), body: body.trim(), image, file };
-    onSave(note?.id, data);
-  }
-
-  function uploadImage(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    setImage(url);
-  }
-
-  function attachFile(e) {
-    const f = e.target.files[0];
-    if (!f) return;
-    setFile(f.name);
-  }
+  const editor = useCreateBlockNote({ initialContent, codeSchema });
 
   return (
-    <div className="max-w-3xl mx-auto relative">
-      {/* Toolbar */}
-      <div className="flex items-center gap-3 mb-4">
-        {/* Upload Image */}
-        <label className="px-3 py-1 text-sm rounded-md bg-gray-200 hover:bg-gray-300 cursor-pointer">
-          Image
+    <div className="flex flex-col items-center min-h-screen bg-[#1f1f1f] py-12 px-6">
+      <div className="w-full max-w-3xl mx-auto mb-2">
+        {isEditingTitle ? (
           <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={uploadImage}
+            value={title}
+            onChange={(e) => onTitleChange(e.target.value)}
+            onBlur={() => setIsEditingTitle(false)}
+            autoFocus
+            placeholder="Untitled"
+            className="w-full bg-transparent text-gray-200 text-4xl font-bold 
+            outline-none border-none placeholder:text-gray-500"
           />
-        </label>
-
-        {/* Attach File */}
-        <label className="px-3 py-1 text-sm rounded-md bg-gray-200 hover:bg-gray-300 cursor-pointer">
-          Attach
-          <input type="file" className="hidden" onChange={attachFile} />
-        </label>
-
-        <div className="flex-1" />
-
-        {/* Dropdown */}
-        <button
-          onClick={() => setMenu((v) => !v)}
-          className="cursor-pointer px-2 py-1 rounded-md hover:bg-gray-200 text-xl"
-        >
-          ⋯
-        </button>
-
-        <button
-          onClick={save}
-          className=" cursor-pointer **:px-4 p-1.5 text-sm rounded-md bg-slate-900 text-white"
-        >
-          Save
-        </button>
+        ) : (
+          <div
+            onClick={() => setIsEditingTitle(true)}
+            className="text-gray-200 text-4xl font-bold cursor-text hover:text-white transition"
+          >
+            {title || <span className="text-gray-500">Untitled</span>}
+          </div>
+        )}
       </div>
 
-      {/* Dropdown Menu */}
-      {menu && (
-        <div className="absolute top-12 right-0 w-48 bg-white border rounded-md shadow p-1 text-sm">
-          <button className="w-full text-left px-3 py-2 hover:bg-gray-100">
-            Duplicate
-          </button>
-          <button className="w-full text-left px-3 py-2 hover:bg-gray-100">
-            Move to Folder
-          </button>
+      <div className="w-full max-w-3xl mb-4">
+        <Divider style={{ borderColor: "#333333" }} />
+      </div>
 
-          {image && (
-            <button
-              onClick={() => setImage(null)}
-              className="w-full text-left px-3 py-2 hover:bg-gray-100 text-red-600"
-            >
-              Remove Image
-            </button>
-          )}
-
-          {file && (
-            <button
-              onClick={() => setFile(null)}
-              className="w-full text-left px-3 py-2 hover:bg-gray-100 text-red-600"
-            >
-              Remove File
-            </button>
-          )}
-
-          <div className="border-t my-1" />
-
-          <button
-            onClick={() => onDelete(note.id)}
-            className="w-full text-left px-3 py-2 hover:bg-red-50 text-red-600"
-          >
-            Delete Note
-          </button>
-        </div>
-      )}
-
-      {/* Image Preview */}
-      {image && (
-        <div className="mb-4">
-          <img
-            src={image}
-            alt="preview"
-            className="w-full max-h-64 object-cover rounded-lg"
-          />
-        </div>
-      )}
-
-      {/* File Name */}
-      {file && (
-        <div className="text-sm mb-3 text-gray-600">Attached: {file}</div>
-      )}
-
-      {/* Title */}
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Title"
-        className=" w-full text-3xl font-semibold outline-none mb-4 bg-transparent"
-      />
-
-      {/* Body */}
-      <textarea
-        value={body}
-        onChange={(e) => setBody(e.target.value)}
-        placeholder="Write here..."
-        className="w-full h-[60vh] outline-none resize-none text-gray-700 bg-transparent"
-      />
+      <div className="w-full max-w-3xl bg-[#262626] rounded-xl">
+        <BlockNoteView
+          editor={editor}
+          onChange={() => onChange(editor.document)}
+        />
+      </div>
     </div>
   );
-}
+};
+
+export default Editor;
