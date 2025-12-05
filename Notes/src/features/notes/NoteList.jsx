@@ -40,14 +40,14 @@ export default function NotesList({
 
       {/* Notes */}
       <div className="flex flex-col gap-2">
-        {notes.map((n) => {
-          const isActive = activeId === n.id;
+        {notes.map((n, index) => {
+          const isActive = activeId === n._id;
           const isPinned = n.pinned;
 
           return (
             <div
-              key={n.id}
-              onClick={() => onSelect(n.id)}
+              key={n._id || n.id || index}
+              onClick={() => onSelect(n._id)}
               className={`group p-3 rounded-md cursor-pointer transition-colors relative
                 ${
                   isActive
@@ -69,7 +69,7 @@ export default function NotesList({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    onPin(n.id);
+                    onPin(n._id);
                   }}
                   className={`text-gray-500 hover:text-gray-300 transition
                     ${
@@ -84,14 +84,12 @@ export default function NotesList({
               </div>
 
               <div className="flex justify-between items-center mt-2">
-                <span className="text-[10px] text-gray-400">
-                  {new Date(n.updatedAt).toLocaleDateString()}
-                </span>
+                <span className="text-[10px] text-gray-400">{n.updatedAt}</span>
 
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    onDelete(n.id);
+                    onDelete(n._id);
                   }}
                   className="opacity-0 group-hover:opacity-100 text-red-500 text-xs transition"
                 >

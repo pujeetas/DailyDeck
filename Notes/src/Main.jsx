@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import MainMenu from "../src/MainMenu";
-import Notes from "../src/features/notes/Notes";
+import NotesPage from "../src/features/notes/NotesPage";
 
 import Dashboard from "../src/features/todo/Dashboard/Dashboard";
 import DashboardRouter from "../src/features/todo/Dashboard/DashboardRouter";
@@ -34,7 +34,7 @@ function Main() {
 
     { path: "/main", element: <MainMenu /> },
 
-    { path: "/notes", element: <Notes /> },
+    { path: "/notes", element: <NotesPage /> },
 
     {
       path: "/to-do",

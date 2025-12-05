@@ -1,13 +1,15 @@
-import { GithubOutlined } from "@ant-design/icons";
 import axios from "axios";
 import {
   ArrowRight,
   Chrome,
+  Github,
   Eye,
   EyeOff,
   Lock,
   Mail,
   User,
+  Sparkles,
+  ShieldCheck,
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 const SignupPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -23,15 +26,20 @@ const SignupPage = () => {
   });
   const [errors, setErrors] = useState({});
 
-  const onChange = (e) =>
+  const onChange = (e) => {
     setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
+    // Clear error when user types
+    if (errors[e.target.name]) {
+      setErrors((s) => ({ ...s, [e.target.name]: null }));
+    }
+  };
 
   const validate = () => {
     const e = {};
-    if (!form.firstName.trim().length > 4)
-      e.firstName = "First name is required";
+    if (!form.firstName.trim()) e.firstName = "First name required";
+    if (!form.lastName.trim()) e.lastName = "Last name required";
     if (!/^\S+@\S+\.\S+$/.test(form.email)) e.email = "Valid email required";
-    if (form.password.length < 6) e.password = "Password must be ≥ 6 chars";
+    if (form.password.length < 6) e.password = "Min 6 characters";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -39,6 +47,7 @@ const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
+    setLoading(true);
 
     try {
       const response = await axios.post("http://localhost:3000/signup", form, {
@@ -47,62 +56,71 @@ const SignupPage = () => {
       console.log(response.data);
       navigate("/main");
     } catch (error) {
-      setErrors(error.response.data.message);
+      setErrors({
+        email: error.response?.data?.message || "Signup failed. Try again.",
+      });
+    } finally {
+      setLoading(false);
     }
-    console.log("submit", form);
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-6">
-      <div className="w-full max-w-5xl bg-white rounded-2xl  overflow-hidden grid grid-cols-1 md:grid-cols-2">
-        {/* Left: Form */}
-        <div className="p-10">
-          <header className="flex items-center gap mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-slate-800 font-sans">
-                DailyDeck
-              </h1>
-              <p className="text-xs text-slate-500">
-                Your daily workflow, simplified.
-              </p>
-            </div>
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4 relative overflow-hidden">
+      {/* Background Grid Pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+        }}
+      ></div>
+
+      <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl shadow-slate-200 overflow-hidden grid grid-cols-1 md:grid-cols-2 relative z-10 border border-slate-100">
+        {/* LEFT SIDE: Signup Form */}
+        <div className="p-8 md:p-12 lg:p-16 flex flex-col justify-center bg-white order-2 md:order-1">
+          <header className="mb-8">
+            <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">
+              Create an account
+            </h1>
+            <p className="text-slate-500">
+              Start your journey to clarity today.
+            </p>
           </header>
 
-          <h2 className="text-2xl font-semibold text-slate-900 mb-1">
-            Create an account
-          </h2>
-          <p className="text-sm text-slate-500 mb-6">
-            Unlock your streamlined workflow.
-          </p>
-
-          <div className="grid grid-cols-2 gap-3 mb-6">
+          {/* Social Buttons */}
+          <div className="grid grid-cols-2 gap-3 mb-8">
             <button
               type="button"
-              className="cursor-pointer flex items-center justify-center gap-2 border border-slate-200 rounded-md py-2 text-sm hover:bg-slate-100"
+              className="flex items-center justify-center gap-2 border border-slate-200 rounded-xl py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all"
             >
-              <Chrome size={16} className="text-slate-600" />
+              <Chrome size={18} />
               Google
             </button>
             <button
               type="button"
-              className="cursor-pointer flex items-center justify-center gap-2 border border-slate-200 rounded-md py-2 text-sm hover:bg-slate-100"
+              className="flex items-center justify-center gap-2 border border-slate-200 rounded-xl py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all"
             >
-              <GithubOutlined size={16} className="text-slate-700" />
+              <Github size={18} />
               GitHub
             </button>
           </div>
 
-          <div className="flex items-center text-xs text-slate-400 mb-6">
-            <div className="flex-1 h-px bg-slate-200" />
-            <span className="px-3">or continue with email</span>
-            <div className="flex-1 h-px bg-slate-200" />
+          <div className="relative flex items-center mb-8">
+            <div className="flex-grow border-t border-slate-100"></div>
+            <span className="flex-shrink-0 mx-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              Or continue with
+            </span>
+            <div className="flex-grow border-t border-slate-100"></div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-            {/* First + Last Name */}
+          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+            {/* Name Fields Row */}
             <div className="grid grid-cols-2 gap-4">
-              {/* First Name */}
-              <label className="block">
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
+                  First Name
+                </label>
                 <div className="relative">
                   <User
                     size={16}
@@ -112,21 +130,25 @@ const SignupPage = () => {
                     name="firstName"
                     value={form.firstName}
                     onChange={onChange}
-                    placeholder="First name"
-                    className={`w-full pl-10 pr-4 py-3 rounded-md border ${
-                      errors.firstName ? "border-rose-500" : "border-slate-200"
-                    } bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-200`}
+                    placeholder="Jane"
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl border ${
+                      errors.firstName
+                        ? "border-rose-500 bg-rose-50"
+                        : "border-slate-200 bg-slate-50"
+                    } text-slate-900 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none`}
                   />
                 </div>
                 {errors.firstName && (
-                  <p className="mt-1 text-rose-600 text-xs">
+                  <p className="text-xs text-rose-500 font-medium">
                     {errors.firstName}
                   </p>
                 )}
-              </label>
+              </div>
 
-              {/* Last Name */}
-              <label className="block">
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
+                  Last Name
+                </label>
                 <div className="relative">
                   <User
                     size={16}
@@ -136,22 +158,26 @@ const SignupPage = () => {
                     name="lastName"
                     value={form.lastName}
                     onChange={onChange}
-                    placeholder="Last name"
-                    className={`w-full pl-10 pr-4 py-3 rounded-md border ${
-                      errors.lastName ? "border-rose-500" : "border-slate-200"
-                    } bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-200`}
+                    placeholder="Doe"
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl border ${
+                      errors.lastName
+                        ? "border-rose-500 bg-rose-50"
+                        : "border-slate-200 bg-slate-50"
+                    } text-slate-900 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none`}
                   />
                 </div>
                 {errors.lastName && (
-                  <p className="mt-1 text-rose-600 text-xs">
+                  <p className="text-xs text-rose-500 font-medium">
                     {errors.lastName}
                   </p>
                 )}
-              </label>
+              </div>
             </div>
 
-            <label className="block">
-              <span className="sr-only">Email</span>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
+                Email
+              </label>
               <div className="relative">
                 <Mail
                   size={16}
@@ -161,20 +187,25 @@ const SignupPage = () => {
                   name="email"
                   value={form.email}
                   onChange={onChange}
-                  placeholder="Email address"
-                  inputMode="email"
-                  className={`w-full pl-10 pr-4 py-3 rounded-md border ${
-                    errors.email ? "border-rose-500" : "border-slate-200"
-                  } bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-200`}
+                  placeholder="name@work.com"
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl border ${
+                    errors.email
+                      ? "border-rose-500 bg-rose-50"
+                      : "border-slate-200 bg-slate-50"
+                  } text-slate-900 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none`}
                 />
               </div>
               {errors.email && (
-                <p className="mt-1 text-rose-600 text-xs">{errors.email}</p>
+                <p className="text-xs text-rose-500 font-medium">
+                  {errors.email}
+                </p>
               )}
-            </label>
+            </div>
 
-            <label className="block">
-              <span className="sr-only">Password</span>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
+                Password
+              </label>
               <div className="relative">
                 <Lock
                   size={16}
@@ -184,56 +215,89 @@ const SignupPage = () => {
                   name="password"
                   value={form.password}
                   onChange={onChange}
-                  placeholder="Password"
                   type={showPassword ? "text" : "password"}
-                  className={`w-full pl-10 pr-10 py-3 rounded-md border ${
-                    errors.password ? "border-rose-500" : "border-slate-200"
-                  } bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-200`}
+                  placeholder="••••••••"
+                  className={`w-full pl-10 pr-10 py-3 rounded-xl border ${
+                    errors.password
+                      ? "border-rose-500 bg-rose-50"
+                      : "border-slate-200 bg-slate-50"
+                  } text-slate-900 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none`}
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword((s) => !s)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 p-1 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-1 text-rose-600 text-xs">{errors.password}</p>
+                <p className="text-xs text-rose-500 font-medium">
+                  {errors.password}
+                </p>
               )}
-            </label>
-
-            <div>
-              <button
-                type="submit"
-                className="cursor-pointer w-full flex items-center justify-center gap-2 py-3 rounded-md bg-slate-800 text-white font-medium hover:bg-slate-900 transition"
-              >
-                Create account
-                <ArrowRight size={16} />
-              </button>
             </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3.5 bg-slate-900 text-white rounded-xl font-medium hover:bg-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-xl shadow-slate-900/10 flex items-center justify-center gap-2 mt-4 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {loading ? "Creating account..." : "Get Started"}
+              {!loading && <ArrowRight size={18} />}
+            </button>
           </form>
 
-          <p className="text-center text-sm text-slate-500 mt-6">
+          <p className="text-center text-sm text-slate-500 mt-8">
             Already have an account?{" "}
-            <a
-              href="#"
-              className="cursor-pointer text-slate-700 font-medium hover:underline"
+            <button
               onClick={() => navigate("/login")}
+              className="text-emerald-600 font-semibold hover:text-emerald-700 hover:underline transition"
             >
               Log in
-            </a>
+            </button>
           </p>
         </div>
 
-        <aside className="relative hidden md:block">
-          <img
-            src="/rightIllustration.png"
-            alt="Workspace"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        </aside>
+        {/* RIGHT SIDE: Brand Panel (Dark Mode Vibe) */}
+        <div className="hidden md:flex flex-col justify-between bg-slate-900 p-12 text-white relative overflow-hidden order-1 md:order-2">
+          {/* Abstract Glow */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 rounded-full blur-[100px] opacity-20 -mr-16 -mt-16"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500 rounded-full blur-[100px] opacity-20 -ml-16 -mb-16"></div>
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 text-emerald-400 mb-6">
+              <Sparkles className="w-5 h-5" />
+              <span className="text-sm font-mono tracking-wide uppercase">
+                Join the community
+              </span>
+            </div>
+            <h2 className="text-4xl font-bold leading-tight tracking-tight">
+              Built for builders, <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">
+                designers, and thinkers.
+              </span>
+            </h2>
+            <p className="mt-4 text-slate-400 text-lg leading-relaxed">
+              DailyDeck helps you regain focus in a distracted world. Join
+              thousands of users today.
+            </p>
+          </div>
+
+          <div className="relative z-10 mt-12">
+            <div className="flex items-center gap-4 bg-white/5 backdrop-blur-sm p-4 rounded-2xl border border-white/10">
+              <div className="p-3 bg-blue-500/20 rounded-xl text-blue-400">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="font-bold text-white">Bank-grade Security</p>
+                <p className="text-sm text-slate-400">
+                  Your data is encrypted and safe.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

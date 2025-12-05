@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import FeatureShowcase from "./components/FeatureShowcase";
 import FAQ from "./components/FAQ";
-import ScreenshotSection from "./components/ScreenshotSection";
 import WhyDailyDeck from "./components/WhyDailyDeck";
 import Hero from "./components/Hero";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import WorkflowSteps from "./components/WorkflowSteps";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ export default function LandingPage() {
       <Hero />
       <WhyDailyDeck />
       <FeatureShowcase />
-      <ScreenshotSection />
+      <WorkflowSteps />
       <FAQ />
       <Footer />
     </div>

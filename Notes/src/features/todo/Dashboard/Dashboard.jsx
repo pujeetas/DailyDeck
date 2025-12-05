@@ -1,9 +1,9 @@
-import { PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import Done from "../Column/Done";
 import InProgress from "../Column/InProgress";
 import Todo from "../Column/Todo";
 import TaskDrawer from "../cards/TaskDrawer";
+import Header from "./Header";
 
 export default function Dashboard({ detailsList, setDetailsList }) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -67,38 +67,14 @@ export default function Dashboard({ detailsList, setDetailsList }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 flex">
-      {/* Main area */}
-      <div className="flex-1 flex flex-col">
+    <div className="min-h-screen bg-[#0E0E10] text-zinc-200 flex">
+      <div className="flex-1 flex flex-col px-8">
         {/* Header */}
-        <header className="flex items-center justify-between px-6 py-4 bg-transparent">
-          <div>
-            <h1 className="text-2xl font-semibold">Tasks</h1>
-            <p className="text-sm text-slate-600">
-              Manage your work — clean & focused
-            </p>
-          </div>
+        <Header onCreateTask={handleCreateBtn} />
 
-          <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center bg-white/6 px-3 py-2 rounded-lg backdrop-blur-sm">
-              <input
-                className="bg-transparent outline-none text-sm text-slate-100 placeholder-slate-400"
-                placeholder="Search tasks..."
-              />
-            </div>
-
-            <button
-              onClick={handleCreateBtn}
-              className="cursor-pointer inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-600 hover:to-violet-600 transition text-white px-4 py-2 rounded-full shadow-lg"
-            >
-              <PlusOutlined />
-              Add Task
-            </button>
-          </div>
-        </header>
-
-        {/* Board */}
+        {/* Main Board */}
         <main className="flex-1 overflow-auto p-6">
+          {/* Drawers */}
           <TaskDrawer
             open={isAddModalOpen}
             mode="add"
@@ -118,41 +94,20 @@ export default function Dashboard({ detailsList, setDetailsList }) {
           />
 
           <div className="space-y-6">
-            {/* Filters bar */}
-            <div className="flex items-center gap-4">
-              <button className="text-xs px-3 py-1 rounded-full bg-white/6">
-                All
-              </button>
-              <button className="text-xs px-3 py-1 rounded-full bg-white/6">
-                Today
-              </button>
-              <button className="text-xs px-3 py-1 rounded-full bg-white/6">
-                Priority
-              </button>
-              <button className="text-xs px-3 py-1 rounded-full bg-white/6">
-                Overdue
-              </button>
-            </div>
-
             {/* Columns */}
-            <div className="flex gap-6 overflow-x-auto pb-6">
-              {/* Column: To-do (red accent) */}
-              <section className="flex-shrink-0 w-[340px] bg-white shadow-sm rounded-xl p-4 border border-gray-200">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-lg flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-rose-400 inline-block" />
-                    To-do (
+            <div className="flex gap-6 overflow-x-auto pb-6 min-w-full md:min-w-[900px]">
+              {/* Column */}
+              <section className="-0 w-[280px] md:w-[300px] lg:w-[320px] bg-[#111113] rounded-lg p-4 border border-zinc-800">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-medium text-sm flex items-center gap-2 text-zinc-300">
+                    <span className="w-2 h-2 rounded-full bg-rose-400"></span>
+                    Backlog (
                     {detailsList.filter((t) => t.status === "todo").length})
                   </h3>
-                  <button
-                    onClick={handleCreateBtn}
-                    className="p-1 rounded-md text-slate-200 hover:bg-white/10"
-                    aria-label="Add to todo"
-                  >
-                    <PlusOutlined />
-                  </button>
                 </div>
-                <div className="space-y-4">
+
+                {/* backlog */}
+                <div className="space-y-3">
                   <Todo
                     detailsList={detailsList}
                     setDetailsList={setDetailsList}
@@ -161,48 +116,56 @@ export default function Dashboard({ detailsList, setDetailsList }) {
                 </div>
               </section>
 
-              {/* Column: In Progress (blue accent) */}
-              <section className="flex-shrink-0 w-[340px] bg-white shadow-sm rounded-xl p-4 border border-gray-200">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-lg flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-sky-400 inline-block" />
+              {/* In Progress */}
+              <section className="flex-shrink-0 w-[320px] bg-[#111113] rounded-lg p-4 border border-zinc-800">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-medium text-sm flex items-center gap-2 text-zinc-300">
+                    <span className="w-2 h-2 rounded-full bg-sky-400"></span>
                     In Progress (
                     {detailsList.filter((t) => t.status === "progress").length})
                   </h3>
-                  <button
-                    onClick={handleCreateBtn}
-                    className="p-1 rounded-md text-slate-200 hover:bg-white/10"
-                    aria-label="Add to in-progress"
-                  >
-                    <PlusOutlined />
-                  </button>
                 </div>
-                <div className="space-y-4">
+
+                <div className="space-y-3">
                   <InProgress
-                    setDetailsList={setDetailsList}
                     detailsList={detailsList}
+                    setDetailsList={setDetailsList}
                     handleEditClick={handleEditClick}
                   />
                 </div>
               </section>
 
-              {/* Column: Done (green accent) */}
-              <section className="flex-shrink-0 w-[340px] bg-white shadow-sm rounded-xl p-4 border border-gray-200">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-lg flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
+              {/* Column: Review */}
+              <section className="flex-shrink-0 w-[320px] bg-[#111113] rounded-lg p-4 border border-zinc-800">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-medium text-sm flex items-center gap-2 text-zinc-300">
+                    <span className="w-2 h-2 rounded-full bg-yellow-400"></span>
+                    Review (
+                    {detailsList.filter((t) => t.status === "review").length})
+                  </h3>
+                </div>
+
+                <div className="space-y-3">
+                  <InProgress
+                    detailsList={detailsList}
+                    setDetailsList={setDetailsList}
+                    handleEditClick={handleEditClick}
+                    reviewMode={true} // optional, if you want to adjust styling
+                  />
+                </div>
+              </section>
+
+              {/* Done */}
+              <section className="flex-shrink-0 w-[320px] bg-[#111113] rounded-lg p-4 border border-zinc-800">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-medium text-sm flex items-center gap-2 text-zinc-300">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
                     Done (
                     {detailsList.filter((t) => t.status === "done").length})
                   </h3>
-                  <button
-                    onClick={handleCreateBtn}
-                    className="p-1 rounded-md text-slate-200 hover:bg-white/10"
-                    aria-label="Add to done"
-                  >
-                    <PlusOutlined />
-                  </button>
                 </div>
-                <div className="space-y-4">
+
+                <div className="space-y-3">
                   <Done
                     detailsList={detailsList}
                     setDetailsList={setDetailsList}

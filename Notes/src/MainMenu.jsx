@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Header from "./components/Header";
+import Header from "./components/Header"; // Ensure path is correct
 
 function MainMenu() {
   const navigate = useNavigate();
@@ -8,105 +8,123 @@ function MainMenu() {
     {
       id: "notes",
       name: "Notes",
-      description: "Organize your thoughts and ideas",
+      description: "Developer-friendly markdown + rich text workspace",
       icon: "📝",
       path: "/notes",
-      color: "text-indigo-500",
+      color: "text-indigo-400",
+      glow: "group-hover:shadow-indigo-500/10 group-hover:border-indigo-500/20",
+      bg: "group-hover:bg-indigo-500/5",
     },
     {
       id: "todo",
-      name: "To-Do List",
-      description: "Manage your daily tasks efficiently",
-      icon: "✅",
+      name: "Tasks",
+      description: "Manage your development workflow",
+      icon: "📌",
       path: "/to-do",
-      color: "text-green-500",
+      color: "text-rose-400",
+      glow: "group-hover:shadow-rose-500/10 group-hover:border-rose-500/20",
+      bg: "group-hover:bg-rose-500/5",
     },
     {
       id: "calendar",
       name: "Calendar",
-      description: "Schedule events and appointments",
+      description: "Plan schedules & deadlines",
       icon: "📅",
       path: "/calendar",
-      color: "text-blue-500",
+      color: "text-blue-400",
+      glow: "group-hover:shadow-blue-500/10 group-hover:border-blue-500/20",
+      bg: "group-hover:bg-blue-500/5",
     },
     {
       id: "reminders",
       name: "Reminders",
-      description: "Set timely alerts for important tasks",
-      icon: "🔔",
+      description: "Never miss critical moments",
+      icon: "⏰",
       path: "/reminders",
-      color: "text-red-500",
+      color: "text-yellow-400",
+      glow: "group-hover:shadow-yellow-500/10 group-hover:border-yellow-500/20",
+      bg: "group-hover:bg-yellow-500/5",
     },
     {
       id: "focus",
       name: "Focus Timer",
-      description: "Boost productivity with timed sessions",
+      description: "Deep work with Pomodoro sessions",
       icon: "⏱️",
       path: "/focus-timer",
-      color: "text-orange-500",
+      color: "text-teal-400",
+      glow: "group-hover:shadow-teal-500/10 group-hover:border-teal-500/20",
+      bg: "group-hover:bg-teal-500/5",
     },
     {
       id: "news",
       name: "TechBuzz",
-      description: "Your daily dose of tech",
+      description: "Daily tech briefs for developers",
       icon: "📰",
       path: "/tech-buzz",
-      color: "text-lime-500",
+      color: "text-lime-400",
+      glow: "group-hover:shadow-lime-500/10 group-hover:border-lime-500/20",
+      bg: "group-hover:bg-lime-500/5",
     },
   ];
 
-  const handleCardClick = (path) => navigate(path);
-
   return (
-    <div>
+    <div className="min-h-screen bg-zinc-950 text-zinc-200 selection:bg-indigo-500/30">
       <Header />
 
-      <div className="min-h-screen bg-gray-50 px-4 py-12 flex flex-col items-center">
-        {/* Title */}
-        <div className="text-center mb-14">
-          <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-2">
+      <div className="px-6 py-16 flex flex-col items-center animate-fadeUp">
+        {/* Title Section */}
+        <div className="text-center mb-16 max-w-2xl">
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 tracking-tight">
             DailyDeck
           </h1>
-          <p className="text-lg sm:text-xl text-slate-500">
-            Your all-in-one productivity companion
+          <p className="text-lg text-zinc-400 leading-relaxed">
+            Your all-in-one developer productivity suite. <br />
+            Select a tool to start your flow.
           </p>
         </div>
 
-        {/* Cards */}
-        <div className="grid w-full max-w-5xl grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {/* Cards Grid */}
+        <div className="grid w-full max-w-6xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {menuItems.map((item) => (
             <div
               key={item.id}
-              onClick={() => handleCardClick(item.path)}
-              className="
-                group
-                bg-white border border-gray-200 rounded-xl p-6 shadow-sm
-                hover:shadow-md cursor-pointer transition
-                flex flex-col items-center text-center"
+              onClick={() => navigate(item.path)}
+              className={`
+                group relative bg-zinc-900/50 border border-zinc-800/60 rounded-2xl 
+                p-8 cursor-pointer transition-all duration-300 ease-out
+                hover:scale-[1.02] hover:-translate-y-1 active:scale-[0.98]
+                ${item.glow} ${item.bg}
+              `}
             >
-              {/* Icon */}
-              <div className={`text-5xl mb-4 ${item.color}`}>{item.icon}</div>
+              <div className="flex flex-col items-center text-center relative z-10">
+                {/* Icon */}
+                <div
+                  className={`text-5xl mb-6 transition-transform duration-300 group-hover:scale-110 drop-shadow-2xl ${item.color}`}
+                >
+                  {item.icon}
+                </div>
 
-              {/* Name */}
-              <h3 className="text-xl font-semibold text-slate-800 mb-1">
-                {item.name}
-              </h3>
+                {/* Name */}
+                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-white transition-colors">
+                  {item.name}
+                </h3>
 
-              {/* Description */}
-              <p className="text-slate-500 text-sm leading-snug">
-                {item.description}
-              </p>
+                {/* Description */}
+                <p className="text-zinc-500 text-sm leading-relaxed group-hover:text-zinc-400 transition-colors">
+                  {item.description}
+                </p>
 
-              {/* CTA */}
-              <span
-                className={`
-                  mt-3 text-sm font-medium opacity-0 
-                  group-hover:opacity-100 transition
+                {/* Micro CTA */}
+                <div
+                  className={`
+                  mt-6 text-xs font-bold uppercase tracking-wider opacity-0 translate-y-2
+                  group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300
                   ${item.color}
                 `}
-              >
-                Explore →
-              </span>
+                >
+                  Launch App →
+                </div>
+              </div>
             </div>
           ))}
         </div>

@@ -20,62 +20,73 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.post(
+      await axios.post(
         "http://localhost:3000/logout",
         {},
         { withCredentials: true }
       );
-      console.log(res.data);
       navigate("/");
     } catch (error) {
-      setError(error.response.data.message);
+      console.error(error);
     }
   };
 
   return (
-    <header className="w-full border-b border-slate-200 bg-white px-6 py-4 flex justify-between items-center">
-      {/* Left Side: Greeting */}
-      <div className="text-xl font-semibold text-slate-900">
+    <header
+      className="
+        w-full h-14 
+        bg-[#0E0E10] 
+        border-b border-zinc-800 
+        px-6 
+        flex items-center justify-between
+        text-zinc-200
+      "
+    >
+      {/* Left */}
+      <div className="text-sm font-medium text-zinc-300">
         Welcome {newUser?.name || "User"}
       </div>
 
-      {/* Right Side */}
-      <div className="flex items-center gap-5">
-        {/* Search */}
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="
-              w-40 sm:w-48
-              py-2 pl-9 pr-3
-              border border-slate-300 rounded-lg
-              bg-slate-50
-              text-slate-700
-              placeholder:text-slate-400
-              focus:outline-none focus:ring-2 focus:ring-blue-500
-              transition
-            "
-          />
-          <SearchOutlined className="absolute top-1/2 -translate-y-1/2 left-3 text-slate-500 text-sm" />
-        </div>
+      {/* Right */}
+      <div className="flex items-center gap-4">
+        {/* Date */}
+        <div className="hidden sm:block text-xs text-zinc-500">{today}</div>
 
-        {/* Notifications */}
-        <button className="text-slate-700 hover:text-blue-600 transition cursor-pointer">
-          <BellOutlined className="text-lg" />
+        {/* Notification */}
+        <button
+          className="
+            w-9 h-9 flex items-center justify-center 
+            rounded-md
+            text-zinc-400 hover:text-zinc-200 
+            hover:bg-zinc-800 transition
+          "
+        >
+          <BellOutlined />
         </button>
 
-        {/* Date */}
-        <div className="text-sm text-slate-600 hidden sm:block">{today}</div>
-
-        {/* User Profile */}
-        <button className="text-slate-700 hover:text-blue-600 transition cursor-pointer">
-          <UserOutlined className="text-lg" />
+        {/* Profile */}
+        <button
+          className="
+            w-9 h-9 flex items-center justify-center 
+            rounded-md
+            text-zinc-400 hover:text-zinc-200 
+            hover:bg-zinc-800 transition
+          "
+        >
+          <UserOutlined />
         </button>
 
         {/* Logout */}
-        <button className="text-slate-700 hover:text-blue-600 transition cursor-pointer">
-          <LogoutOutlined className="text-lg" onClick={handleLogout} />
+        <button
+          onClick={handleLogout}
+          className="
+            w-9 h-9 flex items-center justify-center 
+            rounded-md
+            text-zinc-400 hover:text-zinc-200 
+            hover:bg-zinc-800 transition
+          "
+        >
+          <LogoutOutlined />
         </button>
       </div>
     </header>

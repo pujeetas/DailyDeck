@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const authRoute = require("./src/route/authRoute");
 const userRoute = require("./src/route/userRoute");
 const cors = require("cors");
+const notesRoute = require("./src/route/notesRoute");
 
 const app = express();
 
@@ -21,6 +22,9 @@ app.use(express.json());
 // routes
 app.use("/", authRoute);
 app.use("/", userRoute);
+
+//notes
+app.use("/", notesRoute);
 
 // start server ONLY after DB connection
 const start = async () => {

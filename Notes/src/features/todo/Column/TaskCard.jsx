@@ -1,23 +1,37 @@
 export default function TaskCard({ task, onEdit, onDelete }) {
+  const priorityColor =
+    {
+      high: "bg-red-500",
+      medium: "bg-yellow-500",
+      low: "bg-green-500",
+    }[task.priority] || "bg-gray-400";
+
   return (
     <div
-      className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition cursor-pointer group"
+      className="group rounded-md border border-zinc-800 bg-zinc-900 p-3 
+                 hover:border-zinc-700 hover:bg-zinc-850 transition-colors cursor-pointer"
       onClick={onEdit}
     >
-      {/* Header */}
-      <div className="flex justify-between">
-        <h4 className="font-semibold text-gray-800">{task.title}</h4>
+      {/* Top Row */}
+      <div className="flex items-start justify-between">
+        <div className="flex items-center gap-2">
+          {/* Priority Dot */}
+          <span className={`h-2.5 w-2.5 rounded-full ${priorityColor}`}></span>
 
-        {/* Hover controls */}
+          {/* Title */}
+          <h4 className="text-sm font-medium text-zinc-200">{task.title}</h4>
+        </div>
+
+        {/* Hover Actions */}
         <div className="opacity-0 group-hover:opacity-100 transition flex gap-2">
           <button
             onClick={(e) => {
               e.stopPropagation();
               onEdit();
             }}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-zinc-500 hover:text-zinc-300"
           >
-            ✏️
+            Edit
           </button>
 
           <button
@@ -25,45 +39,37 @@ export default function TaskCard({ task, onEdit, onDelete }) {
               e.stopPropagation();
               onDelete();
             }}
-            className="text-red-500 hover:text-red-700"
+            className="text-red-500 hover:text-red-400"
           >
-            🗑️
+            Delete
           </button>
         </div>
       </div>
 
-      {/* Subtitle */}
-      {task.subtitle && (
-        <p className="text-sm text-gray-500 mt-1">{task.subtitle}</p>
+      {/* Tech Tags */}
+      {task.tech && task.tech.length > 0 && (
+        <div className="flex flex-wrap gap-1 mt-2">
+          {task.tech.map((tag, i) => (
+            <span
+              key={i}
+              className="text-[10px] px-2 py-0.5 bg-zinc-800 text-zinc-400 rounded-md border border-zinc-700"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
       )}
 
-      {/* Priority */}
-      {task.priority && (
-        <span
-          className={`
-            mt-3 inline-block px-2 py-1 rounded text-xs font-medium
-            ${task.priority === "high" && "bg-red-100 text-red-600"}
-            ${task.priority === "medium" && "bg-yellow-100 text-yellow-700"}
-            ${task.priority === "low" && "bg-green-100 text-green-700"}
-          `}
-        >
-          {task.priority}
+      {/* Issue ID */}
+      {task.issueId && (
+        <p className="text-[11px] text-zinc-500 mt-2">{task.issueId}</p>
+      )}
+
+      {/* Blocker */}
+      {task.blocked && (
+        <span className="mt-2 inline-block text-[10px] px-2 py-0.5 bg-red-900/40 text-red-400 rounded-md border border-red-800">
+          Blocked
         </span>
-      )}
-
-      {/* Due Date */}
-      {task.dueDate && (
-        <p
-          className={`text-xs mt-3 px-2 py-1 inline-block rounded 
-            ${
-              new Date(task.dueDate) < new Date()
-                ? "bg-red-100 text-red-600"
-                : "bg-gray-100 text-gray-600"
-            }
-          `}
-        >
-          Due: {task.dueDate}
-        </p>
       )}
     </div>
   );

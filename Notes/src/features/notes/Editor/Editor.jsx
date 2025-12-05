@@ -1,34 +1,39 @@
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
-import { useCreateBlockNote } from "@blocknote/react";
+import { useCreateBlockNote, useEditorSelectionChange } from "@blocknote/react";
 import { codeBlockOptions } from "@blocknote/code-block";
 import "@blocknote/react/style.css";
-import { Divider, Typography } from "antd";
+import { Divider } from "antd";
 import { useState } from "react";
 import { BlockNoteSchema, createCodeBlockSpec } from "@blocknote/core";
+import { useEffect } from "react";
 
-const Editor = ({ value, onChange, onTitleChange, title }) => {
+const Editor = ({ value, onChange, onTitleChange, title, activeId }) => {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
-
-  const initialContent = (() => {
-    if (!value) return [{ type: "paragraph", content: "" }];
-    return value || [{ type: "paragraph", content: "" }];
-  })();
-
-  const codeSchema = BlockNoteSchema.create().extend({
+  const codeSchemaRef = BlockNoteSchema.create().extend({
     blockSpecs: {
       codeBlock: createCodeBlockSpec(codeBlockOptions),
     },
   });
 
-  const editor = useCreateBlockNote({ initialContent, codeSchema });
+  const editor = useCreateBlockNote({
+    initialContent: !value ? [{ type: "paragraph", content: "" }] : value,
+    codeSchema: codeSchemaRef,
+  });
+
+  useEffect(() => {
+    if (!value || !editor) return;
+
+    editor.replaceBlocks(editor.document, value);
+  }, [value, activeId]);
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-[#1f1f1f] py-12 px-6">
+      {/* Title */}
       <div className="w-full max-w-3xl mx-auto mb-2">
         {isEditingTitle ? (
           <input
-            value={title}
+            defaultValue={title}
             onChange={(e) => onTitleChange(e.target.value)}
             onBlur={() => setIsEditingTitle(false)}
             autoFocus
@@ -50,10 +55,13 @@ const Editor = ({ value, onChange, onTitleChange, title }) => {
         <Divider style={{ borderColor: "#333333" }} />
       </div>
 
+      {/* BlockNote Editor */}
       <div className="w-full max-w-3xl bg-[#262626] rounded-xl">
         <BlockNoteView
           editor={editor}
-          onChange={() => onChange(editor.document)}
+          onChange={() => {
+            onChange({ body: editor.document });
+          }}
         />
       </div>
     </div>
