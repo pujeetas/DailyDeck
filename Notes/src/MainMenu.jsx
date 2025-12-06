@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Header from "./components/Header"; // Ensure path is correct
+import Header from "./components/layout/Header";
 
 function MainMenu() {
   const navigate = useNavigate();

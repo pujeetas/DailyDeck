@@ -67,7 +67,7 @@ export default function Login() {
             </div>
             <h2 className="text-4xl font-bold leading-tight tracking-tight">
               Turn your chaos into <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-400 to-blue-500">
                 structured clarity.
               </span>
             </h2>

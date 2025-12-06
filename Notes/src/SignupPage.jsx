@@ -107,11 +107,11 @@ const SignupPage = () => {
           </div>
 
           <div className="relative flex items-center mb-8">
-            <div className="flex-grow border-t border-slate-100"></div>
-            <span className="flex-shrink-0 mx-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <div className="grow border-t border-slate-100"></div>
+            <span className="shrink-0 mx-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
               Or continue with
             </span>
-            <div className="flex-grow border-t border-slate-100"></div>
+            <div className="grow border-t border-slate-100"></div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
@@ -274,7 +274,7 @@ const SignupPage = () => {
             </div>
             <h2 className="text-4xl font-bold leading-tight tracking-tight">
               Built for builders, <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-400 to-blue-500">
                 designers, and thinkers.
               </span>
             </h2>

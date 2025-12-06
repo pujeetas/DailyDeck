@@ -5,16 +5,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainMenu from "../src/MainMenu";
 import NotesPage from "../src/features/notes/NotesPage";
 
-import Dashboard from "../src/features/todo/Dashboard/Dashboard";
-import DashboardRouter from "../src/features/todo/Dashboard/DashboardRouter";
+import Dashboard from "./features/todo/pages/Dashboard";
+import DashboardRouter from "./features/todo/pages/DashboardRouter";
 
-import TaskCentral from "../src/features/todo/TaskCentral/TaskCentral";
-import TaskCentralRouter from "../src/features/todo/TaskCentral/TaskCentralRouter";
-
-import Completed from "../src/features/todo/TaskCentral/TaskCentralSections/Completed/Completed";
-import OverDue from "../src/features/todo/TaskCentral/TaskCentralSections/Overdue/OverDueTask";
-import Priority from "../src/features/todo/TaskCentral/TaskCentralSections/Priority/Priority";
-import TodayTask from "../src/features/todo/TaskCentral/TaskCentralSections/Today/Today";
+import FocusList from "./features/todo/components/FocusList";
 
 import SignupPage from "../src/SignupPage";
 import LandingPage from "./landingPage/LandingPage";
@@ -50,26 +44,13 @@ function Main() {
           ),
         },
         {
-          path: "taskcentral",
-          element: <TaskCentralRouter />,
-          children: [
-            { index: true, element: <TaskCentral detailsList={detailsList} /> },
-            {
-              path: "priority",
-              element: (
-                <Priority
-                  detailsList={detailsList}
-                  setDetailsList={setDetailsList}
-                />
-              ),
-            },
-            {
-              path: "completed",
-              element: <Completed detailsList={detailsList} />,
-            },
-            { path: "today", element: <TodayTask detailsList={detailsList} /> },
-            { path: "overdue", element: <OverDue detailsList={detailsList} /> },
-          ],
+          path: "focus",
+          element: (
+            <FocusList
+              detailsList={detailsList}
+              setDetailsList={setDetailsList}
+            />
+          ),
         },
       ],
     },

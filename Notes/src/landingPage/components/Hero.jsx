@@ -31,7 +31,7 @@ const Hero = () => {
 
         <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight leading-[1.1] mb-6">
           Turn your chaos into <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-600">
+          <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-emerald-600">
             structured clarity.
           </span>
         </h1>

@@ -61,7 +61,7 @@ const FAQ = () => {
               >
                 {item.question}
               </span>
-              <span className="ml-6 flex-shrink-0">
+              <span className="ml-6 shrink-0">
                 {openIndex === index ? (
                   <Minus className="w-5 h-5 text-blue-600" />
                 ) : (
