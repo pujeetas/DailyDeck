@@ -11,11 +11,9 @@ export default function TaskDrawer({
   onClose,
   taskForm,
   setTaskForm,
-  onSubmit,
   mode = "add",
 }) {
   const isEdit = mode === "edit";
-
   return (
     <div
       className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-200
@@ -52,7 +50,10 @@ export default function TaskDrawer({
             label="Issue ID"
             value={taskForm.issueId || ""}
             onChange={(e) =>
-              setTaskForm({ ...taskForm, issueId: e.target.value })
+              setTaskForm({
+                ...taskForm,
+                issueId: e.target.value.toUpperCase(),
+              })
             }
             placeholder="GH-123, JIRA-456"
           />
@@ -103,7 +104,12 @@ export default function TaskDrawer({
           <FormTextarea taskForm={taskForm} setTaskForm={setTaskForm} />
           <DrawerSubtask taskForm={taskForm} setTaskForm={setTaskForm} />
         </div>
-        <DrawerFooter isEdit={isEdit} onClose={onClose} onSubmit={onSubmit} />
+        <DrawerFooter
+          taskForm={taskForm}
+          setTaskForm={setTaskForm}
+          isEdit={isEdit}
+          onClose={onClose}
+        />
       </div>
     </div>
   );

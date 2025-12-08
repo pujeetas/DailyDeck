@@ -1,8 +1,10 @@
 import { useState } from "react";
+import useTodoStore from "../../store/useTodoStore";
 
 // Subtask Section
-export function SubtaskSection({ taskForm = {}, setTaskForm }) {
+export function SubtaskSection({ taskForm, setTaskForm }) {
   const [text, setText] = useState("");
+  const { subTaskStatus } = useTodoStore();
 
   const add = () => {
     if (!text.trim()) return;
@@ -45,7 +47,35 @@ export function SubtaskSection({ taskForm = {}, setTaskForm }) {
             key={s.id}
             className="flex justify-between items-center bg-[#0E0E10] border border-white/10 rounded-lg px-3 py-2 group"
           >
-            <span className="text-xs text-zinc-300">{s.text}</span>
+            {/* LEFT: checkbox + text */}
+            <div className="flex items-center gap-2">
+              {/* Toggle complete */}
+              <input
+                type="checkbox"
+                checked={s.complete}
+                onChange={() => {
+                  setTaskForm({
+                    ...taskForm,
+                    subTask: taskForm.subTask.map((st) =>
+                      st.id === s.id ? { ...st, complete: !st.complete } : st
+                    ),
+                  }),
+                    subTaskStatus();
+                }}
+                className="w-3.5 h-3.5 accent-neutral-500 cursor-pointer"
+              />
+
+              {/* Text with strike if done */}
+              <span
+                className={`text-xs ${
+                  s.complete ? "text-zinc-500 line-through" : "text-zinc-300"
+                }`}
+              >
+                {s.text}
+              </span>
+            </div>
+
+            {/* RIGHT: delete button */}
             <button
               onClick={() => remove(s.id)}
               className="text-zinc-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition text-xs"

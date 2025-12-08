@@ -1,4 +1,7 @@
-export default function TaskCard({ task, onEdit, onDelete, onToggleFocus }) {
+import useTodoStore from "../store/useTodoStore";
+import { message } from "antd";
+
+export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
   const priorityStyles =
     {
       high: "bg-red-500/10 text-red-400 border-red-500/30",
@@ -6,9 +9,35 @@ export default function TaskCard({ task, onEdit, onDelete, onToggleFocus }) {
       low: "bg-sky-500/10 text-sky-300 border-sky-500/30",
     }[task.priority] || "bg-zinc-800/60 text-zinc-300 border-zinc-700";
 
+  const { deleteTodo, toggleFocus, detailsList, updateTodo } = useTodoStore();
+
+  const handleEditClick = (id) => {
+    const taskToEdit = detailsList.find((task) => task._id === id);
+    if (taskToEdit) {
+      setTaskForm({
+        ...taskToEdit,
+        subTask: taskToEdit.subTask || [],
+      });
+      setIsEditModalOpen(true);
+    }
+  };
+  async function handleDelete(id) {
+    await deleteTodo(id);
+  }
+
+  const onToggleFocus = (id, focused) => {
+    toggleFocus(id, focused);
+    const isNowFocused = !detailsList.find((t) => t.id === id)?.focused;
+    if (isNowFocused) {
+      message.success("Added to Focus List");
+    } else {
+      message.info("Removed from Focus List");
+    }
+  };
+
   return (
     <div
-      onClick={onEdit}
+      onClick={() => handleEditClick(task._id)}
       className="group relative flex flex-col gap-2 p-3.5 mb-3 bg-neutral-800/40 hover:bg-neutral-700/40 
   border border-white/10 shadow-[0_1px_4px_rgba(0,0,0,0.25)] hover:border-white/20 rounded-xl transition-colors duration-150 cursor-pointer"
     >
@@ -27,22 +56,22 @@ export default function TaskCard({ task, onEdit, onDelete, onToggleFocus }) {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onToggleFocus(task.id);
+                onToggleFocus(task._id, task.focused);
               }}
               className={`p-1.5 rounded-md transition ${
-                task.isFocus
+                task.focused
                   ? "text-yellow-300 hover:text-yellow-200"
                   : "text-zinc-400 hover:text-zinc-100"
               }`}
-              title={task.isFocus ? "Remove from Focus" : "Add to Focus"}
+              title={task.focused ? "Remove from Focus" : "Add to Focus"}
             >
-              {task.isFocus ? "★" : "☆"}
+              {task.focused ? "★" : "☆"}
             </button>
           )}
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onEdit();
+              handleEditClick(task._id);
             }}
             className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 transition"
             title="Edit"
@@ -62,7 +91,7 @@ export default function TaskCard({ task, onEdit, onDelete, onToggleFocus }) {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onDelete();
+              handleDelete(task._id);
             }}
             className="p-1.5 rounded-md hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition"
             title="Delete"

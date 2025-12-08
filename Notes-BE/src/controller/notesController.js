@@ -61,7 +61,14 @@ const updateNote = async (req, res) => {
 };
 
 //delete note
+const deleteNote = async (req, res) => {
+  try {
+    const deleteNoteId = req.params.id;
+    await NotesModel.findByIdAndDelete(deleteNoteId);
+    res.send("Note Deleted");
+  } catch (error) {
+    res.status(400).send("Something went wrong: " + error.message);
+  }
+};
 
-const deleteNote = async (req, res) => {};
-
-module.exports = { createNote, getAllNotes, updateNote };
+module.exports = { createNote, getAllNotes, updateNote, deleteNote };

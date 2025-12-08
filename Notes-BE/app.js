@@ -6,6 +6,7 @@ const authRoute = require("./src/route/authRoute");
 const userRoute = require("./src/route/userRoute");
 const cors = require("cors");
 const notesRoute = require("./src/route/notesRoute");
+const todoRoute = require("./src/route/todoRoute");
 
 const app = express();
 
@@ -25,6 +26,9 @@ app.use("/", userRoute);
 
 //notes
 app.use("/", notesRoute);
+
+//todo
+app.use("/", todoRoute);
 
 // start server ONLY after DB connection
 const start = async () => {

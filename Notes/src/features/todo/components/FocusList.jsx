@@ -1,27 +1,24 @@
+import { useEffect } from "react";
 import FocusCard from "../components/FocusCard";
+import useTodoStore from "../store/useTodoStore";
+import { message } from "antd";
 
-export default function FocusList({ detailsList, setDetailsList }) {
-  const focusTasks = detailsList.filter((t) => t.isFocus);
+export default function FocusList() {
+  const { fetchAllTodo, detailsList, bulkUnfocus } = useTodoStore();
 
-  const handleToggleFocus = (id) => {
-    setDetailsList((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, isFocus: !task.isFocus } : task
-      )
-    );
-  };
+  useEffect(() => {
+    fetchAllTodo();
+  }, [fetchAllTodo]);
 
-  const handleMarkDone = (id) => {
-    setDetailsList((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, status: "done", isFocus: false } : task
-      )
-    );
+  const focusTasks = detailsList.filter((t) => t.focused);
+  const allIds = focusTasks.map((m) => m._id);
+
+  const handleBulkUnfocus = () => {
+    bulkUnfocus(allIds);
   };
 
   return (
     <div className="relative min-h-screen w-full bg-[#0A0A0A] text-neutral-200 selection:bg-neutral-500/30">
-      {/* subtle background glow (optional, to match dashboard) */}
       <div
         className="fixed inset-0 z-0 pointer-events-none"
         style={{
@@ -43,13 +40,7 @@ export default function FocusList({ detailsList, setDetailsList }) {
 
           {focusTasks.length > 0 && (
             <button
-              onClick={() =>
-                setDetailsList((prev) =>
-                  prev.map((task) =>
-                    task.isFocus ? { ...task, isFocus: false } : task
-                  )
-                )
-              }
+              onClick={() => handleBulkUnfocus()}
               className="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 transition"
             >
               Clear Focus List
@@ -101,12 +92,7 @@ export default function FocusList({ detailsList, setDetailsList }) {
         ) : (
           <div className="space-y-2">
             {focusTasks.map((task) => (
-              <FocusCard
-                key={task.id}
-                task={task}
-                onToggleFocus={() => handleToggleFocus(task.id)}
-                onMarkDone={() => handleMarkDone(task.id)}
-              />
+              <FocusCard key={task._id} task={task} />
             ))}
           </div>
         )}

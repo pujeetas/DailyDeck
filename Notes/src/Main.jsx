@@ -1,33 +1,26 @@
-import { useState } from "react";
+import { useState, Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
-import MainMenu from "../src/MainMenu";
-import NotesPage from "../src/features/notes/NotesPage";
-
-import Dashboard from "./features/todo/pages/Dashboard";
-import DashboardRouter from "./features/todo/pages/DashboardRouter";
-
-import FocusList from "./features/todo/components/FocusList";
-
-import SignupPage from "../src/SignupPage";
-import LandingPage from "./landingPage/LandingPage";
 import "../styles.css";
-import Login from "./Login";
 
-function Main() {
-  const [detailsList, setDetailsList] = useState(() => {
-    const data = localStorage.getItem("list");
-    return data ? JSON.parse(data) : [];
-  });
+// Lazy load pages
+const LandingPage = lazy(() => import("./landingPage/LandingPage"));
+const SignupPage = lazy(() => import("../src/SignupPage"));
+const Login = lazy(() => import("./Login"));
+const MainMenu = lazy(() => import("../src/MainMenu"));
+const NotesPage = lazy(() => import("../src/features/notes/NotesPage"));
+const DashboardRouter = lazy(() =>
+  import("./features/todo/pages/DashboardRouter")
+);
+const Dashboard = lazy(() => import("./features/todo/pages/Dashboard"));
+const FocusList = lazy(() => import("./features/todo/components/FocusList"));
 
-  const router = createBrowserRouter([
+const createAppRouter = () =>
+  createBrowserRouter([
     { path: "/", element: <LandingPage /> },
     { path: "/signup", element: <SignupPage /> },
     { path: "/login", element: <Login /> },
-
     { path: "/main", element: <MainMenu /> },
-
     { path: "/notes", element: <NotesPage /> },
 
     {
@@ -36,27 +29,24 @@ function Main() {
       children: [
         {
           index: true,
-          element: (
-            <Dashboard
-              detailsList={detailsList}
-              setDetailsList={setDetailsList}
-            />
-          ),
+          element: <Dashboard />,
         },
         {
           path: "focus",
-          element: (
-            <FocusList
-              detailsList={detailsList}
-              setDetailsList={setDetailsList}
-            />
-          ),
+          element: <FocusList />,
         },
       ],
     },
   ]);
 
-  return <RouterProvider router={router} />;
+function Main() {
+  const router = createAppRouter();
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RouterProvider router={router} />
+    </Suspense>
+  );
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

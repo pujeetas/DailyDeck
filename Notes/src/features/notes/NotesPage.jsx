@@ -21,7 +21,6 @@ export default function NotesPage() {
     loadNotes();
   };
   const debounceUpdate = useCallback(debounce(performUpdate, 6000), []);
-
   return (
     <div className="flex h-screen bg-[#1f1f1f]">
       <Sidebar
@@ -43,7 +42,6 @@ export default function NotesPage() {
             title={activeNote.title}
             onTitleChange={async (t) => {
               await debounceUpdate(activeId, { title: t });
-              //loadNotes();
             }}
           />
         ) : (

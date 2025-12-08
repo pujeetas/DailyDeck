@@ -3,6 +3,7 @@ import {
   createNote,
   getAllNotes,
   updateNoteRequest,
+  deleteNoteRequest,
 } from "../services/notesService";
 import { useEffect } from "react";
 
@@ -33,11 +34,12 @@ export function useNotes() {
   };
 
   async function updateNote(id, update) {
-    console.log(update);
     return updateNoteRequest(id, update);
   }
 
-  function removeNote(id) {
+  //delete note
+  async function removeNote(id) {
+    const res = await deleteNoteRequest(id);
     setNotes((prev) => prev.filter((n) => n.id !== id));
     setActiveId(null);
   }

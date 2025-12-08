@@ -1,15 +1,44 @@
-export default function FocusCard({ task, onToggleFocus, onMarkDone }) {
+import useTodoStore from "../store/useTodoStore";
+import { message } from "antd";
+
+export default function FocusCard({ task }) {
   const subtasks = task.subTask || [];
   const completed = subtasks.filter((s) => s.complete).length;
   const tech = task.tech || [];
 
   const statusLabel =
     {
-      todo: "Backlog",
+      backlog: "Backlog",
       progress: "In Progress",
       review: "Review",
       done: "Done",
     }[task.status] || "Unknown";
+
+  const { toggleFocus, markDone, detailsList } = useTodoStore();
+
+  const handleToggleFocus = (id, focused) => {
+    toggleFocus(id, focused);
+
+    const isNowFocused = !detailsList.find((t) => t._id === id)?.focused;
+
+    if (isNowFocused) {
+      message.success("Added to Focus List");
+    } else {
+      message.info("Removed from Focus List");
+    }
+  };
+
+  const handleMarkDone = (id, status, focused) => {
+    markDone(task._id, task.status, task.focused);
+
+    const isNowFocused = !detailsList.find((t) => t._id === id)?.focused;
+
+    if (isNowFocused) {
+      message.success("Added to Focus List and Marked Done");
+    } else {
+      message.info("Removed from Focus List");
+    }
+  };
 
   return (
     <div
@@ -93,14 +122,15 @@ export default function FocusCard({ task, onToggleFocus, onMarkDone }) {
       {/* Right side: actions */}
       <div className="flex flex-col items-end gap-2 shrink-0">
         <button
-          onClick={onToggleFocus}
+          onClick={() => handleToggleFocus(task._id, task.focused)}
           className="text-xs px-2 py-1 rounded-lg border border-white/10 bg-neutral-800 hover:bg-neutral-700 text-zinc-200 transition flex items-center gap-1"
         >
           <span>★</span>
           <span>Unfocus</span>
         </button>
+
         <button
-          onClick={onMarkDone}
+          onClick={() => markDone(task._id, task.status, task.focused)}
           className="text-xs px-2 py-1 rounded-lg bg-emerald-500/90 hover:bg-emerald-400 text-black font-medium transition"
         >
           Mark Done

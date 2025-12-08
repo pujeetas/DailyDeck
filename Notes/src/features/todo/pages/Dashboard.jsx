@@ -4,94 +4,44 @@ import Header from "../components/BoardHeader";
 import { KanbanColumn } from "../components/KanbanColumn";
 import { KanbanStatuses } from "../data/kanbanStatuses";
 import ColumnTasks from "../components/ColumnTask";
-import { message } from "antd";
+import useTodoStore from "../store/useTodoStore";
 
-export default function Dashboard({ detailsList, setDetailsList }) {
+export default function Dashboard() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [taskForm, setTaskForm] = useState({
-    id: "",
     title: "",
-    subtitle: "",
-    createdAt: "",
     description: "",
-    category: "",
-    status: "todo",
-    dueDate: "",
+    status: "backlog",
     priority: "",
     subTask: [],
     tech: [],
     issueId: "",
+    focused: false,
   });
 
+  const { detailsList, loading, fetchAllTodo } = useTodoStore((state) => state);
+
   useEffect(() => {
-    const json = JSON.stringify(detailsList);
-    localStorage.setItem("list", json);
-  }, [detailsList]);
-
-  const handleEditClick = (id) => {
-    const taskToEdit = detailsList.find((task) => task.id === id);
-    if (taskToEdit) {
-      setTaskForm({
-        ...taskToEdit,
-        subTask: taskToEdit.subTask || [],
-      });
-      setIsEditModalOpen(true);
-    }
-  };
-
-  function handleCreateBtn() {
-    setTaskForm({
-      id: "",
-      title: "",
-      subtitle: "",
-      createdAt: "",
-      description: "",
-      category: "",
-      status: "todo",
-      dueDate: "",
-      priority: "",
-      subTask: [],
-      tech: [],
-      issueId: "",
-    });
-    setIsAddModalOpen(true);
-  }
-
-  function handleCreateTask() {
-    const newTask = {
-      ...taskForm,
-      id: Date.now(),
-      createdAt: new Date().toISOString(),
-    };
-    setDetailsList((prev) => [newTask, ...prev]);
-    setIsAddModalOpen(false);
-  }
-
-  function handleUpdateTask() {
-    setDetailsList((prev) =>
-      prev.map((task) => (task.id === taskForm.id ? taskForm : task))
-    );
-    setIsEditModalOpen(false);
-  }
+    fetchAllTodo();
+  }, []);
 
   const getCount = (status) =>
     detailsList.filter((t) => t.status === status).length;
 
-  const onToggleFocus = (id) => {
-    setDetailsList((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, isFocus: !task.isFocus } : task
-      )
-    );
-    const isNowFocused = !detailsList.find((t) => t.id === id)?.isFocus;
-
-    if (isNowFocused) {
-      message.success("Added to Focus List");
-    } else {
-      message.info("Removed from Focus List");
-    }
-  };
+  function handleCreateBtn() {
+    setTaskForm({
+      title: "",
+      description: "",
+      status: "backlog",
+      priority: "",
+      subTask: [],
+      tech: [],
+      issueId: "",
+      focused: false,
+    });
+    setIsAddModalOpen(true);
+  }
 
   return (
     <div className="relative min-h-screen w-full bg-[#0A0A0A] text-neutral-200 selection:bg-neutral-500/30">
@@ -115,7 +65,6 @@ export default function Dashboard({ detailsList, setDetailsList }) {
         onClose={() => setIsAddModalOpen(false)}
         taskForm={taskForm}
         setTaskForm={setTaskForm}
-        onSubmit={handleCreateTask}
       />
 
       <TaskDrawer
@@ -124,7 +73,6 @@ export default function Dashboard({ detailsList, setDetailsList }) {
         onClose={() => setIsEditModalOpen(false)}
         taskForm={taskForm}
         setTaskForm={setTaskForm}
-        onSubmit={handleUpdateTask}
       />
 
       {/* Main Board */}
@@ -138,11 +86,10 @@ export default function Dashboard({ detailsList, setDetailsList }) {
               count={getCount(col.key)}
             >
               <ColumnTasks
-                onToggleFocus={onToggleFocus}
+                setTaskForm={setTaskForm}
                 status={col.key}
-                detailsList={detailsList}
-                setDetailsList={setDetailsList}
-                handleEditClick={handleEditClick}
+                isEditModalOpen={isEditModalOpen}
+                setIsEditModalOpen={setIsEditModalOpen}
               />
             </KanbanColumn>
           ))}
