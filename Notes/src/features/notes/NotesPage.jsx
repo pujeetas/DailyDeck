@@ -2,7 +2,8 @@ import { useNotes } from "./hooks/useNotes";
 import Sidebar from "./Sidebar";
 import Editor from "./Editor/Editor";
 import debounce from "lodash.debounce";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
+
 export default function NotesPage() {
   const {
     notes,
@@ -13,14 +14,21 @@ export default function NotesPage() {
     removeNote,
     pinNote,
     setActiveId,
-    loadNotes,
   } = useNotes();
 
-  const performUpdate = async (id, update) => {
-    await updateNote(id, update);
-    loadNotes();
-  };
-  const debounceUpdate = useCallback(debounce(performUpdate, 6000), []);
+  // Create debounced update function with proper dependencies
+  const debouncedUpdate = useMemo(
+    () =>
+      debounce(async (id, updates) => {
+        if (!id) {
+          console.error("No active note ID");
+          return;
+        }
+        await updateNote(id, updates);
+      }, 1000),
+    [updateNote]
+  );
+
   return (
     <div className="flex h-screen bg-[#1f1f1f]">
       <Sidebar
@@ -34,14 +42,15 @@ export default function NotesPage() {
       <div className="flex-1 overflow-auto">
         {activeNote ? (
           <Editor
+            key={activeId}
             activeId={activeId}
             value={activeNote.body}
-            onChange={async (c) => {
-              await debounceUpdate(activeId, c);
+            onChange={(updates) => {
+              debouncedUpdate(activeId, updates);
             }}
             title={activeNote.title}
-            onTitleChange={async (t) => {
-              await debounceUpdate(activeId, { title: t });
+            onTitleChange={(newTitle) => {
+              debouncedUpdate(activeId, { title: newTitle });
             }}
           />
         ) : (

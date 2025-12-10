@@ -1,3 +1,4 @@
+import { GithubOutlined } from "@ant-design/icons";
 import useTodoStore from "../store/useTodoStore";
 import { message } from "antd";
 
@@ -51,7 +52,7 @@ export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
         </span>
 
         {/* Hover Actions */}
-        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1.5">
+        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex  gap-1.5">
           {/* Focus button */}
           {task.status !== "done" && (
             <button
@@ -59,7 +60,7 @@ export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
                 e.stopPropagation();
                 onToggleFocus(task._id, task.focused);
               }}
-              className={`p-1.5 rounded-md transition ${
+              className={`cursor-pointer p-1.5 rounded-md transition ${
                 task.focused
                   ? "text-yellow-300 hover:text-yellow-200"
                   : "text-zinc-400 hover:text-zinc-100"
@@ -69,12 +70,23 @@ export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
               {task.focused ? "★" : "☆"}
             </button>
           )}
+          {task.gitURL && (
+            <a href={task.gitURL} target="_blank" rel="noopener noreferrer">
+              <GithubOutlined
+                style={{
+                  fontSize: 15,
+                  cursor: "pointer",
+                  marginTop: 10,
+                }}
+              />
+            </a>
+          )}
           <button
             onClick={(e) => {
               e.stopPropagation();
               handleEditClick(task._id);
             }}
-            className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 transition"
+            className="cursor-pointer p-1.5 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 transition"
             title="Edit"
           >
             <svg
@@ -94,7 +106,7 @@ export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
               e.stopPropagation();
               handleDelete(task._id);
             }}
-            className="p-1.5 rounded-md hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition"
+            className="cursor-pointer p-1.5 rounded-md hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition"
             title="Delete"
           >
             <svg

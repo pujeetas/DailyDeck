@@ -1,72 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import Header from "./components/layout/Header";
+import { mainMenuItems } from "./constants/mainMenuItems";
 
 function MainMenu() {
   const navigate = useNavigate();
-
-  const menuItems = [
-    {
-      id: "notes",
-      name: "Notes",
-      description: "Developer-friendly markdown + rich text workspace",
-      icon: "📝",
-      path: "/notes",
-      color: "text-indigo-400",
-      glow: "group-hover:shadow-indigo-500/10 group-hover:border-indigo-500/20",
-      bg: "group-hover:bg-indigo-500/5",
-    },
-    {
-      id: "todo",
-      name: "Tasks",
-      description: "Manage your development workflow",
-      icon: "📌",
-      path: "/to-do",
-      color: "text-rose-400",
-      glow: "group-hover:shadow-rose-500/10 group-hover:border-rose-500/20",
-      bg: "group-hover:bg-rose-500/5",
-    },
-    {
-      id: "calendar",
-      name: "Calendar",
-      description: "Plan schedules & deadlines",
-      icon: "📅",
-      path: "/calendar",
-      color: "text-blue-400",
-      glow: "group-hover:shadow-blue-500/10 group-hover:border-blue-500/20",
-      bg: "group-hover:bg-blue-500/5",
-    },
-    {
-      id: "reminders",
-      name: "Reminders",
-      description: "Never miss critical moments",
-      icon: "⏰",
-      path: "/reminders",
-      color: "text-yellow-400",
-      glow: "group-hover:shadow-yellow-500/10 group-hover:border-yellow-500/20",
-      bg: "group-hover:bg-yellow-500/5",
-    },
-    {
-      id: "focus",
-      name: "Focus Timer",
-      description: "Deep work with Pomodoro sessions",
-      icon: "⏱️",
-      path: "/focus-timer",
-      color: "text-teal-400",
-      glow: "group-hover:shadow-teal-500/10 group-hover:border-teal-500/20",
-      bg: "group-hover:bg-teal-500/5",
-    },
-    {
-      id: "news",
-      name: "TechBuzz",
-      description: "Daily tech briefs for developers",
-      icon: "📰",
-      path: "/tech-buzz",
-      color: "text-lime-400",
-      glow: "group-hover:shadow-lime-500/10 group-hover:border-lime-500/20",
-      bg: "group-hover:bg-lime-500/5",
-    },
-  ];
-
+  const menuItems = mainMenuItems;
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-200 selection:bg-indigo-500/30">
       <Header />

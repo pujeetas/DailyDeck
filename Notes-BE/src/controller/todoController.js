@@ -74,7 +74,9 @@ const bulkUnfocus = async (req, res) => {
     await TodoModel.updateMany({ _id: { $in: ids } }, { $set: { focused } });
     res.send("unfocused all todo. ");
   } catch (error) {
-    res.status(400).send("Cannot unfocus all todo. " + error);
+    res
+      .status(400)
+      .json({ message: "Cannot unfocus all todo: " + error.message });
   }
 };
 

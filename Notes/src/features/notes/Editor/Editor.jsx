@@ -1,31 +1,53 @@
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
-import { useCreateBlockNote, useEditorSelectionChange } from "@blocknote/react";
+import { useCreateBlockNote } from "@blocknote/react";
 import { codeBlockOptions } from "@blocknote/code-block";
 import "@blocknote/react/style.css";
 import { Divider } from "antd";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { BlockNoteSchema, createCodeBlockSpec } from "@blocknote/core";
-import { useEffect } from "react";
+
+const schema = BlockNoteSchema.create().extend({
+  blockSpecs: {
+    codeBlock: createCodeBlockSpec(codeBlockOptions),
+  },
+});
 
 const Editor = ({ value, onChange, onTitleChange, title, activeId }) => {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const codeSchemaRef = BlockNoteSchema.create().extend({
-    blockSpecs: {
-      codeBlock: createCodeBlockSpec(codeBlockOptions),
-    },
-  });
+  const [localTitle, setLocalTitle] = useState(title || "");
 
-  const editor = useCreateBlockNote({
-    initialContent: !value ? [{ type: "paragraph", content: "" }] : value,
-    codeSchema: codeSchemaRef,
-  });
-
+  // Update local title when the active note changes
   useEffect(() => {
-    if (!value || !editor) return;
+    setLocalTitle(title || "");
+  }, [title, activeId]);
 
-    editor.replaceBlocks(editor.document, value);
-  }, [value, activeId]);
+  // Memoize initial content to prevent recreation
+  const initialContent = useMemo(() => {
+    return value && value.length > 0
+      ? value
+      : [{ type: "paragraph", content: "" }];
+  }, [activeId]); // Only recreate when activeId changes (new note selected)
+
+  // Initialize editor with memoized content
+  const editor = useCreateBlockNote({
+    schema,
+    initialContent,
+  });
+
+  const handleTitleChange = (e) => {
+    const newTitle = e.target.value;
+    setLocalTitle(newTitle);
+    onTitleChange(newTitle);
+  };
+
+  const handleTitleBlur = () => {
+    setIsEditingTitle(false);
+    // Ensure we save the final title value
+    if (localTitle !== title) {
+      onTitleChange(localTitle);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-[#1f1f1f] py-12 px-6">
@@ -33,9 +55,9 @@ const Editor = ({ value, onChange, onTitleChange, title, activeId }) => {
       <div className="w-full max-w-3xl mx-auto mb-2">
         {isEditingTitle ? (
           <input
-            defaultValue={title}
-            onChange={(e) => onTitleChange(e.target.value)}
-            onBlur={() => setIsEditingTitle(false)}
+            value={localTitle}
+            onChange={handleTitleChange}
+            onBlur={handleTitleBlur}
             autoFocus
             placeholder="Untitled"
             className="w-full bg-transparent text-gray-200 text-4xl font-bold 
@@ -46,7 +68,7 @@ const Editor = ({ value, onChange, onTitleChange, title, activeId }) => {
             onClick={() => setIsEditingTitle(true)}
             className="text-gray-200 text-4xl font-bold cursor-text hover:text-white transition"
           >
-            {title || <span className="text-gray-500">Untitled</span>}
+            {localTitle || <span className="text-gray-500">Untitled</span>}
           </div>
         )}
       </div>
@@ -62,6 +84,7 @@ const Editor = ({ value, onChange, onTitleChange, title, activeId }) => {
           onChange={() => {
             onChange({ body: editor.document });
           }}
+          theme="dark"
         />
       </div>
     </div>

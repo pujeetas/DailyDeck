@@ -4,13 +4,13 @@ import DrawerSubtask from "./DrawerSubtask";
 import FormTextarea from "./inputs/FormTextarea";
 import FormInput from "./inputs/FormInput";
 import TwoColumn from "./inputs/TwoColumn";
-import SelectInput from "./inputs/SelectInput";
 import DateInput from "./DatePicker";
 import FormInputGit from "./inputs/FormInputGit";
 import useTodoStore from "../../store/useTodoStore";
 import { useState } from "react";
 
-import { ConfigProvider, message, Modal, theme } from "antd";
+import { ConfigProvider, message, Modal, Select, theme } from "antd";
+import { techOptions } from "@/constants/techOptions";
 
 export default function TaskDrawer({
   open,
@@ -112,50 +112,79 @@ export default function TaskDrawer({
             handleImport={handleImport}
             placeholder="https://github.com..."
           />
-          <FormInput
-            label="Tech Stack"
-            value={(taskForm.tech || []).join(", ")}
-            onChange={(e) =>
-              setTaskForm({
-                ...taskForm,
-                tech: e.target.value
-                  .split(",")
-                  .map((t) => t.trim())
-                  .filter(Boolean),
-              })
-            }
-            placeholder="React, Node, Tailwind (comma separated)"
-          />
+          <ConfigProvider
+            theme={{
+              components: {
+                Select: {
+                  borderRadius: 8,
+                  controlHeight: 40,
+                  colorBgContainer: "#0E0E10",
+                  colorBorder: "rgba(255,255,255,0.1)",
+                  colorText: "#E4E4E7",
+                  colorTextPlaceholder: "#6B7280",
+                  optionSelectedBg: "#0E0E10",
+                  colorBgElevated: "#0E0E10",
+                },
+              },
+            }}
+          >
+            <label className="text-[11px] font-medium text-zinc-400 uppercase tracking-[0.14em] mb-1.5 block">
+              Tech Stack
+            </label>
 
-          <TwoColumn>
-            <SelectInput
-              label="Status"
-              value={taskForm.status}
-              onChange={(e) =>
-                setTaskForm({ ...taskForm, status: e.target.value })
-              }
-              options={[
-                ["todo", "Backlog"],
-                ["progress", "In Progress"],
-                ["review", "Review"],
-                ["done", "Done"],
-              ]}
+            <Select
+              style={{ width: "100%", marginBottom: 15 }}
+              label="Tech Stack"
+              mode="tags"
+              value={taskForm.tech}
+              onChange={(tech) => setTaskForm({ ...taskForm, tech })}
+              placeholder="React, Node, Tailwind"
+              options={techOptions}
             />
 
-            <SelectInput
-              label="Priority"
-              value={taskForm.priority}
-              onChange={(e) =>
-                setTaskForm({ ...taskForm, priority: e.target.value })
-              }
-              options={[
-                ["", "None"],
-                ["high", "High"],
-                ["medium", "Medium"],
-                ["low", "Low"],
-              ]}
-            />
-          </TwoColumn>
+            <TwoColumn>
+              <div>
+                <label className="text-[11px] font-medium text-zinc-400 uppercase tracking-[0.14em] mb-1.5 block">
+                  Status
+                </label>
+
+                <Select
+                  style={{ width: "100%" }}
+                  value={taskForm.status}
+                  onChange={(value) =>
+                    setTaskForm({ ...taskForm, status: value })
+                  }
+                  options={[
+                    { value: "backlog", label: "Backlog" },
+                    { value: "progress", label: "In Progress" },
+                    { value: "review", label: "Review" },
+                    { value: "done", label: "Done" },
+                  ]}
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] font-medium text-zinc-400 uppercase tracking-[0.14em] mb-1.5 block">
+                  Priority
+                </label>
+
+                <Select
+                  style={{ width: "100%" }}
+                  value={taskForm.priority}
+                  onChange={(value) =>
+                    setTaskForm({ ...taskForm, priority: value })
+                  }
+                  options={[
+                    { value: "", label: "None" },
+                    { value: "high", label: "High" },
+                    { value: "medium", label: "Medium" },
+                    { value: "low", label: "Low" },
+                  ]}
+                />
+              </div>
+            </TwoColumn>
+          </ConfigProvider>
+
           <DateInput
             label="Due Date"
             value={taskForm.dueDate}

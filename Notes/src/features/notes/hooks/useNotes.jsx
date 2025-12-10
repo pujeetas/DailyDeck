@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   createNote,
   getAllNotes,
   updateNoteRequest,
   deleteNoteRequest,
 } from "../services/notesService";
-import { useEffect } from "react";
 
 export function useNotes() {
   const [notes, setNotes] = useState([]);
@@ -22,32 +21,71 @@ export function useNotes() {
       pinned: false,
     };
 
-    const res = await createNote(payload);
-    setNotes((prev) => [res.data, ...prev]);
-    setActiveId(res.data?._id);
+    try {
+      const res = await createNote(payload);
+      const newNoteData = res.data;
+      setNotes((prev) => [newNoteData, ...prev]);
+      setActiveId(newNoteData._id);
+    } catch (error) {
+      console.error("Error creating note:", error);
+    }
   }
 
-  //get all notes
   const loadNotes = async () => {
-    const res = await getAllNotes();
-    setNotes(res.data);
+    try {
+      const res = await getAllNotes();
+      setNotes(res.data);
+    } catch (error) {
+      console.error("Error loading notes:", error);
+    }
   };
 
   async function updateNote(id, update) {
-    return updateNoteRequest(id, update);
-  }
-
-  //delete note
-  async function removeNote(id) {
-    const res = await deleteNoteRequest(id);
-    setNotes((prev) => prev.filter((n) => n.id !== id));
-    setActiveId(null);
-  }
-
-  function pinNote(id) {
     setNotes((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, pinned: !n.pinned } : n))
+      prev.map((n) => (n._id === id ? { ...n, ...update } : n))
     );
+    try {
+      return await updateNoteRequest(id, update);
+    } catch (error) {
+      console.error("Error updating note:", error);
+      // Revert optimistic update on error
+      await loadNotes();
+    }
+  }
+
+  async function removeNote(id) {
+    try {
+      await deleteNoteRequest(id);
+      setNotes((prev) => prev.filter((n) => n._id !== id)); // Fixed: was n.id, should be n._id
+      if (activeId === id) {
+        setActiveId(null);
+      }
+    } catch (error) {
+      console.error("Error deleting note:", error);
+    }
+  }
+
+  async function pinNote(id) {
+    const noteToUpdate = notes.find((n) => n._id === id);
+    if (!noteToUpdate) return;
+
+    const newPinnedState = !noteToUpdate.pinned;
+
+    // Optimistic update
+    setNotes(
+      (prev) =>
+        prev.map((n) => (n._id === id ? { ...n, pinned: newPinnedState } : n)) // Fixed: was n.id, should be n._id
+    );
+
+    try {
+      await updateNoteRequest(id, { pinned: newPinnedState });
+    } catch (error) {
+      console.error("Error pinning note:", error);
+      // Revert on error
+      setNotes((prev) =>
+        prev.map((n) => (n._id === id ? { ...n, pinned: !newPinnedState } : n))
+      );
+    }
   }
 
   const activeNote = notes.find((n) => n._id === activeId) || null;
@@ -55,7 +93,8 @@ export function useNotes() {
   const sortedNotes = [...notes].sort((a, b) => {
     if (a.pinned && !b.pinned) return -1;
     if (!a.pinned && b.pinned) return 1;
-    return b.updatedAt - a.updatedAt;
+    // If both pinned or both unpinned, sort by updatedAt
+    return new Date(b.updatedAt) - new Date(a.updatedAt);
   });
 
   return {

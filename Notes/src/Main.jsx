@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "../styles.css";
 import "./styles/ant-dark-theme.css";
+import LoadingCard from "./LoadingCard";
 
 const LandingPage = lazy(() => import("./landingPage/LandingPage"));
 const SignupPage = lazy(() => import("./features/auth/pages/SignupPage"));
@@ -35,7 +36,7 @@ const router = createBrowserRouter([
 function Main() {
   return (
     <div className="antd-dark-theme">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LoadingCard />}>
         <RouterProvider router={router} />
       </Suspense>
     </div>

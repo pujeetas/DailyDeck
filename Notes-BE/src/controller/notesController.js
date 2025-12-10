@@ -10,17 +10,18 @@ const createNote = async (req, res) => {
     }
 
     if (typeof noteDetails.pinned !== "boolean") {
-      return res.status(400).send("Inalid pinned format: expected a boolean.");
+      return res.status(400).send("Invalid pinned format: expected a boolean.");
     }
 
     const newNote = new NotesModel({
-      title: noteDetails.title,
+      title: noteDetails.title || "",
       body: noteDetails.body,
       pinned: noteDetails.pinned,
     });
 
     await newNote.save();
-    res.send("Note Created Successfully");
+    // FIXED: Return the created note object instead of just a message
+    res.status(201).json(newNote);
   } catch (error) {
     res.status(400).send("Something went wrong: " + error.message);
   }
@@ -29,32 +30,35 @@ const createNote = async (req, res) => {
 //get all notes
 const getAllNotes = async (req, res) => {
   try {
-    const allNotes = await NotesModel.find();
-    if (!allNotes) {
-      res.status(400).send("No Notes FOund. Create one now");
-    }
-    res.send(allNotes);
+    const allNotes = await NotesModel.find().sort({ updatedAt: -1 });
+    res.json(allNotes);
   } catch (error) {
     res.status(400).send("Something went wrong: " + error.message);
   }
 };
 
 //update note
-
 const updateNote = async (req, res) => {
   try {
     const noteId = req.params.id;
     const detailsToUpdate = req.body;
 
+    // Validate that we're not setting title to undefined
+    if (detailsToUpdate.title === undefined) {
+      delete detailsToUpdate.title;
+    }
+
     const noteInDB = await NotesModel.findByIdAndUpdate(
       noteId,
       detailsToUpdate,
-      { new: true }
+      { new: true, runValidators: true }
     );
+
     if (!noteInDB) {
-      res.status(400).send("Note cannot be updated");
+      return res.status(404).send("Note not found");
     }
-    res.send(noteInDB);
+
+    res.json(noteInDB);
   } catch (error) {
     res.status(400).send("Something went wrong: " + error.message);
   }
@@ -64,8 +68,13 @@ const updateNote = async (req, res) => {
 const deleteNote = async (req, res) => {
   try {
     const deleteNoteId = req.params.id;
-    await NotesModel.findByIdAndDelete(deleteNoteId);
-    res.send("Note Deleted");
+    const deletedNote = await NotesModel.findByIdAndDelete(deleteNoteId);
+
+    if (!deletedNote) {
+      return res.status(404).send("Note not found");
+    }
+
+    res.json({ message: "Note Deleted", _id: deleteNoteId });
   } catch (error) {
     res.status(400).send("Something went wrong: " + error.message);
   }

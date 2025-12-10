@@ -10,6 +10,7 @@ const createTodoValidations = Joi.object({
   gitURL: Joi.string()
     .pattern(/^https?:\/\/(www\.)?github\.com\/[\w.-]+\/[\w.-]+/i)
     .message("Invalid GitHub repository URL")
+    .allow("")
     .optional(),
 
   tech: Joi.array().items(Joi.string().min(1).max(30)).max(20).optional(),
@@ -43,6 +44,7 @@ const updateTodoValidations = Joi.object({
   gitURL: Joi.string()
     .pattern(/^https?:\/\/(www\.)?github\.com\/[\w.-]+\/[\w.-]+/i)
     .message("Invalid GitHub repository URL")
+    .allow("")
     .optional(),
   tech: Joi.array().items(Joi.string().min(1).max(30)).max(20).optional(),
   status: Joi.string()
