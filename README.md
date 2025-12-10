@@ -1,128 +1,84 @@
-📝 React Productivity Suite
-Notes + Tasks + Priority Manager — all in one clean, modern UI.
-A unified React app that combines a Notes App, Task Management System, and Task Insights into one beautifully designed productivity tool.
-Built with React, Tailwind, Lucide Icons, and localStorage for persistence.
+# DailyDeck ⚡️
+### The EngOps Platform for High-Velocity Developers
 
-🚀 Feature Overview
-🗒️ Notes App
-✔ Create, Edit, Delete Notes
-Manage notes with titles, content, and attached data.
+![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)
+![Node](https://img.shields.io/badge/Node.js-18+-green?style=for-the-badge&logo=node.js)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green?style=for-the-badge&logo=mongodb)
+![Tailwind](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css)
 
-✔ Advanced Rich Text Editor
-Headings, bold/italic, code blocks, inline code, lists, checklists, callouts, images, slash menu, and more.
+> **"Context switching is the killer of productivity."**
 
-✔ Live Search
-Filter notes instantly as you type.
+DailyDeck is a developer-centric productivity suite designed to bridge the gap between **Project Management** (Jira/Linear) and **Execution** (GitHub/VS Code). It unifies Tasks, Notes, and Calendar planning into a single "Dark Mode First" command center.
 
-✔ Tags for Notes
-Add, remove, and manage tags for improved organization.
+---
 
-✔ Sidebar Navigation
-Notes, Favorites, Images, Attachments, Recently Edited, etc.
+## 🚀 Why I Built This
+Most productivity apps are too generic. As a developer, I needed a tool that understands **software workflows**:
+1.  **Context Switching:** Moving between GitHub Issues and Todo lists creates friction.
+2.  **Deadline Visibility:** Kanban boards are great for status, but bad for deadlines.
+3.  **Documentation:** Notes usually live separately from tasks.
 
-✔ Modern Editor
-Edit notes with a distraction-free interface.
+DailyDeck solves this by integrating **Markdown Documentation**, **Calendar Visualization**, and **Task Tracking** in one cohesive architecture.
 
-✔ Persistent Notes
-Saved in localStorage so your data stays even after a refresh.
+---
 
-✅ Task Management Dashboard
-A fully redesigned Trello-style board with:
+## 🛠 Tech Stack & Architecture
 
-✔ To-Do, In-Progress, Done Columns
-Each using a shared TaskCard component.
+### Frontend (Client)
+* **Framework:** React 19 (Vite)
+* **Styling:** Tailwind CSS + Ant Design (Custom Dark Theme Config)
+* **State Management:** Zustand (Global Store)
+* **Forms & Dates:** Ant Design Form + Dayjs + Date-fns
+* **Editor:** Tiptap (Headless Rich Text)
 
-✔ Modern Task Cards
-Priority badge
-Status badge
-Due date
-Hover actions
-Clean spacing & typography
-✔ Task Drawer (Add + Edit)
-A unified slide-in panel for:
-Title
-Subtitle
-Description
-Priority
-Status
-Due Date
-Subtasks
-Tags (optional)
+### Backend (API)
+* **Runtime:** Node.js & Express
+* **Database:** MongoDB (Atlas) with Mongoose ODMs
+* **Architecture:** Service-Controller Layer pattern (Separation of Concerns)
 
-✔ Subtasks
-Add/remove subtasks inside the drawer.
+---
 
-✔ Tags for Tasks
-Integrated system to label and organize tasks.
+## ✨ Key Features
 
-✔ Fully Tailwind
+### 1. The Engineering Dashboard
+* **Dual-View Workflow:** Toggle instantly between **Kanban Board** (Stage-based) and **Calendar View** (Time-based).
+* **Smart Filters:** One-click filtering for "Today", "High Priority", and "Overdue" tasks.
+* **Visual Priority:** Block-style rendering with color-coded borders to identify critical path items immediately.
 
-📊 TaskCentral — Smart Task Overview
-A modern dashboard providing insights into your tasks:
+### 2. Developer-First Notes
+* **Rich Text Editor:** Slash commands (`/`), code blocks, and markdown support.
+* **Integrated Workflow:** Keep documentation alongside your task board.
 
-✔ Priority Tasks
-Color-coded, modern cards showing all high/medium/low priority items.
+### 3. Production-Grade UI/UX
+* **Enterprise Dark Mode:** Custom `ConfigProvider` overrides for Ant Design to ensure perfect contrast.
+* **Optimistic UI:** Instant visual feedback on task updates.
+* **Responsive:** Fully adaptive grid layouts for sidebar and dashboard widgets.
 
-✔ Today’s Tasks
-Tasks scheduled for today with clean card UI.
+---
 
-✔ Overdue Tasks
-Highlight late tasks with red indicators and urgency badges.
+## 📂 Project Structure (Feature-Based)
 
-✔ Completed Tasks
-Beautiful completion cards + stats:
-Completed today
-This week
-This month
+I utilized a **Feature-Based Architecture** to ensure scalability. Instead of grouping by file type (components/hooks), code is grouped by domain.
 
-✔ Modern Grid Cards
-4-column responsive layout
-Accent bars, icon bubbles, subtle shadows, and minimalist design.
+```bash
+src/
+├── features/
+│   ├── auth/           # Login/Signup Logic
+│   ├── notes/          # Rich Text Editor & Note Logic
+│   └── todo/           # The Core Task Engine
+│       ├── components/ 
+│       │   ├── CalendarBoard.jsx   # Time-based Logic
+│       │   ├── KanbanBoard.jsx     # Drag-and-drop Logic
+│       │   └── TaskDrawer.jsx      # Form Logic
+│       └── store/      # Zustand Slice for Tasks
+├── components/         # Shared UI (Layouts, Buttons)
+└── services/           # API Integration Layer
 
-🧩 Authentication
-Includes UI for:
-✔ Sign In
-✔ Sign Up
-✔ Reset Password
-(Front-end only — connect to backend later.)
+🚦 Roadmap & Future Scope
+This project is evolving from a productivity tool into an EngOps (Engineering Operations) platform.
 
-🛠️ Tech Stack
-React
-Tailwind CSS (fully migrated UI)
-Lucide Icons
-React Router
-localStorage
-Clean component architecture
-
-💡 How It All Works
-📝 Notes
-Stored in React state
-Synced to localStorage
-Search updates via useEffect
-Tags stored per note
-
-📌 Tasks
-Stored in central dashboard state
-Drawer handles add/edit operations
-Reusable TaskCard displays each task
-Columns filter tasks by status
-Insights pages filter by priority/date
-
-🌟 Recent Enhancements
-✔ Complete Tailwind migration (Removed all vanilla CSS)
-✔ Modern TaskCentral UI
-✔ Rewritten Priority, Today, Overdue, Completed pages
-✔ Reusable TaskCard component
-✔ TaskDrawer replacing modals
-✔ UI matched across Notes + Tasks
-✔ Responsive grid layouts
-✔ Improved spacing, typography, card design
-✔ New folder structure for scalability
-
-🚧 Future Improvements
-Drag & drop tasks (react-beautiful-dnd)
-Cloud sync (Supabase / Firebase)
-Full user auth with JWT
-Dark mode toggle
-Sorting and filtering tools for notes & tasks
-Multi-device support
+[x] MVP: Notes, Tasks, Kanban, Dark Mode.
+[x] Visual Planning: Calendar View Implementation.
+[ ] Phase 2 (Automation): GitHub Webhook integration to auto-move cards based on PR status.
+[ ] Phase 3 (Analytics): Velocity tracking and "Cycle Time" charts.
+[ ] Phase 4 (AI): RAG-based search to query notes and tasks using natural language.
