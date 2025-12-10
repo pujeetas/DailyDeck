@@ -27,8 +27,8 @@ export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
 
   const onToggleFocus = (id, focused) => {
     toggleFocus(id, focused);
-    const isNowFocused = !detailsList.find((t) => t.id === id)?.focused;
-    if (isNowFocused) {
+
+    if (!focused) {
       message.success("Added to Focus List");
     } else {
       message.info("Removed from Focus List");
@@ -52,7 +52,7 @@ export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
         {/* Hover Actions */}
         <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1.5">
           {/* Focus button */}
-          {onToggleFocus && (
+          {task.status !== "done" && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -119,14 +119,13 @@ export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
         {task.title || "Untitled task"}
       </h4>
 
-      {/* Optional description preview (1 line) */}
       {task.description && (
         <p className="text-[11px] text-zinc-500 line-clamp-1 mt-0.5">
           {task.description}
         </p>
       )}
 
-      {/* Footer Info */}
+      {/* Footer  */}
       <div className="flex items-center justify-between pt-2 mt-1 border-t border-white/5">
         <div className="flex items-center gap-2">
           {task.issueId && (

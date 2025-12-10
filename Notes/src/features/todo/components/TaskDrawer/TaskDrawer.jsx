@@ -5,6 +5,7 @@ import FormTextarea from "./inputs/FormTextarea";
 import FormInput from "./inputs/FormInput";
 import TwoColumn from "./inputs/TwoColumn";
 import SelectInput from "./inputs/SelectInput";
+import DateInput from "./DatePicker";
 
 export default function TaskDrawer({
   open,
@@ -101,6 +102,12 @@ export default function TaskDrawer({
               ]}
             />
           </TwoColumn>
+          <DateInput
+            label="Due Date"
+            value={taskForm.dueDate}
+            onChange={(date) => setTaskForm({ ...taskForm, dueDate: date })}
+          />
+
           <FormTextarea taskForm={taskForm} setTaskForm={setTaskForm} />
           <DrawerSubtask taskForm={taskForm} setTaskForm={setTaskForm} />
         </div>

@@ -1,0 +1,168 @@
+/* ================================
+   INPUT FIELD
+   ================================ */
+.dark-antd-date {
+    background-color: #18181b !important;
+    /* bg-neutral-900 */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    /* border-white/10 */
+    color: #e4e4e7 !important;
+    /* text-zinc-200 */
+    border-radius: 6px;
+    padding: 4px 10px !important;
+}
+
+.dark-antd-date input {
+    background: transparent !important;
+    color: #e4e4e7 !important;
+    /* text-zinc-200 */
+}
+
+.dark-antd-date input::placeholder {
+    color: #71717a !important;
+    /* text-zinc-500 */
+    opacity: 1 !important;
+}
+
+.dark-antd-date:hover {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    /* border-white/20 */
+}
+
+/* ================================
+   POPUP PANEL (Calendar)
+   ================================ */
+.dark-antd-date-popup .ant-picker-panel {
+    background-color: #18181b !important;
+    /* bg-neutral-900 */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+/* Header */
+.dark-antd-date-popup .ant-picker-header {
+    background-color: #18181b !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-antd-date-popup .ant-picker-header-view {
+    color: #fafafa !important;
+    /* text-neutral-50 */
+    font-weight: 500;
+}
+
+/* Navigation Arrows */
+.dark-antd-date-popup .ant-picker-header-next-btn,
+.dark-antd-date-popup .ant-picker-header-prev-btn {
+    color: #a1a1aa !important;
+    /* zinc-400 */
+}
+
+.dark-antd-date-popup .ant-picker-header-next-btn:hover,
+.dark-antd-date-popup .ant-picker-header-prev-btn:hover {
+    color: #fafafa !important;
+    /* white */
+}
+
+/* ================================
+   DAYS GRID
+   ================================ */
+.dark-antd-date-popup .ant-picker-cell {
+    color: #d4d4d8 !important;
+    /* zinc-300 */
+}
+
+.dark-antd-date-popup .ant-picker-cell-inner {
+    border-radius: 6px !important;
+}
+
+/* Hover */
+.dark-antd-date-popup .ant-picker-cell-inner:hover {
+    background-color: #27272a !important;
+    /* zinc-800 */
+    color: white !important;
+}
+
+/* Selected Day */
+.dark-antd-date-popup .ant-picker-cell-selected .ant-picker-cell-inner {
+    background-color: rgb(37, 99, 235) !important;
+    /* blue-600 */
+    color: white !important;
+}
+
+/* Today */
+.dark-antd-date-popup .ant-picker-cell-today .ant-picker-cell-inner {
+    border: 1px solid #38bdf8 !important;
+    /* sky-400 */
+    color: #38bdf8 !important;
+}
+
+/* Weekday Labels */
+.dark-antd-date-popup .ant-picker-content th {
+    color: #a1a1aa !important;
+    /* zinc-400 */
+}
+
+/* Shadow Around Calendar Popup */
+.dark-antd-date-popup {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* When the popup is rendered inside the DatePicker root (using getPopupContainer)
+   apply the same dark styles to descendant .ant-picker elements */
+.dark-antd-date .ant-picker-panel {
+    background-color: #18181b !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.dark-antd-date .ant-picker-header {
+    background-color: #18181b !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-antd-date .ant-picker-header-view {
+    color: #fafafa !important;
+    font-weight: 500;
+}
+
+.dark-antd-date .ant-picker-header-next-btn,
+.dark-antd-date .ant-picker-header-prev-btn {
+    color: #a1a1aa !important;
+}
+
+.dark-antd-date .ant-picker-header-next-btn:hover,
+.dark-antd-date .ant-picker-header-prev-btn:hover {
+    color: #fafafa !important;
+}
+
+.dark-antd-date .ant-picker-cell {
+    color: #d4d4d8 !important;
+}
+
+.dark-antd-date .ant-picker-cell-inner {
+    border-radius: 6px !important;
+}
+
+.dark-antd-date .ant-picker-cell-inner:hover {
+    background-color: #27272a !important;
+    color: white !important;
+}
+
+.dark-antd-date .ant-picker-cell-selected .ant-picker-cell-inner {
+    background-color: rgb(37, 99, 235) !important;
+    color: white !important;
+}
+
+.dark-antd-date .ant-picker-cell-today .ant-picker-cell-inner {
+    border: 1px solid #38bdf8 !important;
+    color: #38bdf8 !important;
+}
+
+.dark-antd-date .ant-picker-content th {
+    color: #a1a1aa !important;
+}
+
+.dark-antd-date .ant-picker-panel {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}

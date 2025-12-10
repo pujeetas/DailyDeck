@@ -1,5 +1,13 @@
-const FilterBar = () => {
-  const filters = ["All", "Today", "Priority", "Overdue"];
+import dayjs from "dayjs";
+import useTodoStore from "../store/useTodoStore";
+import { isActive } from "@tiptap/core";
+
+const FilterBar = ({ setActiveFilter, activeFilter }) => {
+  const filters = ["All", "Today", "High Priority", "Overdue"];
+
+  const handleFilter = (f) => {
+    setActiveFilter(f);
+  };
 
   return (
     <div
@@ -10,10 +18,11 @@ const FilterBar = () => {
     >
       {filters.map((f, i) => (
         <button
+          onClick={() => handleFilter(f)}
           key={f}
           className={`px-3 py-1.5 rounded-full border transition-all whitespace-nowrap
               ${
-                i === 0
+                activeFilter === f
                   ? "bg-zinc-100 text-zinc-900 border-zinc-100"
                   : "bg-transparent text-zinc-400 border-transparent hover:border-zinc-700 hover:bg-zinc-900/60 hover:text-zinc-100"
               }

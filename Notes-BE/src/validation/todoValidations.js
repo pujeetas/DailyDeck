@@ -29,17 +29,19 @@ const createTodoValidations = Joi.object({
     .optional(),
 
   focused: Joi.boolean().default(false),
+  dueDate: Joi.date(),
 });
 
 const updateTodoValidations = Joi.object({
   title: Joi.string().min(1).max(100).optional(),
-  issueId: Joi.string().max(50).optional(),
+  issueId: Joi.string().max(50).allow("").optional(),
   tech: Joi.array().items(Joi.string().min(1).max(30)).max(20).optional(),
   status: Joi.string()
     .valid(...allowedStatus)
     .optional(),
   priority: Joi.string().valid("high", "medium", "low", "").optional(),
-  description: Joi.string().max(2000).optional(),
+  description: Joi.string().max(2000).allow("").optional(),
+  dueDate: Joi.date().optional(),
   subTask: Joi.array()
     .items(
       Joi.object({

@@ -23,8 +23,8 @@ const createTodo = async (req, res) => {
 const updateTodo = async (req, res) => {
   try {
     const todoId = req.params.id;
-    const idInDB = await TodoModel.findById(todoId);
-    if (!idInDB) {
+    const exists = await TodoModel.findById(todoId);
+    if (!exists) {
       return res.status(400).send("Todo does not exist");
     }
     const todoDetailsToUpdate = req.body;
@@ -33,10 +33,17 @@ const updateTodo = async (req, res) => {
     if (error) {
       return res.status(400).send(error.details[0].message);
     }
-    const updated = await TodoModel.findByIdAndUpdate(idInDB, value, {
-      new: true,
-    });
-    res.send("Todo updated");
+    ["_id", "createdAt", "updatedAt", "__v"].forEach(
+      (key) => delete value[key]
+    );
+
+    const updated = await TodoModel.findByIdAndUpdate(
+      todoId,
+      { $set: value },
+      { new: true }
+    );
+
+    res.send(updated);
   } catch (error) {
     res.status(400).send("Cannot update todo. " + error);
   }

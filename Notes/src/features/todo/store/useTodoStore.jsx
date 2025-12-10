@@ -76,19 +76,25 @@ const useTodoStore = create((set) => ({
     }
   },
 
-  subTaskStatus: (todoId, subTaskId) =>
-    set((state) => ({
-      detailsList: state.detailsList.map((todo) =>
-        todo._id === todoId
-          ? {
-              ...todo,
-              subTask: todo.subTask.map((st) =>
-                st.id === subTaskId ? { ...st, complete: !st.complete } : st
-              ),
-            }
-          : todo
-      ),
-    })),
+  subTaskStatus: async (todoId, subTaskId) => {
+    try {
+      set((state) => ({
+        detailsList: state.detailsList.map((todo) =>
+          todo._id === todoId
+            ? {
+                ...todo,
+                subTask: todo.subTask.map((st) =>
+                  st.id === subTaskId ? { ...st, complete: !st.complete } : st
+                ),
+              }
+            : todo
+        ),
+      })),
+        await useTodoStore.getState().fetchAllTodo();
+    } catch (error) {
+      console.log(error);
+    }
+  },
 
   bulkUnfocus: async (ids) => {
     try {

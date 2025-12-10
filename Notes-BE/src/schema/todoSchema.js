@@ -39,6 +39,10 @@ const todoSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    dueDate: {
+      type: Date,
+      default: null,
+    },
   },
 
   {
