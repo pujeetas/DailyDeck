@@ -21,10 +21,11 @@ export default function Dashboard() {
     tech: [],
     issueId: "",
     focused: false,
+    gitURL: "",
   });
-  const [activeFilter, setActiveFilter] = useState(null);
+  const [activeFilter, setActiveFilter] = useState("All");
 
-  const { detailsList, loading, fetchAllTodo } = useTodoStore((state) => state);
+  const { detailsList, fetchAllTodo } = useTodoStore((state) => state);
 
   const [view, setView] = useState("board");
 
@@ -33,7 +34,6 @@ export default function Dashboard() {
   }, []);
 
   const filtered = filterLogic(activeFilter, detailsList);
-  console.log(filtered);
 
   const getCount = (status) =>
     filtered.filter((t) => t.status === status).length;
@@ -48,6 +48,7 @@ export default function Dashboard() {
       tech: [],
       issueId: "",
       focused: false,
+      gitURL: "",
     });
     setIsAddModalOpen(true);
   }

@@ -43,6 +43,10 @@ const todoSchema = new Schema(
       type: Date,
       default: null,
     },
+    gitURL: {
+      type: String,
+      trim: true,
+    },
   },
 
   {

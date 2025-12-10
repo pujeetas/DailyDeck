@@ -2,7 +2,6 @@ import React from "react";
 import { Calendar, ConfigProvider, Flex, theme, Tooltip, App } from "antd";
 import dayjs from "dayjs";
 import useTodoStore from "./store/useTodoStore";
-import { message } from "antd";
 import { useEffect } from "react";
 
 const CalendarBoard = ({

@@ -1,3 +1,4 @@
+import { message } from "antd";
 import axios from "axios";
 import { create } from "zustand";
 
@@ -110,6 +111,24 @@ const useTodoStore = create((set) => ({
       await useTodoStore.getState().fetchAllTodo();
     } catch (error) {
       console.log(error);
+    }
+  },
+
+  getGitDetails: async (url) => {
+    set({ loading: true });
+
+    try {
+      const response = await axios.post("http://localhost:3000/getGitDetails", {
+        url,
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      const errorText =
+        error.response?.data?.message || error.message || "Unknown error";
+      return { success: false, message: errorText };
+    } finally {
+      set({ loading: false });
     }
   },
 }));

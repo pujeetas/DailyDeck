@@ -6,6 +6,11 @@ import FormInput from "./inputs/FormInput";
 import TwoColumn from "./inputs/TwoColumn";
 import SelectInput from "./inputs/SelectInput";
 import DateInput from "./DatePicker";
+import FormInputGit from "./inputs/FormInputGit";
+import useTodoStore from "../../store/useTodoStore";
+import { useState } from "react";
+
+import { ConfigProvider, message, Modal, theme } from "antd";
 
 export default function TaskDrawer({
   open,
@@ -15,6 +20,42 @@ export default function TaskDrawer({
   mode = "add",
 }) {
   const isEdit = mode === "edit";
+
+  const { getGitDetails, loading } = useTodoStore();
+
+  const [isValuePresent, setIsValuePresent] = useState(false);
+  const [pendingURL, setPendingURL] = useState("");
+
+  const handleImport = async (url) => {
+    if (taskForm.description || taskForm.title) {
+      setPendingURL(url);
+      setIsValuePresent(true);
+      return;
+    }
+    await runImport(url);
+  };
+
+  const runImport = async (url) => {
+    try {
+      const issue = await getGitDetails(url);
+      console.log(issue);
+      if (issue.success === false) {
+        message.error(issue.message);
+        return;
+      }
+
+      setTaskForm((prev) => ({
+        ...prev,
+        title: issue.title,
+        description: issue.body,
+        gitURL: url,
+      }));
+    } catch (error) {
+      console.error(error);
+      message.error("Unexpected error. Try again.");
+    }
+  };
+
   return (
     <div
       className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-200
@@ -57,6 +98,19 @@ export default function TaskDrawer({
               })
             }
             placeholder="GH-123, JIRA-456"
+          />
+          <FormInputGit
+            label="Git URL"
+            value={taskForm.gitURL || ""}
+            onChange={(e) =>
+              setTaskForm({
+                ...taskForm,
+                gitURL: e.target.value,
+              })
+            }
+            loading={loading}
+            handleImport={handleImport}
+            placeholder="https://github.com..."
           />
           <FormInput
             label="Tech Stack"
@@ -111,6 +165,28 @@ export default function TaskDrawer({
           <FormTextarea taskForm={taskForm} setTaskForm={setTaskForm} />
           <DrawerSubtask taskForm={taskForm} setTaskForm={setTaskForm} />
         </div>
+
+        {isValuePresent && (
+          <ConfigProvider
+            theme={{
+              algorithm: theme.darkAlgorithm,
+            }}
+          >
+            <Modal
+              open={isValuePresent}
+              title="Override existing data?"
+              onOk={() => {
+                runImport(pendingURL);
+                setIsValuePresent(false);
+              }}
+              onCancel={() => setIsValuePresent(false)}
+              okButtonProps={{ danger: true }}
+            >
+              This will replace your current title and description.
+            </Modal>
+          </ConfigProvider>
+        )}
+
         <DrawerFooter
           taskForm={taskForm}
           setTaskForm={setTaskForm}

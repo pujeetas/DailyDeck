@@ -5,8 +5,8 @@ const {
   deleteTodo,
   getAllTodo,
   bulkUnfocus,
+  getGitDetails,
 } = require("../controller/todoController");
-const { bulkSave } = require("../schema/todoSchema");
 
 const todoRoute = express.Router();
 
@@ -15,5 +15,6 @@ todoRoute.patch("/updateTodo/:id", updateTodo);
 todoRoute.delete("/deleteTodo/:id", deleteTodo);
 todoRoute.get("/getAllTodo", getAllTodo);
 todoRoute.patch("/bulkUnfocus", bulkUnfocus);
+todoRoute.post("/getGitDetails", getGitDetails);
 
 module.exports = todoRoute;

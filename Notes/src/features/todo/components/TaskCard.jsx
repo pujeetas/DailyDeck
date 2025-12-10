@@ -9,7 +9,7 @@ export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
       low: "bg-sky-500/10 text-sky-300 border-sky-500/30",
     }[task.priority] || "bg-zinc-800/60 text-zinc-300 border-zinc-700";
 
-  const { deleteTodo, toggleFocus, detailsList, updateTodo } = useTodoStore();
+  const { deleteTodo, toggleFocus, detailsList } = useTodoStore();
 
   const handleEditClick = (id) => {
     const taskToEdit = detailsList.find((task) => task._id === id);
@@ -22,7 +22,8 @@ export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
     }
   };
   async function handleDelete(id) {
-    await deleteTodo(id);
+    const del = await deleteTodo(id);
+    console.log(del);
   }
 
   const onToggleFocus = (id, focused) => {

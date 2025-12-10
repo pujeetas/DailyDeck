@@ -78,10 +78,53 @@ const bulkUnfocus = async (req, res) => {
   }
 };
 
+const getGitDetails = async (req, res) => {
+  try {
+    const userURL = req.body.url;
+
+    const match = userURL.match(/github\.com\/([^/]+)\/([^/]+)\/issues\/(\d+)/);
+
+    if (!match) {
+      return res.status(400).send("Invalid GitHub issue URL.");
+    }
+
+    const gitIssueExists = await TodoModel.findOne({ gitURL: userURL });
+
+    if (gitIssueExists) {
+      return res.status(400).json({ message: "Git Issue Already Exists" });
+    }
+
+    const [_, owner, repo, issueNumber] = match;
+
+    const apiURL = `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}`;
+
+    const response = await fetch(apiURL, {
+      headers: {
+        Accept: "application/vnd.github+json",
+      },
+    });
+
+    if (!response.ok) {
+      return res
+        .status(response.status)
+        .json({ message: "Issue not found on GitHub" });
+    }
+
+    const data = await response.json();
+
+    return res.json(data);
+  } catch (error) {
+    return res
+      .status(400)
+      .json({ message: "Cannot get git details: " + error.message });
+  }
+};
+
 module.exports = {
   createTodo,
   updateTodo,
   deleteTodo,
   getAllTodo,
   bulkUnfocus,
+  getGitDetails,
 };
