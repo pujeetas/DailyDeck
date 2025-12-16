@@ -1,11 +1,34 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-const useUserStore = create((set) => ({
-  newUser: null,
+const useUserStore = create(
+  persist(
+    (set) => ({
+      user: null,
+      isAuthenticated: false,
 
-  addUser: (userData) => set(() => ({ newUser: userData })),
+      login: (userData) =>
+        set({
+          user: userData,
+          isAuthenticated: true,
+        }),
 
-  removeUser: () => set({ newUser: null }),
-}));
+      signUp: (userData) =>
+        set({
+          user: userData,
+          isAuthenticated: true,
+        }),
+
+      logout: () =>
+        set({
+          user: null,
+          isAuthenticated: false,
+        }),
+    }),
+    {
+      name: "user-storage",
+    }
+  )
+);
 
 export default useUserStore;

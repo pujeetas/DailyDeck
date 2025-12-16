@@ -3,6 +3,9 @@ const { Schema } = mongoose;
 
 const noteSchema = new Schema(
   {
+    userId: {
+      type: String,
+    },
     title: {
       type: String,
     },

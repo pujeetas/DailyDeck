@@ -14,6 +14,8 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import useUserStore from "@/hooks/useUserStore";
+
 const SignupPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -25,6 +27,7 @@ const SignupPage = () => {
     password: "",
   });
   const [errors, setErrors] = useState({});
+  const { signUp } = useUserStore();
 
   const onChange = (e) => {
     setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
@@ -50,10 +53,10 @@ const SignupPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:3000/signup", form, {
+      const response = await axios.post("/api/signup", form, {
         withCredentials: true,
       });
-      console.log(response.data);
+      signUp(response.data.user);
       navigate("/main");
     } catch (error) {
       setErrors({

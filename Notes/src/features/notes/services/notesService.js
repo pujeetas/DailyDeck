@@ -1,22 +1,43 @@
 import axios from "axios";
 
-export const createNote = (payload) =>
-  axios.post("http://localhost:3000/createNote", payload);
+const api = axios.create({
+  baseURL: "/api",
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-export const getAllNotes = () => axios.get("http://localhost:3000/getAllNotes");
+const isValidId = (id) => {
+  return id && id !== "undefined" && id !== "null";
+};
+
+export const createNote = (payload) => api.post("/createNote", payload);
+
+export const getAllNotes = () => api.get("/getAllNotes");
 
 export const updateNoteRequest = (id, updates) => {
-  if (!id || id === "undefined") {
+  if (!isValidId(id)) {
     console.error("Invalid note ID:", id);
     return Promise.reject(new Error("Invalid note ID"));
   }
-  return axios.patch(`http://localhost:3000/updateNote/${id}`, updates);
+  return api.patch(`/updateNote/${id}`, updates);
 };
 
 export const deleteNoteRequest = (id) => {
-  if (!id || id === "undefined") {
+  if (!isValidId(id)) {
     console.error("Invalid note ID:", id);
     return Promise.reject(new Error("Invalid note ID"));
   }
-  return axios.delete(`http://localhost:3000/deleteNote/${id}`);
+  return api.delete(`/deleteNote/${id}`);
+};
+
+export const question = (questionText) => {
+  if (!questionText || !questionText.trim()) {
+    return Promise.reject(new Error("Question cannot be empty"));
+  }
+  return api.post("/question", {
+    // Changed from axios to api
+    question: questionText.trim(),
+  });
 };

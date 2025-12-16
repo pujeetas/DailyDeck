@@ -1,4 +1,3 @@
-import useTodoStore from "../store/useTodoStore";
 import TaskCard from "./TaskCard";
 
 export default function ColumnTasks({

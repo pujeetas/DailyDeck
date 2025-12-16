@@ -33,11 +33,13 @@ export default function Dashboard() {
     fetchAllTodo();
   }, []);
 
-  const filtered = filterLogic(activeFilter, detailsList);
+  const filtered = filterLogic(activeFilter, detailsList || []);
 
-  const getCount = (status) =>
+  const getCount = (status) => {
+    if (!Array.isArray(filtered)) return 0;
+
     filtered.filter((t) => t.status === status).length;
-
+  };
   function handleCreateBtn() {
     setTaskForm({
       title: "",

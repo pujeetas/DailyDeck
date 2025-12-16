@@ -1,6 +1,6 @@
+import useUserStore from "@/hooks/useUserStore";
 import { DeleteOutlined, PushpinOutlined } from "@ant-design/icons";
 import { PanelRightClose } from "lucide-react";
-import Search from "./Search/Search";
 
 export default function NotesList({
   notes,
@@ -11,6 +11,13 @@ export default function NotesList({
   onNew,
   setIsSidebarClose,
 }) {
+  const { user } = useUserStore();
+  const today = new Date().toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+
   return (
     <section className="w-72 bg-[#262626] h-full p-4 overflow-y-auto">
       {/* Header */}
@@ -26,8 +33,12 @@ export default function NotesList({
         />
       </div>
 
-      {/* Search */}
-      <Search notes={notes} />
+      <div className="flex flex-col leading-tight mb-6">
+        <span className="text-sm text-zinc-300 font-medium">
+          Welcome, {user?.firstName || "User"}
+        </span>
+        <span className="text-[11px] text-zinc-500">{today}</span>
+      </div>
 
       {/* New Note Button */}
       <button

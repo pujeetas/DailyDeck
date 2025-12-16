@@ -7,14 +7,15 @@ const {
   bulkUnfocus,
   getGitDetails,
 } = require("../controller/todoController");
+const auth = require("../middleware/authMiddleware");
 
 const todoRoute = express.Router();
 
-todoRoute.post("/createTodo", createTodo);
-todoRoute.patch("/updateTodo/:id", updateTodo);
-todoRoute.delete("/deleteTodo/:id", deleteTodo);
-todoRoute.get("/getAllTodo", getAllTodo);
-todoRoute.patch("/bulkUnfocus", bulkUnfocus);
-todoRoute.post("/getGitDetails", getGitDetails);
+todoRoute.post("/createTodo", auth, createTodo);
+todoRoute.patch("/updateTodo/:id", auth, updateTodo);
+todoRoute.delete("/deleteTodo/:id", auth, deleteTodo);
+todoRoute.get("/getAllTodo", auth, getAllTodo);
+todoRoute.patch("/bulkUnfocus", auth, bulkUnfocus);
+todoRoute.post("/getGitDetails", auth, getGitDetails);
 
 module.exports = todoRoute;

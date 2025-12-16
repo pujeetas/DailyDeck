@@ -4,10 +4,11 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "../styles.css";
 import "./styles/ant-dark-theme.css";
 import LoadingCard from "./LoadingCard";
+import ProtectedRoute from "./ProtectedRoute";
 
 const LandingPage = lazy(() => import("./landingPage/LandingPage"));
-const SignupPage = lazy(() => import("./features/auth/pages/SignupPage"));
-const Login = lazy(() => import("./features/auth/pages/Login"));
+const SignupPage = lazy(() => import("./features/auth/SignupPage"));
+const Login = lazy(() => import("./features/auth/Login"));
 const MainMenu = lazy(() => import("../src/MainMenu"));
 const NotesPage = lazy(() => import("../src/features/notes/NotesPage"));
 const DashboardRouter = lazy(() =>
@@ -20,12 +21,30 @@ const router = createBrowserRouter([
   { path: "/", element: <LandingPage /> },
   { path: "/signup", element: <SignupPage /> },
   { path: "/login", element: <Login /> },
-  { path: "/main", element: <MainMenu /> },
-  { path: "/notes", element: <NotesPage /> },
 
   {
+    path: "/main",
+    element: (
+      <ProtectedRoute>
+        <MainMenu />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/notes",
+    element: (
+      <ProtectedRoute>
+        <NotesPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "/to-do",
-    element: <DashboardRouter />,
+    element: (
+      <ProtectedRoute>
+        <DashboardRouter />
+      </ProtectedRoute>
+    ),
     children: [
       { index: true, element: <Dashboard /> },
       { path: "focus", element: <FocusList /> },

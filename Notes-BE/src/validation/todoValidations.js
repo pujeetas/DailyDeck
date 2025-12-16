@@ -52,7 +52,7 @@ const updateTodoValidations = Joi.object({
     .optional(),
   priority: Joi.string().valid("high", "medium", "low", "").optional(),
   description: Joi.string().max(2000).allow("").optional(),
-  dueDate: Joi.date().optional(),
+  dueDate: Joi.date().optional().allow("", null),
   subTask: Joi.array()
     .items(
       Joi.object({

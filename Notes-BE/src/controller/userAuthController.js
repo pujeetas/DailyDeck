@@ -10,6 +10,7 @@ const {
 const { createToken } = require("../services/authServices");
 
 // signup user
+
 const signupUser = async (req, res) => {
   try {
     const { error, value } = userSigninValidation.validate(req.body);
@@ -32,9 +33,28 @@ const signupUser = async (req, res) => {
 
     await newUser.save();
 
-    return res
-      .status(201)
-      .json({ message: "User registered. Login to continue" });
+    // ADD TOKEN CREATION AND COOKIE (same as login)
+    const payload = { id: newUser._id, email: newUser.email };
+    const jwtToken = createToken(payload);
+
+    console.log("🔑 Generated token on signup:", jwtToken);
+
+    res.cookie("token", jwtToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+    });
+
+    return res.status(201).json({
+      message: "Account created successfully",
+      user: {
+        id: newUser._id,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email,
+      },
+    });
   } catch (error) {
     console.error(error);
     return res.status(400).json({ message: error.message });
@@ -65,6 +85,8 @@ const loginUser = async (req, res) => {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
+      domain: "localhost",
+
       path: "/",
     });
 
@@ -89,6 +111,8 @@ const logoutUser = (req, res) => {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
+      domain: "localhost",
+
       path: "/",
     });
 

@@ -1,10 +1,20 @@
+require("dotenv").config();
+
 const NotesModel = require("../schema/notesSchema");
+const { addNoteToChroma, searchNotes } = require("../services/chromaService");
+const {
+  extractPlainTextFromBlockNote,
+} = require("../services/extractPlainTextFromEditor");
+const Anthropic = require("@anthropic-ai/sdk");
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
 
 //create note
 const createNote = async (req, res) => {
   try {
     const noteDetails = req.body;
-
     if (!Array.isArray(noteDetails.body)) {
       return res.status(400).send("Invalid body format: expected an array.");
     }
@@ -14,13 +24,13 @@ const createNote = async (req, res) => {
     }
 
     const newNote = new NotesModel({
+      userId: req.user.id,
       title: noteDetails.title || "",
       body: noteDetails.body,
       pinned: noteDetails.pinned,
     });
 
     await newNote.save();
-    // FIXED: Return the created note object instead of just a message
     res.status(201).json(newNote);
   } catch (error) {
     res.status(400).send("Something went wrong: " + error.message);
@@ -30,7 +40,11 @@ const createNote = async (req, res) => {
 //get all notes
 const getAllNotes = async (req, res) => {
   try {
-    const allNotes = await NotesModel.find().sort({ updatedAt: -1 });
+    const userId = req.user.id;
+    const allNotes = await NotesModel.find({ userId: userId }).sort({
+      updatedAt: -1,
+    });
+
     res.json(allNotes);
   } catch (error) {
     res.status(400).send("Something went wrong: " + error.message);
@@ -43,7 +57,6 @@ const updateNote = async (req, res) => {
     const noteId = req.params.id;
     const detailsToUpdate = req.body;
 
-    // Validate that we're not setting title to undefined
     if (detailsToUpdate.title === undefined) {
       delete detailsToUpdate.title;
     }
@@ -58,7 +71,17 @@ const updateNote = async (req, res) => {
       return res.status(404).send("Note not found");
     }
 
-    res.json(noteInDB);
+    if (detailsToUpdate.body) {
+      const plainText = extractPlainTextFromBlockNote(noteInDB.body);
+
+      if (plainText.trim()) {
+        await addNoteToChroma(noteId, noteInDB.title, plainText, {
+          pinned: noteInDB.pinned,
+        });
+      }
+
+      res.json(noteInDB);
+    }
   } catch (error) {
     res.status(400).send("Something went wrong: " + error.message);
   }
@@ -80,4 +103,73 @@ const deleteNote = async (req, res) => {
   }
 };
 
-module.exports = { createNote, getAllNotes, updateNote, deleteNote };
+//get question
+const getQuestion = async (req, res) => {
+  try {
+    const { question } = req.body;
+
+    if (!question || question.trim() === "") {
+      return res.status(400).json({
+        error: "Question is required and cannot be empty",
+      });
+    }
+    console.log("Received question:", question);
+    // Search relevant notes using ChromaDB
+    const chromaResults = await searchNotes(question, 5);
+
+    if (chromaResults.ids.length === 0) {
+      return res.status(200).json({
+        answer: "I couldn't find any relevant notes to answer your question.",
+        question: question,
+      });
+    }
+    // Get full notes from MongoDB
+    const notes = await NotesModel.find({
+      _id: { $in: chromaResults.ids },
+    });
+
+    const context = notes
+      .map((note, idx) => {
+        const plainText = extractPlainTextFromBlockNote(note.body);
+        return `Note ${idx + 1} (${note.title || "Untitled"}):\n${plainText}`;
+      })
+      .join("\n\n---\n\n");
+
+    // Call Claude API
+    const message = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1024,
+      messages: [
+        {
+          role: "user",
+          content: `Based on the following notes, please answer this question: "${question}"Relevant Notes:${context}
+            Please provide a clear and concise answer based only on the information in these notes.`,
+        },
+      ],
+    });
+
+    const answer = message.content[0].text;
+
+    console.log("Generated answer:", answer);
+
+    console.log("Context length:", context.length);
+    res.status(200).json({
+      question: question,
+      answer: answer,
+      relevantNotes: notes.map((n) => ({ id: n._id, title: n.title })),
+    });
+  } catch (error) {
+    console.error("Error in getQuestion:", error);
+    res.status(500).json({
+      error: "Internal server error: " + error.message,
+    });
+  }
+};
+
+module.exports = {
+  createNote,
+  getAllNotes,
+  updateNote,
+  deleteNote,
+  getQuestion,
+};

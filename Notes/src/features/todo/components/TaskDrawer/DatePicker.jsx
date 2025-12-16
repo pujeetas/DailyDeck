@@ -10,7 +10,7 @@ export default function DateInput({ label = "Due Date", value, onChange }) {
 
       <DatePicker
         value={value ? dayjs(value) : null}
-        onChange={(date) => onChange(date?.toISOString() || null)}
+        onChange={(date) => onChange(date?.toISOString() || undefined)}
         suffixIcon={<CalendarOutlined className="text-zinc-400" />}
         rootClassName="dark-antd-date"
         getPopupContainer={(trigger) => trigger?.parentElement || document.body}

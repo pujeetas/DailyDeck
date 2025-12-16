@@ -2,11 +2,14 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CheckSquare, Sparkles, ArrowRight } from "lucide-react";
+import useUserStore from "@/hooks/useUserStore";
 
 export default function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+
+  const { login, user } = useUserStore();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,13 +20,16 @@ export default function Login() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:3000/login",
+        "/api/login",
         {
           email: form.email,
           password: form.password,
         },
         { withCredentials: true }
       );
+
+      const { user } = response.data;
+      login(user);
 
       navigate("/main");
     } catch (error) {

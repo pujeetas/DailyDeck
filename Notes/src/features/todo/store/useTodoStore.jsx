@@ -1,6 +1,10 @@
-import { message } from "antd";
 import axios from "axios";
 import { create } from "zustand";
+
+const api = axios.create({
+  baseURL: "/api",
+  withCredentials: true,
+});
 
 const useTodoStore = create((set) => ({
   detailsList: [],
@@ -9,7 +13,7 @@ const useTodoStore = create((set) => ({
   fetchAllTodo: async () => {
     try {
       set({ loading: true });
-      const res = await axios.get("http://localhost:3000/getAllTodo");
+      const res = await api.get("/getAllTodo"); // Changed
       set({ detailsList: res.data, loading: false });
     } catch (err) {
       set({ loading: false });
@@ -19,7 +23,7 @@ const useTodoStore = create((set) => ({
 
   createTodo: async (data) => {
     try {
-      await axios.post("http://localhost:3000/createTodo", data);
+      await api.post("/createTodo", data); // Changed
       await useTodoStore.getState().fetchAllTodo();
     } catch (err) {
       console.error(err);
@@ -28,7 +32,7 @@ const useTodoStore = create((set) => ({
 
   updateTodo: async (id, data) => {
     try {
-      await axios.patch(`http://localhost:3000/updateTodo/${id}`, data);
+      await api.patch(`/updateTodo/${id}`, data); // Changed
       await useTodoStore.getState().fetchAllTodo();
     } catch (error) {
       console.log(error);
@@ -37,7 +41,7 @@ const useTodoStore = create((set) => ({
 
   deleteTodo: async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/deleteTodo/${id}`);
+      await api.delete(`/deleteTodo/${id}`); // Changed
       await useTodoStore.getState().fetchAllTodo();
     } catch (error) {
       console.error(error);
@@ -51,7 +55,8 @@ const useTodoStore = create((set) => ({
           t._id === id ? { ...t, focused: !t.focused } : t
         ),
       }));
-      await axios.patch(`http://localhost:3000/updateTodo/${id}`, {
+      await api.patch(`/updateTodo/${id}`, {
+        // Changed
         focused: !focused,
       });
       await useTodoStore.getState().fetchAllTodo();
@@ -67,7 +72,8 @@ const useTodoStore = create((set) => ({
           t._id === id ? { ...t, status: "done", focused: false } : t
         ),
       }));
-      await axios.patch(`http://localhost:3000/updateTodo/${id}`, {
+      await api.patch(`/updateTodo/${id}`, {
+        // Changed
         status: "done",
         focused: !focused,
       });
@@ -104,7 +110,8 @@ const useTodoStore = create((set) => ({
           ids.includes(t._id) ? { ...t, focused: false } : t
         ),
       }));
-      await axios.patch(`http://localhost:3000/bulkUnfocus`, {
+      await api.patch(`/bulkUnfocus`, {
+        // Changed
         ids,
         focused: false,
       });
@@ -118,7 +125,8 @@ const useTodoStore = create((set) => ({
     set({ loading: true });
 
     try {
-      const response = await axios.post("http://localhost:3000/getGitDetails", {
+      const response = await api.post("/getGitDetails", {
+        // Changed
         url,
       });
       return response.data;

@@ -7,12 +7,12 @@ const auth = async (req, res, next) => {
     if (!token) {
       return res.status(401).json({ message: "Token missing" });
     }
-    const deocdedObj = await jwt.verify(token, "pujeeta");
-    req.user = deocdedObj;
+    const decodedObj = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decodedObj;
     next();
   } catch (error) {
     console.log(error);
-    return res.status(400).json({ message: "Invalid token" });
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
 

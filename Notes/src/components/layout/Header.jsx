@@ -10,8 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const navigate = useNavigate();
-  const newUser = useUserStore((state) => state.newUser);
-
+  const { user, logout } = useUserStore();
   const today = new Date().toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "long",
@@ -25,7 +24,8 @@ const Header = () => {
         {},
         { withCredentials: true }
       );
-      navigate("/");
+      logout();
+      navigate("/login");
     } catch (error) {
       console.error(error);
     }
@@ -46,7 +46,7 @@ const Header = () => {
       {/* LEFT: Welcome */}
       <div className="flex flex-col leading-tight">
         <span className="text-sm text-zinc-300 font-medium">
-          Welcome, {newUser?.name || "User"}
+          Welcome, {user?.firstName || "User"}
         </span>
         <span className="text-[11px] text-zinc-500">{today}</span>
       </div>

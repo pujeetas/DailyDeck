@@ -13,7 +13,7 @@ const createTodo = async (req, res) => {
     if (error) {
       return res.status(400).send(error.details[0].message);
     }
-    await TodoModel.create(value);
+    await TodoModel.create({ userId: req.user.id, ...value });
     res.send(value);
   } catch (error) {
     res.status(400).send("Cannot create todo. " + error);
@@ -23,6 +23,7 @@ const createTodo = async (req, res) => {
 const updateTodo = async (req, res) => {
   try {
     const todoId = req.params.id;
+
     const exists = await TodoModel.findById(todoId);
     if (!exists) {
       return res.status(400).send("Todo does not exist");
@@ -61,7 +62,10 @@ const deleteTodo = async (req, res) => {
 
 const getAllTodo = async (req, res) => {
   try {
-    const allTodo = await TodoModel.find();
+    const userId = req.user.id;
+    console.log(userId);
+    const allTodo = await TodoModel.find({ userId: userId });
+    console.log(allTodo);
     res.send(allTodo);
   } catch (error) {
     res.status(400).send("Cannot get all todo. " + error);
