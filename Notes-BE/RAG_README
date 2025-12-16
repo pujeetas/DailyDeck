@@ -1,0 +1,55 @@
+🧠 AI Features (RAG-Powered)
+
+DailyDeck includes an AI assistant built using Retrieval-Augmented Generation (RAG) to provide context-aware help across tasks and notes.
+
+How It Works
+User Query → Embeddings → Vector Search → Context → Claude AI → Response
+
+Tech Stack
+LLM: Claude Sonnet 4
+Embeddings: Anthropic text embeddings
+Vector DB: MongoDB Atlas Vector Search
+Backend: Node.js API
+
+Key Capabilities
+🔍 Natural Language Search
+Semantic search across tasks and notes
+Understands dev terms (PRs, deployments, deadlines)
+Supports time-based queries (last week, overdue, upcoming)
+
+🧾 Smart Summaries
+Summarizes progress across related tasks and notes
+Highlights blockers and next steps
+
+📚 Context-Aware Answers
+Finds past decisions from notes
+Returns citation-based responses with source links
+🛠 Intelligent Task Creation
+Converts feature requests into structured subtasks
+Suggests priorities, tags, and dependencies
+
+API Example
+POST /api/ai/query
+{
+  "query": "What are my blockers this week?",
+  "context": ["tasks", "notes"],
+  "mode": "search | summarize | generate"
+}
+
+RAG Flow (Simplified)
+
+Generate embedding for user query
+Perform vector search (MongoDB Atlas)
+Assemble most relevant context
+Send context + query to Claude
+Performance & Security
+Server-side embeddings (no client exposure)
+User-isolated data access
+Cached frequent queries (5-min TTL)
+Optimized context to stay within token limits
+
+Planned Enhancements
+
+Proactive task suggestions
+Personalized insights
+GitHub PR & commit ingestion
