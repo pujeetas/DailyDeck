@@ -1,10 +1,10 @@
-const TodoModel = require("../schema/todoSchema");
-const {
+import { TodoModel } from "../schema/todoSchema.js";
+import {
   createTodoValidations,
   updateTodoValidations,
-} = require("../validation/todoValidations");
+} from "../validation/todoValidations.js";
 
-const createTodo = async (req, res) => {
+export const createTodo = async (req, res) => {
   try {
     const todoDetailsFromUser = req.body;
 
@@ -20,7 +20,7 @@ const createTodo = async (req, res) => {
   }
 };
 
-const updateTodo = async (req, res) => {
+export const updateTodo = async (req, res) => {
   try {
     const todoId = req.params.id;
 
@@ -50,7 +50,7 @@ const updateTodo = async (req, res) => {
   }
 };
 
-const deleteTodo = async (req, res) => {
+export const deleteTodo = async (req, res) => {
   try {
     const todoId = req.params.id;
     await TodoModel.findByIdAndDelete(todoId);
@@ -60,7 +60,7 @@ const deleteTodo = async (req, res) => {
   }
 };
 
-const getAllTodo = async (req, res) => {
+export const getAllTodo = async (req, res) => {
   try {
     const userId = req.user.id;
     console.log(userId);
@@ -72,7 +72,7 @@ const getAllTodo = async (req, res) => {
   }
 };
 
-const bulkUnfocus = async (req, res) => {
+export const bulkUnfocus = async (req, res) => {
   try {
     const { ids, focused } = req.body;
     await TodoModel.updateMany({ _id: { $in: ids } }, { $set: { focused } });
@@ -84,7 +84,7 @@ const bulkUnfocus = async (req, res) => {
   }
 };
 
-const getGitDetails = async (req, res) => {
+export const getGitDetails = async (req, res) => {
   try {
     const userURL = req.body.url;
 
@@ -124,13 +124,4 @@ const getGitDetails = async (req, res) => {
       .status(400)
       .json({ message: "Cannot get git details: " + error.message });
   }
-};
-
-module.exports = {
-  createTodo,
-  updateTodo,
-  deleteTodo,
-  getAllTodo,
-  bulkUnfocus,
-  getGitDetails,
 };

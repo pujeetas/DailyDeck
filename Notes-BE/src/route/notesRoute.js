@@ -1,13 +1,15 @@
-const express = require("express");
-const {
+import express from "express";
+
+import {
   createNote,
   getAllNotes,
   updateNote,
   deleteNote,
   getQuestion,
-} = require("../controller/notesController");
-const auth = require("../middleware/authMiddleware");
-const notesRoute = express.Router();
+} from "../controller/notesController.js";
+
+import { auth } from "../middleware/authMiddleware.js";
+export const notesRoute = express.Router();
 
 notesRoute.post("/createNote", auth, createNote);
 
@@ -18,5 +20,3 @@ notesRoute.patch("/updateNote/:id", auth, updateNote);
 notesRoute.delete("/deleteNote/:id", auth, deleteNote);
 
 notesRoute.post("/question", auth, getQuestion);
-
-module.exports = notesRoute;

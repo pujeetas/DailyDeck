@@ -1,12 +1,13 @@
-require("dotenv").config();
-const express = require("express");
-const connectDB = require("./src/database/database");
-const cookieParser = require("cookie-parser");
-const authRoute = require("./src/route/authRoute");
-const userRoute = require("./src/route/userRoute");
-const cors = require("cors");
-const notesRoute = require("./src/route/notesRoute");
-const todoRoute = require("./src/route/todoRoute");
+import "dotenv/config";
+import express from "express";
+import { connectDB } from "./src/database/database.js";
+import cookieParser from "cookie-parser";
+
+import { authRoute } from "./src/route/authRoute.js";
+import { userRoute } from "./src/route/userRoute.js";
+import cors from "cors";
+import { notesRoute } from "./src/route/notesRoute.js";
+import { todoRoute } from "./src/route/todoRoute.js";
 
 const app = express();
 

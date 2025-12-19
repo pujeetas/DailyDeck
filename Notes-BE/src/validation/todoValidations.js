@@ -1,8 +1,7 @@
-const Joi = require("joi");
-
+import Joi from "joi";
 const allowedStatus = ["backlog", "progress", "review", "done"];
 
-const createTodoValidations = Joi.object({
+export const createTodoValidations = Joi.object({
   title: Joi.string().min(1).max(100).required(),
 
   issueId: Joi.string().max(50).allow(""),
@@ -38,7 +37,7 @@ const createTodoValidations = Joi.object({
   dueDate: Joi.date(),
 });
 
-const updateTodoValidations = Joi.object({
+export const updateTodoValidations = Joi.object({
   title: Joi.string().min(1).max(100).optional(),
   issueId: Joi.string().max(50).allow("").optional(),
   gitURL: Joi.string()
@@ -64,4 +63,3 @@ const updateTodoValidations = Joi.object({
     .optional(),
   focused: Joi.boolean().optional(),
 }).unknown(true);
-module.exports = { createTodoValidations, updateTodoValidations };

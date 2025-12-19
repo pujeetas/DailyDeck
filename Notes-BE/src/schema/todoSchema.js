@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const SubtaskSchema = new mongoose.Schema(
@@ -57,6 +57,4 @@ const todoSchema = new Schema(
   }
 );
 
-const TodoModel = mongoose.model("Todo", todoSchema);
-
-module.exports = TodoModel;
+export const TodoModel = mongoose.model("Todo", todoSchema);

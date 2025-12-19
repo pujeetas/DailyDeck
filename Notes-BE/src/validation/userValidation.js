@@ -1,6 +1,6 @@
-const Joi = require("joi");
+import Joi from "joi";
 
-const userSigninValidation = Joi.object({
+export const userSigninValidation = Joi.object({
   firstName: Joi.string().min(3).max(10).required(),
   lastName: Joi.string().min(3).max(10),
   email: Joi.string()
@@ -28,7 +28,7 @@ const userSigninValidation = Joi.object({
     }),
 });
 
-const userLoginValidation = Joi.object({
+export const userLoginValidation = Joi.object({
   email: Joi.string()
     .email({ tlds: { allow: false } })
     .min(5)
@@ -53,5 +53,3 @@ const userLoginValidation = Joi.object({
       "any.required": "Password is required",
     }),
 });
-
-module.exports = { userSigninValidation, userLoginValidation };

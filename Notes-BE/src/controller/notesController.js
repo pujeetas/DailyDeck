@@ -1,18 +1,18 @@
-require("dotenv").config();
+import "dotenv/config";
 
-const NotesModel = require("../schema/notesSchema");
-const { addNoteToChroma, searchNotes } = require("../services/chromaService");
-const {
-  extractPlainTextFromBlockNote,
-} = require("../services/extractPlainTextFromEditor");
-const Anthropic = require("@anthropic-ai/sdk");
+import { NotesModel } from "../schema/notesSchema.js";
+
+import { addNoteToChroma, searchNotes } from "../services/chromaService.js";
+import { extractPlainTextFromBlockNote } from "../services/extractPlainTextFromEditor.js";
+
+import { Anthropic } from "@anthropic-ai/sdk";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
 //create note
-const createNote = async (req, res) => {
+export const createNote = async (req, res) => {
   try {
     const noteDetails = req.body;
     if (!Array.isArray(noteDetails.body)) {
@@ -38,7 +38,7 @@ const createNote = async (req, res) => {
 };
 
 //get all notes
-const getAllNotes = async (req, res) => {
+export const getAllNotes = async (req, res) => {
   try {
     const userId = req.user.id;
     const allNotes = await NotesModel.find({ userId: userId }).sort({
@@ -52,7 +52,7 @@ const getAllNotes = async (req, res) => {
 };
 
 //update note
-const updateNote = async (req, res) => {
+export const updateNote = async (req, res) => {
   try {
     const noteId = req.params.id;
     const detailsToUpdate = req.body;
@@ -88,7 +88,7 @@ const updateNote = async (req, res) => {
 };
 
 //delete note
-const deleteNote = async (req, res) => {
+export const deleteNote = async (req, res) => {
   try {
     const deleteNoteId = req.params.id;
     const deletedNote = await NotesModel.findByIdAndDelete(deleteNoteId);
@@ -104,7 +104,7 @@ const deleteNote = async (req, res) => {
 };
 
 //get question
-const getQuestion = async (req, res) => {
+export const getQuestion = async (req, res) => {
   try {
     const { question } = req.body;
 
@@ -164,12 +164,4 @@ const getQuestion = async (req, res) => {
       error: "Internal server error: " + error.message,
     });
   }
-};
-
-module.exports = {
-  createNote,
-  getAllNotes,
-  updateNote,
-  deleteNote,
-  getQuestion,
 };

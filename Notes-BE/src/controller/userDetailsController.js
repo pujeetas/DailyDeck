@@ -1,6 +1,6 @@
-const UserModel = require("../schema/userSchema");
+import { UserModel } from "../schema/userSchema.js";
 
-const userDetailsController = async (req, res) => {
+export const userDetailsController = async (req, res) => {
   try {
     const loggedinUser = req.user;
 
@@ -17,5 +17,3 @@ const userDetailsController = async (req, res) => {
     res.status(400).send(error);
   }
 };
-
-module.exports = userDetailsController;

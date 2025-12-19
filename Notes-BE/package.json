@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
     "@chroma-core/default-embed": "^0.1.9",

@@ -27,7 +27,7 @@ export const mainMenuItems = [
     name: "Mock Lab",
     description: "Generate fake JSON data for testing",
     icon: "🧪", // or 🎲
-    path: "/mock-lab",
+    path: "/json-mock",
     color: "text-pink-400", // "Playful" color for fake data
     glow: "group-hover:shadow-pink-500/10 group-hover:border-pink-500/20",
     bg: "group-hover:bg-pink-500/5",

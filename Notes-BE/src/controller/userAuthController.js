@@ -1,21 +1,24 @@
-const { userSigninValidation } = require("../validation/userValidation");
-const UserModel = require("../schema/userSchema");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const {
+import { userSigninValidation } from "../validation/userValidation.js";
+import { UserModel } from "../schema/userSchema.js";
+import {
   findUserByEmail,
   compareHashedPassword,
   hashPassword,
-} = require("../services/userServices");
-const { createToken } = require("../services/authServices");
+} from "../services/userServices.js";
+
+import { createToken } from "../services/authServices.js";
+import { ERRORS } from "../constants/errorMessages.js";
+import { STATUS } from "../constants/statusCodes.js";
 
 // signup user
 
-const signupUser = async (req, res) => {
+export const signupUser = async (req, res) => {
   try {
     const { error, value } = userSigninValidation.validate(req.body);
     if (error) {
-      return res.status(400).json({ message: error.details[0].message });
+      return res
+        .status(STATUS.BAD_REQUEST)
+        .json({ message: ERRORS.INVALID_INPUT });
     }
 
     const hashedPassword = await hashPassword(value.password);
@@ -62,7 +65,7 @@ const signupUser = async (req, res) => {
 };
 
 // login user
-const loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -105,7 +108,7 @@ const loginUser = async (req, res) => {
 };
 
 // logout user
-const logoutUser = (req, res) => {
+export const logoutUser = (req, res) => {
   try {
     res.clearCookie("token", {
       httpOnly: true,
@@ -121,5 +124,3 @@ const logoutUser = (req, res) => {
     return res.status(500).json({ message: "Error logging out" });
   }
 };
-
-module.exports = { signupUser, loginUser, logoutUser };

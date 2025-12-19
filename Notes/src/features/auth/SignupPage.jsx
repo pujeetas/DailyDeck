@@ -11,6 +11,7 @@ import {
   Sparkles,
   ShieldCheck,
 } from "lucide-react";
+import { message } from "antd";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -57,11 +58,12 @@ const SignupPage = () => {
         withCredentials: true,
       });
       signUp(response.data.user);
+      message.success(response.data.message || "Loggin successful");
       navigate("/main");
     } catch (error) {
-      setErrors({
-        email: error.response?.data?.message || "Signup failed. Try again.",
-      });
+      message.error(
+        error.response?.data?.message || "Signup failed. Try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -215,6 +217,7 @@ const SignupPage = () => {
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                 />
                 <input
+                  key={showPassword ? "password-text" : "password-hidden"}
                   name="password"
                   value={form.password}
                   onChange={onChange}

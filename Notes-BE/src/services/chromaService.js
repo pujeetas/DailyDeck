@@ -1,8 +1,8 @@
-const { chromaClient } = require("../database/chroma");
-const { embeddingFunction } = require("./embeddingFunction ");
+import { ChromaClient as chromaClient } from "chromadb";
+import { embeddingFunction } from "./embeddingFunction.js";
 let collection;
 
-async function getCollection() {
+export async function getCollection() {
   if (!collection) {
     collection = await chromaClient.getOrCreateCollection({
       name: "notes_rag",
@@ -13,7 +13,7 @@ async function getCollection() {
   return collection;
 }
 
-async function addNoteToChroma(noteId, title, plainText, metadata = {}) {
+export async function addNoteToChroma(noteId, title, plainText, metadata = {}) {
   const collection = await getCollection();
 
   if (!plainText.trim()) {
@@ -33,7 +33,7 @@ async function addNoteToChroma(noteId, title, plainText, metadata = {}) {
   });
 }
 
-async function searchNotes(queryText, limit = 5) {
+export async function searchNotes(queryText, limit = 5) {
   const collection = await getCollection();
 
   const results = await collection.query({
@@ -47,5 +47,3 @@ async function searchNotes(queryText, limit = 5) {
     metadatas: results.metadatas[0] || [],
   };
 }
-
-module.exports = { getCollection, addNoteToChroma, searchNotes };

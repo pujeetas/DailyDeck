@@ -1,4 +1,4 @@
-function extractPlainTextFromBlockNote(blocks) {
+export function extractPlainTextFromBlockNote(blocks) {
   if (!Array.isArray(blocks)) return "";
 
   return blocks
@@ -20,4 +20,3 @@ function extractPlainTextFromBlockNote(blocks) {
     .filter(Boolean)
     .join("\n");
 }
-module.exports = { extractPlainTextFromBlockNote };
