@@ -32,6 +32,14 @@ export function generateData(fields) {
   context.date = faker.date.anytime().toISOString().split("T")[0];
   context.dateTime = faker.date.anytime();
 
+  context.address = {
+    street: faker.location.streetAddress(),
+    city: faker.location.city(),
+    state: faker.location.state(),
+    country: faker.location.country(),
+    zip: faker.location.zipCode(),
+  };
+
   const formatMap = {
     firstname: () => context.firstname,
     lastname: () => context.lastname,
@@ -54,15 +62,16 @@ export function generateData(fields) {
 
     date: () => context.date,
     datetime: () => context.dateTime,
+
+    address: () => context.address,
   };
 
   fields.forEach((element) => {
-    const key = element.name.toLowerCase();
+    const key = element.format.toLowerCase();
     function generate() {
       return formatMap[key]();
     }
     const value = generate();
-    console.log(value);
 
     result[element.name] = value;
   });

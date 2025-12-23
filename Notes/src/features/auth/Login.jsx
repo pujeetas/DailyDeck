@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CheckSquare, Sparkles, ArrowRight } from "lucide-react";
 import useUserStore from "@/hooks/useUserStore";
+import { message } from "antd";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -30,15 +31,15 @@ export default function Login() {
 
       const { user } = response.data;
       login(user);
-
+      message.success("Login successful!");
       navigate("/main");
     } catch (error) {
       if (error.response) {
-        alert(error.response.data.message || "Something went wrong.");
+        message.error(error.response.data.message || "Something went wrong.");
       } else if (error.request) {
-        alert("No response from server. Check your backend.");
+        message.error("No response from server. Check your backend.");
       } else {
-        alert("Request failed: " + error.message);
+        message.error("Request failed: " + error.message);
       }
     } finally {
       setLoading(false);

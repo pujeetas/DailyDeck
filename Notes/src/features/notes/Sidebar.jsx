@@ -1,7 +1,6 @@
 import NotesList from "./NoteList";
 
 export default function Sidebar({
-  isSidebarClose,
   setIsSidebarClose,
   onNew,
   notes,

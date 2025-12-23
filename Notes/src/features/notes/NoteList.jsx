@@ -1,6 +1,8 @@
 import useUserStore from "@/hooks/useUserStore";
 import { DeleteOutlined, PushpinOutlined } from "@ant-design/icons";
 import { PanelRightClose } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function NotesList({
   notes,
@@ -17,9 +19,10 @@ export default function NotesList({
     month: "long",
     year: "numeric",
   });
+  const navigate = useNavigate();
 
   return (
-    <section className="w-72 bg-[#262626] h-full p-4 overflow-y-auto">
+    <section className="w-72 bg-[#262626] h-full p-4 flex flex-col overflow-y-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-[11px] font-semibold text-gray-400 tracking-wider">
@@ -50,7 +53,7 @@ export default function NotesList({
       </button>
 
       {/* Notes */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 flex-1">
         {notes.map((n, index) => {
           const isActive = activeId === n._id;
           const isPinned = n.pinned;
@@ -111,6 +114,19 @@ export default function NotesList({
           );
         })}
       </div>
+
+      {/* Go to Main Menu */}
+      <button
+        onClick={() => navigate("/main")} // or navigate("/") if routing
+        className="cursor-pointer mt-4 flex items-center gap-2 text-[11px] text-gray-500 
+             hover:text-gray-300 transition-colors group"
+      >
+        <ArrowLeft
+          size={14}
+          className="opacity-60 group-hover:opacity-100 transition"
+        />
+        <span>Go to main menu</span>
+      </button>
     </section>
   );
 }

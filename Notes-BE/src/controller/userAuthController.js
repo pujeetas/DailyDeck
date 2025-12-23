@@ -5,26 +5,26 @@ import {
   compareHashedPassword,
   hashPassword,
 } from "../services/userServices.js";
-
 import { createToken } from "../services/authServices.js";
 import { ERRORS } from "../constants/errorMessages.js";
 import { STATUS } from "../constants/statusCodes.js";
 
 // signup user
-
 export const signupUser = async (req, res) => {
   try {
     const { error, value } = userSigninValidation.validate(req.body);
     if (error) {
       return res
         .status(STATUS.BAD_REQUEST)
-        .json({ message: ERRORS.INVALID_INPUT });
+        .json({ message: error.details[0].message });
     }
 
     const hashedPassword = await hashPassword(value.password);
 
     if (!hashedPassword) {
-      return res.status(400).json({ message: "Something went wrong" });
+      return res
+        .status(STATUS.SERVER_ERROR)
+        .json({ message: ERRORS.SERVER_ERROR });
     }
 
     const newUser = new UserModel({
@@ -36,11 +36,8 @@ export const signupUser = async (req, res) => {
 
     await newUser.save();
 
-    // ADD TOKEN CREATION AND COOKIE (same as login)
     const payload = { id: newUser._id, email: newUser.email };
     const jwtToken = createToken(payload);
-
-    console.log("🔑 Generated token on signup:", jwtToken);
 
     res.cookie("token", jwtToken, {
       httpOnly: true,
@@ -49,7 +46,7 @@ export const signupUser = async (req, res) => {
       path: "/",
     });
 
-    return res.status(201).json({
+    return res.status(STATUS.CREATED).json({
       message: "Account created successfully",
       user: {
         id: newUser._id,
@@ -59,8 +56,14 @@ export const signupUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(error);
-    return res.status(400).json({ message: error.message });
+    if (error.code === STATUS.DUPLICATE_KEY) {
+      return res
+        .status(STATUS.BAD_REQUEST)
+        .json({ message: ERRORS.DUPLICATE_EMAIL });
+    }
+    return res
+      .status(STATUS.SERVER_ERROR)
+      .json({ message: ERRORS.SERVER_ERROR });
   }
 };
 
@@ -72,13 +75,17 @@ export const loginUser = async (req, res) => {
     const checkUser = await findUserByEmail(email);
 
     if (!checkUser) {
-      return res.status(400).json({ message: "User not found" });
+      return res
+        .status(STATUS.NOT_FOUND)
+        .json({ message: ERRORS.USER_NOT_FOUND });
     }
 
     const isMatch = await compareHashedPassword(password, checkUser.password);
 
     if (!isMatch) {
-      return res.status(400).json({ message: "Incorrect password" });
+      return res
+        .status(STATUS.UNAUTHORIZED)
+        .json({ message: ERRORS.INVALID_CREDENTIALS });
     }
 
     const payload = { id: checkUser._id, email: checkUser.email };
@@ -89,11 +96,10 @@ export const loginUser = async (req, res) => {
       secure: false,
       sameSite: "lax",
       domain: "localhost",
-
       path: "/",
     });
 
-    return res.status(200).json({
+    return res.status(STATUS.OK).json({
       message: "Login successful",
       user: {
         id: checkUser._id,
@@ -103,7 +109,9 @@ export const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return res
+      .status(STATUS.SERVER_ERROR)
+      .json({ message: ERRORS.SERVER_ERROR });
   }
 };
 
@@ -115,12 +123,13 @@ export const logoutUser = (req, res) => {
       secure: false,
       sameSite: "lax",
       domain: "localhost",
-
       path: "/",
     });
 
-    return res.status(200).json({ message: "User logged out" });
+    return res.status(STATUS.OK).json({ message: "User logged out" });
   } catch (error) {
-    return res.status(500).json({ message: "Error logging out" });
+    return res
+      .status(STATUS.SERVER_ERROR)
+      .json({ message: ERRORS.SERVER_ERROR });
   }
 };

@@ -1,3 +1,5 @@
+import { generateData } from "./generateData";
+
 export function PreviewPanel({
   fields,
   count,
