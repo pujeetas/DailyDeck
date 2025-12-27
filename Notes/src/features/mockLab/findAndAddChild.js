@@ -1,7 +1,4 @@
 export function findAndAddChild(fields, parentId) {
-  console.log(fields);
-  console.log(parentId);
-
   return fields.map((field) => {
     if (field.id === parentId) {
       return {

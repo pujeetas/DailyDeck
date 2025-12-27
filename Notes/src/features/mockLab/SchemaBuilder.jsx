@@ -1,5 +1,4 @@
-import Header from "@/components/layout/Header";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Info, Delete, X } from "lucide-react";
 
 export default function SchemaBuilder({
   fields,
@@ -7,6 +6,7 @@ export default function SchemaBuilder({
   updateField,
   removeField,
   addChildField,
+  setFields,
 }) {
   const schemaOptions = [
     { value: "firstname", label: "First Name" },
@@ -27,9 +27,19 @@ export default function SchemaBuilder({
     { value: "boolean", label: "Boolean" },
     { value: "date", label: "Date" },
     { value: "datetime", label: "Date Time" },
+    {
+      value: "address",
+      label: "Address",
+      description: "Generates nested object: street, city, state, country, zip",
+    },
   ];
 
   const renderField = (field) => {
+    const selectedOption = schemaOptions.find(
+      (opt) => opt.value === field.format
+    );
+    const hasError = !field.name || field.name.trim() === "";
+
     return (
       <>
         <div
@@ -42,8 +52,17 @@ export default function SchemaBuilder({
               value={field.name}
               onChange={(e) => updateField(field.id, "name", e.target.value)}
               placeholder="e.g. firstName"
-              className="w-full mt-1 px-3 py-2 bg-[#0F1424] border border-white/10 focus:border-[#6D5BFF] rounded text-slate-100"
+              className={`w-full mt-1 px-3 py-2 bg-[#0F1424] border rounded text-slate-100 ${
+                hasError
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-white/10 focus:border-[#6D5BFF]"
+              }`}
             />
+            {hasError && (
+              <p className="text-xs text-red-400 mt-1">
+                Field name is required
+              </p>
+            )}
           </div>
 
           <div className="col-span-6">
@@ -59,6 +78,14 @@ export default function SchemaBuilder({
                 </option>
               ))}
             </select>
+            {selectedOption?.description && (
+              <div className="flex items-start gap-1 mt-1">
+                <Info size={14} className="text-blue-400 mt-0.5 shrink-0" />
+                <p className="text-xs text-slate-400">
+                  {selectedOption.description}
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="col-span-1 flex items-end">
@@ -70,7 +97,7 @@ export default function SchemaBuilder({
             </button>
             <button
               onClick={() => addChildField(field.id)}
-              className="p-2 text-green-400 hover:bg-red-900/30 rounded"
+              className="p-2 text-green-400 hover:bg-green-900/30 rounded"
             >
               <Plus size={16} />
             </button>
@@ -91,13 +118,31 @@ export default function SchemaBuilder({
         <h2 className="text-xl font-semibold text-slate-200">
           Schema Definition
         </h2>
-        <button
-          onClick={addField}
-          className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-[#1A1F2E] hover:bg-[#6D5BFF]"
-        >
-          <Plus size={16} />
-          Add Field
-        </button>
+        <div className="flex">
+          <button
+            onClick={addField}
+            className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-[#1A1F2E] hover:bg-[#6D5BFF]"
+          >
+            <Plus size={16} />
+            Add Field
+          </button>
+          <button
+            onClick={() =>
+              setFields([
+                {
+                  id: Date.now(),
+                  name: "firstName",
+                  format: "firstname",
+                  children: [],
+                },
+              ])
+            }
+            className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-[#1A1F2E] hover:bg-red-700"
+          >
+            <X size={16} />
+            Clear Fields
+          </button>
+        </div>
       </div>
 
       <div className="space-y-4">
