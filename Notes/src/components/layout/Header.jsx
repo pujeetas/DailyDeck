@@ -1,10 +1,11 @@
-import { Search, Bell, User, LogOut } from "lucide-react";
+import { Bell, User, LogOut, Home } from "lucide-react";
 
 import useUserStore from "../../hooks/useUserStore";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { HomeFilled } from "@ant-design/icons";
 
-const Header = () => {
+const Header = ({ color }) => {
   const navigate = useNavigate();
   const { user, logout } = useUserStore();
   const today = new Date().toLocaleDateString("en-GB", {
@@ -28,13 +29,20 @@ const Header = () => {
   };
 
   return (
-    <header className="w-full h-16 px-6 bg-[#111113] border-b border-white/10 flex items-center justify-between backdrop-blur-lg sticky top-0 z-40 text-zinc-200">
+    <header
+      className={`w-full h-16 px-6 ${color ? color : "bg-[#111113]"} border-b border-white/10 flex items-center justify-between backdrop-blur-lg sticky top-0 z-40 text-zinc-200`}
+    >
       {/* LEFT */}
-      <div className="flex flex-col leading-tight min-w-fit">
-        <span className="text-sm text-zinc-300 font-medium">
-          Welcome {user.firstName}
-        </span>
-        <span className="text-[11px] text-zinc-500">{today}</span>
+      <div className="flex gap-4 ">
+        <button className="cursor-pointer" onClick={() => navigate("/main")}>
+          <HomeFilled />
+        </button>
+        <div className="flex flex-col leading-tight min-w-fit">
+          <span className="text-sm text-zinc-300 font-medium">
+            Welcome {user.firstName}
+          </span>
+          <span className="text-[11px] text-zinc-500">{today}</span>
+        </div>
       </div>
 
       {/* RIGHT */}

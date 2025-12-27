@@ -1,8 +1,8 @@
-import { Download, Copy, Check } from "lucide-react";
+import { Download, Copy, Check, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { message } from "antd";
 
-export default function ExportOptions({ data }) {
+export default function ExportOptions({ data, setPreviewData }) {
   const [messageApi, contextHolder] = message.useMessage();
   const [copied, setCopied] = useState(false);
 
@@ -49,7 +49,7 @@ export default function ExportOptions({ data }) {
   return (
     <>
       {contextHolder}
-      <div className="flex gap-3 mb-4">
+      <div className="flex gap-3 mb-4 justify-center items-center">
         <button
           onClick={copyToClipboard}
           className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-slate-200 rounded-lg hover:bg-slate-600 transition-colors"
@@ -65,6 +65,7 @@ export default function ExportOptions({ data }) {
           <Download size={16} />
           Download JSON
         </button>
+        <RefreshCw size={20} onClick={() => setPreviewData(null)} />
       </div>
     </>
   );

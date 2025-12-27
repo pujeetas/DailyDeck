@@ -24,12 +24,12 @@ export const mainMenuItems = [
     bgGradient: "from-blue-500/5 to-transparent",
   },
   {
-    id: "mockforge",
-    name: "MockForge",
+    id: "payloadLab",
+    name: "Payload Lab",
     description:
       "Generate realistic fake JSON data for API testing and development workflows",
     icon: <Database className="w-full h-full" />,
-    path: "/mock-lab",
+    path: "/payload-lab",
     color: "text-emerald-400",
     accentColor: "border-emerald-500/20",
     bgGradient: "from-emerald-500/5 to-transparent",

@@ -5,7 +5,7 @@ import "../styles.css";
 import "./styles/ant-dark-theme.css";
 import LoadingCard from "./LoadingCard";
 import ProtectedRoute from "./ProtectedRoute";
-import FakeJsonGenerator from "./features/mockLab/FakeJsonGenerator";
+import FakeJsonGenerator from "./features/mockLab/layout/FakeJsonGenerator";
 
 const LandingPage = lazy(() => import("./landingPage/LandingPage"));
 const SignupPage = lazy(() => import("./features/auth/SignupPage"));
@@ -52,7 +52,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/mock-lab",
+    path: "/payload-lab",
     element: (
       <ProtectedRoute>
         <FakeJsonGenerator />

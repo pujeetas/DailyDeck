@@ -1,18 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import {
-  MenuOutlined,
-  HomeOutlined,
-  LineChartOutlined,
-  TagsOutlined,
-} from "@ant-design/icons";
-import { Star } from "lucide-react";
+import { LineChartOutlined } from "@ant-design/icons";
+import { Book, Star } from "lucide-react";
 
 const Sidebar = () => {
   const location = useLocation();
 
   const menuItems = [
-    { icon: <MenuOutlined />, path: "/main", label: "Dashboard" },
-    { icon: <HomeOutlined />, path: "/to-do", label: "Tasks" },
+    { icon: <Book />, path: "/to-do", label: "Tasks" },
     { icon: <LineChartOutlined />, path: "/analytics", label: "Analytics" },
     {
       icon: <Star />,
@@ -31,8 +25,7 @@ const Sidebar = () => {
         border-r border-white/10
         text-zinc-400
         sticky left-0 top-0
-        backdrop-blur-xl
-      "
+        backdrop-blur-xl "
     >
       {menuItems.map((item) => {
         const isActive = location.pathname === item.path;
