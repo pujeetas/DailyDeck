@@ -85,7 +85,12 @@ export const loginUser = async (req, res) => {
     }
 
     const checkUser = await findUserByEmail(email);
-    console.log("User found:", !!checkUser);
+    console.log("User lookup result:", checkUser ? "found" : "not found");
+    if (checkUser) {
+      console.log("User ID:", checkUser._id);
+      console.log("User email:", checkUser.email);
+      console.log("Password hash exists:", !!checkUser.password);
+    }
 
     if (!checkUser) {
       return res
@@ -93,7 +98,17 @@ export const loginUser = async (req, res) => {
         .json({ message: ERRORS.USER_NOT_FOUND });
     }
 
-    const isMatch = await compareHashedPassword(password, checkUser.password);
+    let isMatch;
+    try {
+      isMatch = await compareHashedPassword(password, checkUser.password);
+      console.log("Password comparison result:", isMatch);
+    } catch (bcryptError) {
+      console.error("Bcrypt error:", bcryptError);
+      return res.status(STATUS.SERVER_ERROR).json({
+        message: ERRORS.SERVER_ERROR,
+        debug: `Bcrypt error: ${bcryptError.message}`,
+      });
+    }
 
     if (!isMatch) {
       return res
