@@ -43,11 +43,13 @@ export const signupUser = async (req, res) => {
     const payload = { id: newUser._id, email: newUser.email };
     const jwtToken = createToken(payload);
 
+    // Fixed cookie options for production
     res.cookie("token", jwtToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production", // Use secure in production
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // "none" required for cross-site cookies
       path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     return res.status(STATUS.CREATED).json({
@@ -60,6 +62,7 @@ export const signupUser = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Signup error:", error);
     if (error.code === STATUS.DUPLICATE_KEY) {
       return res
         .status(STATUS.BAD_REQUEST)
@@ -76,7 +79,6 @@ export const loginUser = async (req, res) => {
   try {
     console.log("🔐 Login request received");
     console.log("Request body:", req.body);
-    console.log("Request headers:", req.headers);
     console.log("Login attempt for:", req.body.email);
 
     const { email, password } = req.body;
@@ -89,11 +91,6 @@ export const loginUser = async (req, res) => {
 
     const checkUser = await findUserByEmail(email);
     console.log("User lookup result:", checkUser ? "found" : "not found");
-    if (checkUser) {
-      console.log("User ID:", checkUser._id);
-      console.log("User email:", checkUser.email);
-      console.log("Password hash exists:", !!checkUser.password);
-    }
 
     if (!checkUser) {
       return res
@@ -109,7 +106,6 @@ export const loginUser = async (req, res) => {
       console.error("Bcrypt error:", bcryptError);
       return res.status(STATUS.SERVER_ERROR).json({
         message: ERRORS.SERVER_ERROR,
-        debug: `Bcrypt error: ${bcryptError.message}`,
       });
     }
 
@@ -124,11 +120,13 @@ export const loginUser = async (req, res) => {
     const jwtToken = createToken(payload);
     console.log("Token created successfully");
 
+    // Fixed cookie options for production
     res.cookie("token", jwtToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     return res.status(STATUS.OK).json({
@@ -144,7 +142,7 @@ export const loginUser = async (req, res) => {
     console.error("Login error:", error);
     return res
       .status(STATUS.SERVER_ERROR)
-      .json({ message: ERRORS.SERVER_ERROR, debug: error.message });
+      .json({ message: ERRORS.SERVER_ERROR, error: error.message });
   }
 };
 
@@ -153,14 +151,14 @@ export const logoutUser = (req, res) => {
   try {
     res.clearCookie("token", {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      domain: `${process.env.CORS_ORIGIN}`,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       path: "/",
     });
 
     return res.status(STATUS.OK).json({ message: "User logged out" });
   } catch (error) {
+    console.error("Logout error:", error);
     return res
       .status(STATUS.SERVER_ERROR)
       .json({ message: ERRORS.SERVER_ERROR });
@@ -196,12 +194,13 @@ export const forgotPassword = async (req, res) => {
       throw new Error("Failed to save token");
     }
 
-    const resetURL = `${process.env.CORS_ORIGIN}reset-password/${emailExists._id}/${token}`;
+    const resetURL = `${process.env.CORS_ORIGIN}/reset-password/${emailExists._id}/${token}`;
 
     //send email
     await sendResetEmail(email, resetURL);
     return res.status(200).json({ message: ERRORS.EMAIL_SENT });
   } catch (error) {
+    console.error("Forgot password error:", error);
     return res
       .status(STATUS.SERVER_ERROR)
       .json({ message: ERRORS.SERVER_ERROR });
@@ -235,7 +234,7 @@ export const resetPassword = async (req, res) => {
     const { userId, token } = req.params;
     const newPassword = req.body.password;
 
-    console.log(userId);
+    console.log("Reset password attempt for userId:", userId);
 
     if (!userId || !token) {
       return res.status(400).json({ message: ERRORS.INVALID_TOKEN });
@@ -248,7 +247,7 @@ export const resetPassword = async (req, res) => {
 
     if (!user) {
       return res.status(STATUS.BAD_REQUEST).json({
-        message: "No user found",
+        message: "No user found or token expired",
       });
     }
 
@@ -279,6 +278,7 @@ export const resetPassword = async (req, res) => {
       message: "Password reset successful",
     });
   } catch (error) {
+    console.error("Reset password error:", error);
     return res
       .status(STATUS.SERVER_ERROR)
       .json({ message: ERRORS.SERVER_ERROR });
