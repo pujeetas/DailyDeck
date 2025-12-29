@@ -74,9 +74,16 @@ export const signupUser = async (req, res) => {
 // login user
 export const loginUser = async (req, res) => {
   try {
+    console.log("Login attempt for:", req.body.email);
+
     const { email, password } = req.body;
 
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
     const checkUser = await findUserByEmail(email);
+    console.log("User found:", !!checkUser);
 
     if (!checkUser) {
       return res
@@ -113,9 +120,10 @@ export const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Login error:", error);
     return res
       .status(STATUS.SERVER_ERROR)
-      .json({ message: ERRORS.SERVER_ERROR });
+      .json({ message: ERRORS.SERVER_ERROR, debug: error.message });
   }
 };
 
