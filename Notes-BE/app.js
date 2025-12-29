@@ -13,21 +13,11 @@ const app = express();
 // CORS - use environment variable
 const allowedOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
-  : ["http://localhost:5173"];
+  : ["http://localhost:5173", "https://daily-deck-ten.vercel.app"];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (mobile apps, Postman, etc.)
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      console.log("Blocked origin:", origin);
-      return callback(new Error("Not allowed by CORS"));
-    },
+    origin: true, // Allow all origins for testing
     credentials: true,
   })
 );
