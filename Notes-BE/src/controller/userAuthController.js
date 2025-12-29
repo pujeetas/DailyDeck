@@ -101,8 +101,10 @@ export const loginUser = async (req, res) => {
         .json({ message: ERRORS.INVALID_CREDENTIALS });
     }
 
-    const payload = { id: checkUser._id, email: checkUser.email };
+    const payload = { id: checkUser._id.toString(), email: checkUser.email };
+    console.log("Creating token with payload:", payload);
     const jwtToken = createToken(payload);
+    console.log("Token created successfully");
 
     res.cookie("token", jwtToken, {
       httpOnly: true,
