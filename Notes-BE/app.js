@@ -14,7 +14,7 @@ const app = express();
 // middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
     credentials: true,
   })
 );
@@ -31,19 +31,14 @@ app.use("/", notesRoute);
 //todo
 app.use("/", todoRoute);
 
-// start server ONLY after DB connection
-const start = async () => {
-  try {
-    await connectDB();
+// Connect to DB when the module loads
+connectDB()
+  .then(() => {
     console.log("Connected to DB");
+  })
+  .catch((err) => {
+    console.error("Failed to connect to DB:", err.message);
+  });
 
-    app.listen(process.env.PORT || 3000, () => {
-      console.log(`Server running on ${process.env.PORT || 3000}`);
-    });
-  } catch (err) {
-    console.error("Failed to start server:", err.message);
-    process.exit(1);
-  }
-};
-
-start();
+// Export the app for serverless deployment
+export default app;
