@@ -1,5 +1,9 @@
 {
   "type": "module",
+  "scripts": {
+  "start": "node app.js",
+  "dev": "node app.js"
+},
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
     "bcrypt": "^6.0.0",
