@@ -99,7 +99,7 @@ export const loginUser = async (req, res) => {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      domain: "localhost",
+      domain: process.env.CORS_ORIGIN,
       path: "/",
     });
 
@@ -126,7 +126,7 @@ export const logoutUser = (req, res) => {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      domain: "localhost",
+      domain: `${process.env.CORS_ORIGIN}`,
       path: "/",
     });
 
@@ -167,7 +167,7 @@ export const forgotPassword = async (req, res) => {
       throw new Error("Failed to save token");
     }
 
-    const resetURL = `http://localhost:5173/reset-password/${emailExists._id}/${token}`;
+    const resetURL = `${process.env.CORS_ORIGIN}reset-password/${emailExists._id}/${token}`;
 
     //send email
     await sendResetEmail(email, resetURL);
