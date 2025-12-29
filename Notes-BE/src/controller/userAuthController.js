@@ -74,6 +74,9 @@ export const signupUser = async (req, res) => {
 // login user
 export const loginUser = async (req, res) => {
   try {
+    console.log("🔐 Login request received");
+    console.log("Request body:", req.body);
+    console.log("Request headers:", req.headers);
     console.log("Login attempt for:", req.body.email);
 
     const { email, password } = req.body;
@@ -125,7 +128,6 @@ export const loginUser = async (req, res) => {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      domain: process.env.CORS_ORIGIN,
       path: "/",
     });
 
