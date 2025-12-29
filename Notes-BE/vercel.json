@@ -1,8 +1,9 @@
 {
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://daily-deck-oaxd.vercel.app/api/:path*"
-    }
+  "version": 2,
+  "builds": [
+    { "src": "app.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "app.js" }
   ]
 }

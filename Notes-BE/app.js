@@ -22,15 +22,12 @@ app.use(cookieParser());
 app.use(express.json());
 
 // routes
-app.use("/", authRoute);
-app.use("/", userRoute);
-
+app.use("/api", authRoute);
+app.use("/api", userRoute);
 //notes
-app.use("/", notesRoute);
-
+app.use("/api", notesRoute);
 //todo
-app.use("/", todoRoute);
-
+app.use("/api", todoRoute);
 // Connect to DB when the module loads
 connectDB()
   .then(() => {
