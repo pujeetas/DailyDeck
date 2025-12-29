@@ -3,7 +3,7 @@ export function KanbanColumn({ title, colorDot, count, children }) {
   return (
     <section
       className="flex flex-col min-w-[300px] md:min-w-[350px]
- bg-neutral-900/30 backdrop-blur-md rounded-xl border border-white/5 shadow-lg h-full transition-colors hover:border-white/10"
+ bg-neutral-900/30 backdrop-blur-md rounded-xl border border-white/5 shadow-lg h-full transition-colors hover:border-white/10 overflow-hidden"
     >
       <div className="p-5 border-b border-white/5 bg-neutral-800/40">
         <div className="flex items-center justify-between">
@@ -20,9 +20,7 @@ export function KanbanColumn({ title, colorDot, count, children }) {
           </span>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-3">
-        {children}
-      </div>
+      <div className="flex-1 p-4 custom-scrollbar space-y-3">{children}</div>
     </section>
   );
 }

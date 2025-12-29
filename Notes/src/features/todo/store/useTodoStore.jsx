@@ -13,7 +13,7 @@ const useTodoStore = create((set) => ({
   fetchAllTodo: async () => {
     try {
       set({ loading: true });
-      const res = await api.get("/getAllTodo"); // Changed
+      const res = await api.get("/getAllTodo");
       set({ detailsList: res.data, loading: false });
     } catch (err) {
       set({ loading: false });
@@ -23,7 +23,7 @@ const useTodoStore = create((set) => ({
 
   createTodo: async (data) => {
     try {
-      await api.post("/createTodo", data); // Changed
+      await api.post("/createTodo", data);
       await useTodoStore.getState().fetchAllTodo();
     } catch (err) {
       console.error(err);
@@ -32,7 +32,7 @@ const useTodoStore = create((set) => ({
 
   updateTodo: async (id, data) => {
     try {
-      await api.patch(`/updateTodo/${id}`, data); // Changed
+      await api.patch(`/updateTodo/${id}`, data);
       await useTodoStore.getState().fetchAllTodo();
     } catch (error) {
       console.log(error);
@@ -41,7 +41,7 @@ const useTodoStore = create((set) => ({
 
   deleteTodo: async (id) => {
     try {
-      await api.delete(`/deleteTodo/${id}`); // Changed
+      await api.delete(`/deleteTodo/${id}`);
       await useTodoStore.getState().fetchAllTodo();
     } catch (error) {
       console.error(error);

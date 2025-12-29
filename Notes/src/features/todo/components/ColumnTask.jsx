@@ -1,3 +1,4 @@
+import { DraggableItem } from "../helper/DraggableItem";
 import TaskCard from "./TaskCard";
 
 export default function ColumnTasks({
@@ -11,13 +12,17 @@ export default function ColumnTasks({
     <p className="text-xs text-neutral-500 px-3 py-2">No tasks here yet.</p>
   ) : (
     <>
-      {tasks.map((task, index) => (
-        <TaskCard
-          key={task._id || index}
-          task={task}
-          setTaskForm={setTaskForm}
-          setIsEditModalOpen={setIsEditModalOpen}
-        />
+      {tasks.map((task) => (
+        <DraggableItem key={task._id} id={task._id}>
+          {({ dragHandleProps }) => (
+            <TaskCard
+              task={task}
+              dragHandleProps={dragHandleProps}
+              setTaskForm={setTaskForm}
+              setIsEditModalOpen={setIsEditModalOpen}
+            />
+          )}
+        </DraggableItem>
       ))}
     </>
   );

@@ -8,10 +8,15 @@ import BoardHeader from "../components/BoardHeader";
 import CalendarBoard from "../CalendarBoard";
 import { App as AntApp } from "antd";
 import { filterLogic } from "../helper/filterLogic";
+import { DndContext, DragOverlay } from "@dnd-kit/core";
+import { DroppableArea } from "../helper/DroppableArea";
+import { handleDragEnd } from "../helper/handleDragEnd";
+import TaskCard from "../components/TaskCard";
 
 export default function Dashboard() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [activeTask, setActiveTask] = useState(null);
   const [taskForm, setTaskForm] = useState({
     title: "",
     description: "",
@@ -26,7 +31,6 @@ export default function Dashboard() {
   const [activeFilter, setActiveFilter] = useState("All");
 
   const { detailsList, fetchAllTodo } = useTodoStore((state) => state);
-
   const [view, setView] = useState("board");
 
   useEffect(() => {
@@ -37,9 +41,24 @@ export default function Dashboard() {
 
   const getCount = (status) => {
     if (!Array.isArray(filtered)) return 0;
-
-    filtered.filter((t) => t.status === status).length;
+    return filtered.filter((t) => t.status === status).length;
   };
+
+  const handleDragStart = (event) => {
+    const { active } = event;
+    const task = filtered.find((t) => t._id === active.id);
+    setActiveTask(task);
+  };
+
+  const onDragEnd = (event) => {
+    handleDragEnd(event);
+    setActiveTask(null);
+  };
+
+  const handleDragCancel = () => {
+    setActiveTask(null);
+  };
+
   function handleCreateBtn() {
     setTaskForm({
       title: "",
@@ -66,18 +85,14 @@ export default function Dashboard() {
           }}
         />
 
-        {/* Header */}
-        <div className="relative z-10">
-          <BoardHeader
-            onCreateTask={handleCreateBtn}
-            view={view}
-            setView={setView}
-            activeFilter={activeFilter}
-            setActiveFilter={setActiveFilter}
-          />
-        </div>
+        <BoardHeader
+          onCreateTask={handleCreateBtn}
+          view={view}
+          setView={setView}
+          activeFilter={activeFilter}
+          setActiveFilter={setActiveFilter}
+        />
 
-        {/* Drawers */}
         <TaskDrawer
           open={isAddModalOpen}
           mode="add"
@@ -94,28 +109,47 @@ export default function Dashboard() {
           setTaskForm={setTaskForm}
         />
 
-        {/* Board View*/}
         {view === "board" ? (
-          <main className="flex-1 pt-6 px-6 pb-6 overflow-x-hidden">
-            <div className="grid md:grid-ls-2 lg:grid-cols-4 gap-6 w-full">
-              {KanbanStatuses.map((col) => (
-                <KanbanColumn
-                  key={col.key}
-                  colorDot={col.color}
-                  title={col.label}
-                  count={getCount(col.key)}
-                >
-                  <ColumnTasks
-                    setTaskForm={setTaskForm}
-                    status={col.key}
-                    activeFilter={activeFilter}
-                    setActiveFilter={setActiveFilter}
-                    isEditModalOpen={isEditModalOpen}
-                    setIsEditModalOpen={setIsEditModalOpen}
-                    filtered={filtered}
-                  />
-                </KanbanColumn>
-              ))}
+          <main className="flex-1 pt-6 px-6 pb-6 overflow-x-auto relative z-10">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 w-full min-w-max">
+              <DndContext
+                onDragStart={handleDragStart}
+                onDragEnd={onDragEnd}
+                onDragCancel={handleDragCancel}
+              >
+                {KanbanStatuses.map((col) => (
+                  <DroppableArea id={col.key} key={col.key}>
+                    <KanbanColumn
+                      colorDot={col.color}
+                      title={col.label}
+                      count={getCount(col.key)}
+                    >
+                      <ColumnTasks
+                        setTaskForm={setTaskForm}
+                        status={col.key}
+                        activeFilter={activeFilter}
+                        setActiveFilter={setActiveFilter}
+                        isEditModalOpen={isEditModalOpen}
+                        setIsEditModalOpen={setIsEditModalOpen}
+                        filtered={filtered}
+                      />
+                    </KanbanColumn>
+                  </DroppableArea>
+                ))}
+
+                <DragOverlay dropAnimation={null}>
+                  {activeTask ? (
+                    <div className=" cursor-grabbing pointer-events-none">
+                      <TaskCard
+                        task={activeTask}
+                        dragHandleProps={{}}
+                        setTaskForm={setTaskForm}
+                        setIsEditModalOpen={setIsEditModalOpen}
+                      />
+                    </div>
+                  ) : null}
+                </DragOverlay>
+              </DndContext>
             </div>
           </main>
         ) : (

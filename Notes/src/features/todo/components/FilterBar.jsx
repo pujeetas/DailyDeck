@@ -1,7 +1,3 @@
-import dayjs from "dayjs";
-import useTodoStore from "../store/useTodoStore";
-import { isActive } from "@tiptap/core";
-
 const FilterBar = ({ setActiveFilter, activeFilter }) => {
   const filters = ["All", "Today", "High Priority", "Overdue"];
 

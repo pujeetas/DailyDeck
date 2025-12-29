@@ -2,7 +2,12 @@ import { GithubOutlined } from "@ant-design/icons";
 import useTodoStore from "../store/useTodoStore";
 import { message } from "antd";
 
-export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
+export default function TaskCard({
+  task,
+  setTaskForm,
+  setIsEditModalOpen,
+  dragHandleProps,
+}) {
   const priorityStyles =
     {
       high: "bg-red-500/10 text-red-400 border-red-500/30",
@@ -15,79 +20,81 @@ export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
   const handleEditClick = (id) => {
     const taskToEdit = detailsList.find((task) => task._id === id);
     if (taskToEdit) {
-      setTaskForm({
-        ...taskToEdit,
-        subTask: taskToEdit.subTask || [],
-      });
+      setTaskForm({ ...taskToEdit, subTask: taskToEdit.subTask || [] });
       setIsEditModalOpen(true);
     }
   };
-  async function handleDelete(id) {
-    const del = await deleteTodo(id);
-    console.log(del);
-  }
 
   const onToggleFocus = (id, focused) => {
     toggleFocus(id, focused);
-
-    if (!focused) {
-      message.success("Added to Focus List");
-    } else {
-      message.info("Removed from Focus List");
-    }
+    focused
+      ? message.info("Removed from Focus List")
+      : message.success("Added to Focus List");
   };
 
   return (
     <div
       onClick={() => handleEditClick(task._id)}
       className="group relative flex flex-col gap-2 p-3.5 mb-3 bg-neutral-800/40 hover:bg-neutral-700/40 
-  border border-white/10 shadow-[0_1px_4px_rgba(0,0,0,0.25)] hover:border-white/20 rounded-xl transition-colors duration-150 cursor-pointer"
+      border border-white/10 shadow-[0_1px_4px_rgba(0,0,0,0.25)] hover:border-white/20 rounded-xl transition-colors duration-150 cursor-pointer overflow-hidden select-none"
     >
-      {/* Top Row: Priority + Actions */}
+      {/* Top Row: Priority (Drag Handle) + Actions */}
       <div className="flex items-start justify-between gap-3">
-        <span
-          className={`text-[10px] uppercase font-semibold px-2 py-0.5 rounded-md border ${priorityStyles}`}
+        {/* DRAG HANDLE AREA */}
+        <div
+          {...dragHandleProps}
+          onClick={(e) => e.stopPropagation()}
+          className="flex items-center gap-2 cursor-grab active:cursor-grabbing"
         >
-          {task.priority ? task.priority : "No Priority"}
-        </span>
+          {/* Visual Drag Icon */}
+          <span className="text-zinc-600 group-hover:text-zinc-400 transition-colors">
+            ⠿
+          </span>
+          <span
+            className={`text-[10px] uppercase font-semibold px-2 py-0.5 rounded-md border ${priorityStyles}`}
+          >
+            {task.priority || "No Priority"}
+          </span>
+        </div>
 
-        {/* Hover Actions */}
-        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex  gap-1.5">
-          {/* Focus button */}
+        {/* Hover Actions (Buttons) */}
+        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1.5">
           {task.status !== "done" && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onToggleFocus(task._id, task.focused);
               }}
-              className={`cursor-pointer p-1.5 rounded-md transition ${
+              className={`p-1.5 rounded-md transition ${
                 task.focused
-                  ? "text-yellow-300 hover:text-yellow-200"
+                  ? "text-yellow-300"
                   : "text-zinc-400 hover:text-zinc-100"
               }`}
-              title={task.focused ? "Remove from Focus" : "Add to Focus"}
             >
               {task.focused ? "★" : "☆"}
             </button>
           )}
+
           {task.gitURL && (
-            <a href={task.gitURL} target="_blank" rel="noopener noreferrer">
+            <a
+              href={task.gitURL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+            >
               <GithubOutlined
-                style={{
-                  fontSize: 15,
-                  cursor: "pointer",
-                  marginTop: 10,
-                }}
+                className="text-zinc-400 hover:text-zinc-100 p-1.5 mt-1"
+                style={{ fontSize: 15 }}
               />
             </a>
           )}
+
           <button
             onClick={(e) => {
               e.stopPropagation();
               handleEditClick(task._id);
             }}
-            className="cursor-pointer p-1.5 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 transition"
-            title="Edit"
+            className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 transition"
           >
             <svg
               width="14"
@@ -101,13 +108,13 @@ export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
               <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
             </svg>
           </button>
+
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleDelete(task._id);
+              deleteTodo(task._id);
             }}
-            className="cursor-pointer p-1.5 rounded-md hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition"
-            title="Delete"
+            className="p-1.5 rounded-md hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition"
           >
             <svg
               width="14"
@@ -138,7 +145,7 @@ export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
         </p>
       )}
 
-      {/* Footer  */}
+      {/* Footer */}
       <div className="flex items-center justify-between pt-2 mt-1 border-t border-white/5">
         <div className="flex items-center gap-2">
           {task.issueId && (
@@ -154,24 +161,17 @@ export default function TaskCard({ task, setTaskForm, setIsEditModalOpen }) {
           )}
         </div>
 
-        {/* Tech Stack tags */}
-        {task.tech && task.tech.length > 0 && (
-          <div className="flex flex-wrap gap-1 justify-end max-w-[55%]">
-            {task.tech.slice(0, 3).map((t, i) => (
-              <span
-                key={i}
-                className="text-[10px] px-1.5 py-0.5 rounded-md bg-zinc-800/80 text-zinc-300"
-              >
-                {t}
-              </span>
-            ))}
-            {task.tech.length > 3 && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-zinc-900 text-zinc-500">
-                +{task.tech.length - 3}
-              </span>
-            )}
-          </div>
-        )}
+        {/* Tech Stack */}
+        <div className="flex flex-wrap gap-1 justify-end max-w-[55%]">
+          {task.tech?.slice(0, 3).map((t, i) => (
+            <span
+              key={i}
+              className="text-[10px] px-1.5 py-0.5 rounded-md bg-zinc-800/80 text-zinc-300"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* Blocked Indicator */}
