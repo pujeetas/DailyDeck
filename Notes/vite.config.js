@@ -13,7 +13,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: import.meta.env.BACKEND_URL,
+        target: process.env.VITE_BACKEND_URL,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
