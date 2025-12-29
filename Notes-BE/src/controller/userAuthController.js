@@ -4,10 +4,14 @@ import {
   findUserByEmail,
   compareHashedPassword,
   hashPassword,
+  hashToken,
 } from "../services/userServices.js";
+import crypto from "node:crypto";
+
 import { createToken } from "../services/authServices.js";
 import { ERRORS } from "../constants/errorMessages.js";
 import { STATUS } from "../constants/statusCodes.js";
+import nodemailer from "nodemailer";
 
 // signup user
 export const signupUser = async (req, res) => {
@@ -127,6 +131,124 @@ export const logoutUser = (req, res) => {
     });
 
     return res.status(STATUS.OK).json({ message: "User logged out" });
+  } catch (error) {
+    return res
+      .status(STATUS.SERVER_ERROR)
+      .json({ message: ERRORS.SERVER_ERROR });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email || !email.includes("@")) {
+    return res
+      .status(STATUS.BAD_REQUEST)
+      .json({ message: ERRORS.INVALID_EMAIL });
+  }
+  try {
+    const emailExists = await findUserByEmail(email);
+    if (!emailExists) {
+      return res
+        .status(200)
+        .json({ message: "If email exists, reset link sent" });
+    }
+    const token = crypto.randomBytes(32).toString("hex");
+    const hashedToken = await hashToken(token);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    const saveHashToken = await UserModel.updateOne(
+      {
+        email: email,
+      },
+      { $set: { resetToken: hashedToken, resetTokenExpiresAt: expiresAt } }
+    );
+    if (saveHashToken.modifiedCount === 0) {
+      throw new Error("Failed to save token");
+    }
+
+    const resetURL = `http://localhost:5173/reset-password/${emailExists._id}/${token}`;
+
+    //send email
+    await sendResetEmail(email, resetURL);
+    return res.status(200).json({ message: ERRORS.EMAIL_SENT });
+  } catch (error) {
+    return res
+      .status(STATUS.SERVER_ERROR)
+      .json({ message: ERRORS.SERVER_ERROR });
+  }
+};
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+async function sendResetEmail(userEmail, resetURL) {
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: userEmail,
+    subject: "Password Reset Request",
+    html: `
+      <h2>Reset Your Password</h2>
+      <p>Click the link below to reset your password:</p>
+      <a href="${resetURL}">Reset Password</a>
+      <p>This link expires in 10 mins.</p>
+    `,
+  });
+}
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { userId, token } = req.params;
+    const newPassword = req.body.password;
+
+    console.log(userId);
+
+    if (!userId || !token) {
+      return res.status(400).json({ message: ERRORS.INVALID_TOKEN });
+    }
+
+    const user = await UserModel.findOne({
+      _id: userId,
+      resetTokenExpiresAt: { $gt: new Date() },
+    });
+
+    if (!user) {
+      return res.status(STATUS.BAD_REQUEST).json({
+        message: "No user found",
+      });
+    }
+
+    const isValid = await compareHashedPassword(token, user.resetToken);
+
+    if (!isValid) {
+      return res.status(400).json({ message: ERRORS.INVALID_TOKEN });
+    }
+
+    if (!newPassword) {
+      return res.status(400).json({ message: ERRORS.INVALID_CREDENTIALS });
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    await UserModel.updateOne(
+      { _id: user._id },
+      {
+        $set: { password: hashedPassword },
+        $unset: {
+          resetToken: "",
+          resetTokenExpiresAt: "",
+        },
+      }
+    );
+
+    return res.status(STATUS.OK).json({
+      message: "Password reset successful",
+    });
   } catch (error) {
     return res
       .status(STATUS.SERVER_ERROR)

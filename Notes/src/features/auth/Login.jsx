@@ -4,13 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { CheckSquare, Sparkles, ArrowRight } from "lucide-react";
 import useUserStore from "@/hooks/useUserStore";
 import { message } from "antd";
+import ForgotPasswordModal from "./ForgotPasswordModal";
 
 export default function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [forgotPassword, setForgotPassword] = useState(false);
 
-  const { login, user } = useUserStore();
+  const { login } = useUserStore();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -129,7 +131,7 @@ export default function Login() {
                 </label>
                 <button
                   type="button"
-                  onClick={() => navigate("/forgot-password")}
+                  onClick={() => setForgotPassword(true)}
                   className="text-sm text-emerald-600 font-medium hover:text-emerald-700 hover:underline"
                 >
                   Forgot password?
@@ -169,6 +171,12 @@ export default function Login() {
           </div>
         </div>
       </div>
+      {forgotPassword && (
+        <ForgotPasswordModal
+          forgotPassword={forgotPassword}
+          setForgotPassword={setForgotPassword}
+        />
+      )}
     </div>
   );
 }

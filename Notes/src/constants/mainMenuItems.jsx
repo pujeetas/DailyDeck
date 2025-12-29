@@ -1,4 +1,4 @@
-import { Code2, Calendar, Database, Zap, Terminal, Layers } from "lucide-react";
+import { Code2, Calendar, Database, Zap, Terminal } from "lucide-react";
 
 export const mainMenuItems = [
   {

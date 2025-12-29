@@ -17,7 +17,6 @@
     "dayjs": "^1.11.19",
     "firebase": "^12.4.0",
     "lodash.debounce": "^4.0.8",
-    "lottie-react": "^2.4.1",
     "lucide-react": "^0.525.0",
     "marked": "^17.0.1",
     "react": "^19.1.0",
