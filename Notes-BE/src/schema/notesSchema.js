@@ -12,7 +12,10 @@ const noteSchema = new Schema(
     body: {
       type: [mongoose.Schema.Types.Mixed],
     },
-
+    embedding: {
+      type: [Number],
+      index: true, // For vector search
+    },
     pinned: {
       type: Boolean,
       default: false,

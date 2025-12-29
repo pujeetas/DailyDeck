@@ -2,7 +2,10 @@ import "dotenv/config";
 
 import { NotesModel } from "../schema/notesSchema.js";
 
-import { addNoteToChroma, searchNotes } from "../services/chromaService.js";
+import {
+  addNoteEmbedding,
+  searchNotes,
+} from "../services/mongoVectorService.js";
 import { extractPlainTextFromBlockNote } from "../services/extractPlainTextFromEditor.js";
 
 import { Anthropic } from "@anthropic-ai/sdk";
@@ -31,6 +34,13 @@ export const createNote = async (req, res) => {
     });
 
     await newNote.save();
+
+    // Add to vector search
+    const plainText = extractPlainTextFromBlockNote(newNote.body);
+    if (plainText.trim()) {
+      await addNoteEmbedding(newNote._id.toString(), newNote.title, plainText);
+    }
+
     res.status(201).json(newNote);
   } catch (error) {
     res.status(400).send("Something went wrong: " + error.message);
@@ -75,9 +85,7 @@ export const updateNote = async (req, res) => {
       const plainText = extractPlainTextFromBlockNote(noteInDB.body);
 
       if (plainText.trim()) {
-        await addNoteToChroma(noteId, noteInDB.title, plainText, {
-          pinned: noteInDB.pinned,
-        });
+        await addNoteEmbedding(noteId, noteInDB.title, plainText);
       }
 
       res.json(noteInDB);
