@@ -16,11 +16,7 @@ const Header = ({ color }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(
-        `${process.env.CORS_ORIGIN}/logout`,
-        {},
-        { withCredentials: true }
-      );
+      await axios.post("/api/logout", {}, { withCredentials: true });
       logout();
       navigate("/login");
     } catch (error) {
