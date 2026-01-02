@@ -43,7 +43,7 @@ function MainMenu() {
                          focus:outline-none focus:ring-2 focus:ring-zinc-700 focus:ring-offset-2 focus:ring-offset-zinc-950"
             >
               <div
-                className={`absolute inset-0 bg-gradient-to-br ${item.bgGradient} rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                className={`absolute inset-0 bg-linear-to-br ${item.bgGradient} rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
               />
 
               <div className="relative z-10">

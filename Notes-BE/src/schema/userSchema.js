@@ -4,6 +4,10 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema(
   {
+    avatarId: {
+      type: Number,
+      default: 1,
+    },
     firstName: {
       type: String,
       required: true,
@@ -30,6 +34,53 @@ const userSchema = new Schema(
 
     resetTokenExpiresAt: {
       type: Date,
+    },
+    userName: {
+      type: String,
+    },
+    bio: {
+      type: String,
+    },
+    jobTitle: {
+      type: String,
+    },
+    emailNotification: {
+      type: Boolean,
+      default: false,
+    },
+    browserNotification: {
+      type: Boolean,
+      default: false,
+    },
+    gitHub: {
+      username: {
+        type: String,
+      },
+      avatarUrl: {
+        type: String,
+      },
+      profileUrl: {
+        type: String,
+      },
+      bio: {
+        type: String,
+      },
+      publicRepos: {
+        type: Number,
+      },
+      followers: {
+        type: Number,
+      },
+      following: {
+        type: Number,
+      },
+      verified: {
+        type: Boolean,
+        default: false,
+      },
+      connectedAt: {
+        type: Date,
+      },
     },
   },
   {
