@@ -1,4 +1,6 @@
 {
+    "type": "module",
+
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
     "@blocknote/code-block": "^0.44.0",

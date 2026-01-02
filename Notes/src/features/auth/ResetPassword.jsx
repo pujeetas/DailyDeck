@@ -15,7 +15,6 @@ export default function ResetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(token);
     if (!userId || !token) {
       message.error("Invalid or expired reset link");
       return;

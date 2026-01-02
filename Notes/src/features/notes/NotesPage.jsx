@@ -60,7 +60,6 @@ export default function NotesPage() {
 
   const handleAskQuestion = useCallback(
     async (question) => {
-      console.log("Asking question:", question);
       try {
         await askQuestion(question);
       } catch (error) {

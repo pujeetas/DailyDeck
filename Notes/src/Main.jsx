@@ -1,11 +1,12 @@
-import { Suspense, lazy } from "react";
+import { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "../styles.css";
 import LoadingCard from "./LoadingCard";
 import ProtectedRoute from "./ProtectedRoute";
-import FakeJsonGenerator from "./features/mockLab/layout/FakeJsonGenerator";
+import Profile from "./components/layout/profile/Profile";
 import ResetPassword from "./features/auth/ResetPassword";
+import FakeJsonGenerator from "./features/mockLab/layout/FakeJsonGenerator";
 
 const LandingPage = lazy(() => import("./landingPage/LandingPage"));
 const SignupPage = lazy(() => import("./features/auth/SignupPage"));
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
   { path: "/signup", element: <SignupPage /> },
   { path: "/login", element: <Login /> },
   { path: "/reset-password/:userId/:token", element: <ResetPassword /> },
+  { path: "/profile-setting", element: <Profile /> },
 
   {
     path: "/main",

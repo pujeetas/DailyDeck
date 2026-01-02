@@ -1,9 +1,10 @@
-import { Bell, User, LogOut, Home } from "lucide-react";
+import { Bell, LogOut } from "lucide-react";
 
-import useUserStore from "../../hooks/useUserStore";
+import { HomeFilled } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { HomeFilled } from "@ant-design/icons";
+import useUserStore from "../../hooks/useUserStore";
+import UserDropdownMenu from "@/constants/userDropdownMenu";
 
 const Header = ({ color }) => {
   const navigate = useNavigate();
@@ -49,9 +50,7 @@ const Header = ({ color }) => {
           <Bell className="w-4 h-4" />
         </button>
 
-        <button className="w-9 h-9 flex items-center justify-center rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-[#1E1E22] transition">
-          <User className="w-4 h-4" />
-        </button>
+        <UserDropdownMenu handleLogout={handleLogout} />
 
         <button
           onClick={handleLogout}

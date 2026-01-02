@@ -15,9 +15,6 @@ const allowedOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
   : ["http://localhost:5173", "https://daily-deck-ten.vercel.app"];
 
-console.log("🌐 Allowed origins:", allowedOrigins);
-console.log("🔧 NODE_ENV:", process.env.NODE_ENV);
-
 // CORS middleware - handles both regular requests and preflight
 app.use(
   cors({
@@ -76,7 +73,6 @@ let isConnected = false;
 
 const connectToDatabase = async () => {
   if (isConnected) {
-    console.log("⚡ Using existing database connection");
     return Promise.resolve();
   }
 
@@ -84,7 +80,6 @@ const connectToDatabase = async () => {
   try {
     await connectDB();
     isConnected = true;
-    console.log("✅ Database connected");
   } catch (error) {
     console.error("❌ Database connection error:", error);
     throw error;

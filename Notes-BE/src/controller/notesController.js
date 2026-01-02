@@ -113,28 +113,36 @@ export const deleteNote = async (req, res) => {
 
 //get question
 export const getQuestion = async (req, res) => {
+  console.log("=== getQuestion called ===");
+
   try {
     const { question } = req.body;
+    console.log("1. Question received:", question);
 
     if (!question || question.trim() === "") {
+      console.log("2. Question validation failed");
       return res.status(400).json({
         error: "Question is required and cannot be empty",
       });
     }
-    console.log("Received question:", question);
-    // Search relevant notes using ChromaDB
-    const chromaResults = await searchNotes(question, 5);
 
-    if (chromaResults.ids.length === 0) {
+    console.log("3. About to call searchNotes");
+    const mongoVectorResults = await searchNotes(question, 5);
+    console.log("4. searchNotes completed");
+    console.log("5. mongoVectorResults:", mongoVectorResults);
+    if (mongoVectorResults.ids.length === 0) {
       return res.status(200).json({
         answer: "I couldn't find any relevant notes to answer your question.",
         question: question,
       });
     }
+    console.log(mongoVectorResults);
+
     // Get full notes from MongoDB
     const notes = await NotesModel.find({
-      _id: { $in: chromaResults.ids },
+      _id: { $in: mongoVectorResults.ids },
     });
+    console.log(notes);
 
     const context = notes
       .map((note, idx) => {
@@ -142,7 +150,7 @@ export const getQuestion = async (req, res) => {
         return `Note ${idx + 1} (${note.title || "Untitled"}):\n${plainText}`;
       })
       .join("\n\n---\n\n");
-
+    console.log(context);
     // Call Claude API
     const message = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
@@ -158,9 +166,8 @@ export const getQuestion = async (req, res) => {
 
     const answer = message.content[0].text;
 
-    console.log("Generated answer:", answer);
+    //console.log("Generated answer:", answer);
 
-    console.log("Context length:", context.length);
     res.status(200).json({
       question: question,
       answer: answer,

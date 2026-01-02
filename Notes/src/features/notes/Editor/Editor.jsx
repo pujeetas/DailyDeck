@@ -96,16 +96,12 @@ const Editor = ({
     }
 
     try {
-      console.log("Asking question:", currentQuestion);
-
       // Call the question API
       await onAskQuestion(currentQuestion);
 
       // Reset states
       setAskAIBtn(false);
       setCurrentQuestion("");
-
-      console.log("Question sent successfully, command cleared");
     } catch (error) {
       console.error("Error sending question:", error);
       // Optionally show error to user
