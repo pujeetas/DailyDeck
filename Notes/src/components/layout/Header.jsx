@@ -4,7 +4,7 @@ import { HomeFilled } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../hooks/useUserStore";
-import UserDropdownMenu from "@/constants/userDropdownMenu";
+import UserDropdownMenu from "@/constants/userDropdownMenu.jsx";
 
 const Header = ({ color }) => {
   const navigate = useNavigate();
