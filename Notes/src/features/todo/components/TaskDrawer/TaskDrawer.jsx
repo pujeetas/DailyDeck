@@ -38,7 +38,6 @@ export default function TaskDrawer({
   const runImport = async (url) => {
     try {
       const issue = await getGitDetails(url);
-      console.log(issue);
       if (issue.success === false) {
         message.error(issue.message);
         return;

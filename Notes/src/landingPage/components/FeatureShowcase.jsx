@@ -1,108 +1,133 @@
 import React from "react";
-import {
-  Calendar,
-  CheckSquare,
-  FileText,
-  Link as LinkIcon,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { Calendar, CheckSquare, FileText, ArrowUpRight } from "lucide-react";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.06, // 60ms stagger
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+};
 
 export default function FeatureShowcase() {
   return (
-    <section className="py-24 px-6 bg-white border-t border-slate-100">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-            Three powerful tools.{" "}
-            <span className="text-blue-600">One fluent workflow.</span>
-          </h2>
-          <p className="text-slate-500 text-lg max-w-2xl mx-auto">
-            Don't switch tabs. Your notes link to your calendar, and your tasks
-            live inside your docs.
-          </p>
-        </div>
+    <section className="py-32 px-6 border-t border-zinc-900 relative overflow-hidden bg-[#0a0a0a]">
+      {/* Decorative Background Blob */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
 
-        {/* BENTO GRID LAYOUT */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* CARD 1: Rich Text Editor (Spans 2 columns) */}
-          <div className="md:col-span-2 bg-slate-50 rounded-3xl p-8 border border-slate-100 relative overflow-hidden group hover:shadow-lg transition-all duration-300">
-            <div className="flex justify-between items-start mb-6">
-              <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-100">
-                <FileText className="w-6 h-6 text-orange-500" />
+      <div className="max-w-6xl mx-auto relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-20"
+        >
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+            Three powerful tools. <br />
+            <span className="text-zinc-500">One fluent workflow.</span>
+          </h2>
+        </motion.div>
+
+        {/* BENTO GRID */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
+          {/* CARD 1: The Canvas (Wide) */}
+          <motion.div
+            variants={cardVariants}
+            whileHover="hover" // Triggers children variants with "hover" key
+            className="md:col-span-2 glow-card rounded-3xl p-8 relative overflow-hidden group cursor-default"
+          >
+            {/* Hover Lift Effect */}
+            <motion.div
+              className="absolute inset-0 bg-transparent"
+              whileHover={{ scale: 1.01, y: -4 }}
+              transition={{ duration: 0.2 }}
+            />
+
+            <div className="relative z-10">
+              <div className="flex justify-between items-start mb-8">
+                <div className="bg-zinc-900/80 p-3 rounded-xl border border-zinc-700">
+                  <FileText className="w-6 h-6 text-orange-500" />
+                </div>
+                <ArrowUpRight className="text-zinc-600 group-hover:text-white transition-colors" />
               </div>
-              <span className="text-sm font-medium text-slate-400">
-                Rich Text Canvas
-              </span>
+
+              <h3 className="text-2xl font-bold text-white mb-2">The Canvas</h3>
+              <p className="text-zinc-400 mb-12 max-w-sm">
+                Write freely. Drag tasks directly into your document or embed
+                your calendar schedule inline.
+              </p>
             </div>
 
-            <h3 className="text-2xl font-bold text-slate-900 mb-2">
-              The Canvas
-            </h3>
-            <p className="text-slate-500 mb-8 max-w-sm">
-              Write freely. Drag tasks directly into your document or embed your
-              calendar schedule inline.
-            </p>
-
-            {/* Mock UI Element */}
-            <div className="absolute bottom-0 right-0 w-[85%] h-[180px] bg-white rounded-tl-2xl shadow-[0_-10px_40px_rgba(0,0,0,0.05)] p-6 border-l border-t border-slate-100">
-              <div className="space-y-3">
-                <div className="h-4 bg-slate-100 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-100 rounded w-1/2"></div>
-                <div className="h-8 bg-blue-50 rounded-lg w-full mt-4 flex items-center px-3 gap-2 text-xs text-blue-600 font-medium">
+            {/* Mock UI - Reacts to Parent Hover */}
+            <motion.div
+              variants={{
+                hover: { x: 6, opacity: 1 },
+                rest: { x: 0, opacity: 0.8 },
+              }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="absolute bottom-0 right-0 w-[85%] h-[200px] bg-[#0a0a0a] rounded-tl-2xl border-l border-t border-zinc-800 p-6"
+            >
+              <div className="space-y-4">
+                <div className="h-2 bg-zinc-800 rounded w-3/4"></div>
+                <div className="h-2 bg-zinc-800 rounded w-1/2"></div>
+                <div className="h-10 bg-blue-500/10 border border-blue-500/20 rounded-lg w-full mt-6 flex items-center px-4 gap-3 text-xs text-blue-400 font-mono-tech">
                   <Calendar className="w-3 h-3" />
-                  Meeting: Q3 Strategy
+                  <span>Meeting: Q3 Strategy</span>
                 </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          {/* RIGHT COLUMN STACK */}
+          {/* RIGHT COLUMN */}
           <div className="flex flex-col gap-6">
             {/* CARD 2: Calendar */}
-            <div className="flex-1 bg-blue-600 rounded-3xl p-6 text-white relative overflow-hidden group hover:shadow-xl hover:shadow-blue-900/20 transition-all">
-              <div className="flex justify-between items-center mb-4">
-                <Calendar className="w-6 h-6 text-blue-200" />
-              </div>
+            <motion.div
+              variants={cardVariants}
+              whileHover={{ scale: 1.01, y: -4 }}
+              className="flex-1 bg-blue-600 rounded-3xl p-8 text-white relative overflow-hidden cursor-default"
+            >
+              <Calendar className="w-8 h-8 text-blue-200 mb-6" />
               <h3 className="text-xl font-bold mb-1">Calendar</h3>
-              <p className="text-blue-100 text-sm">Syncs two-way with Notes.</p>
-
-              {/* Decorative Glow */}
-              <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-blue-500 rounded-full blur-3xl opacity-50"></div>
-            </div>
-
-            {/* CARD 3: To-Do List */}
-            <div className="flex-1 bg-slate-900 rounded-3xl p-6 text-white relative overflow-hidden group hover:shadow-xl hover:shadow-slate-900/20 transition-all">
-              <div className="flex justify-between items-center mb-4">
-                <CheckSquare className="w-6 h-6 text-emerald-400" />
-                <div className="px-2 py-1 bg-slate-800 rounded text-[10px] font-bold tracking-wider text-slate-300 uppercase">
-                  5 Pending
-                </div>
-              </div>
-              <h3 className="text-xl font-bold mb-1">Tasks</h3>
-              <p className="text-slate-400 text-sm">
-                Auto-generated from your docs.
+              <p className="text-blue-100 text-sm opacity-80">
+                Syncs two-way with Notes.
               </p>
+            </motion.div>
 
-              {/* Mock List */}
-              <div className="mt-4 space-y-2 opacity-80">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full border border-slate-600"></div>
-                  <div className="h-1.5 w-20 bg-slate-700 rounded"></div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                  <div className="h-1.5 w-12 bg-slate-600 rounded"></div>
-                </div>
+            {/* CARD 3: Tasks */}
+            <motion.div
+              variants={cardVariants}
+              whileHover={{ scale: 1.01, y: -4 }}
+              className="flex-1 glow-card rounded-3xl p-8 relative overflow-hidden group cursor-default"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <CheckSquare className="w-8 h-8 text-emerald-500" />
+                <span className="text-xs font-mono-tech text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded">
+                  5 ACTIVE
+                </span>
               </div>
-            </div>
+              <h3 className="text-xl font-bold text-white mb-1">Tasks</h3>
+              <p className="text-zinc-500 text-sm">Auto-generated from docs.</p>
+            </motion.div>
           </div>
-        </div>
-
-        {/* Bottom Tagline */}
-        <div className="mt-8 flex justify-center text-slate-400 text-sm items-center gap-2">
-          <LinkIcon className="w-4 h-4" />
-          <span>Changes reflect across all modules instantly.</span>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

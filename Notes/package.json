@@ -1,43 +1,43 @@
 {
     "type": "module",
-
-  "dependencies": {
-    "@ant-design/icons": "^6.1.0",
-    "@blocknote/code-block": "^0.44.0",
-    "@blocknote/core": "^0.44.0",
-    "@blocknote/mantine": "^0.44.0",
-    "@blocknote/react": "^0.44.0",
-    "@dnd-kit/core": "^6.3.1",
-    "@faker-js/faker": "^10.1.0",
-    "@rive-app/react-canvas": "^4.24.0",
-    "@tailwindcss/typography": "^0.5.19",
-    "@tailwindcss/vite": "^4.1.15",
-    "@tiptap/react": "^3.11.1",
-    "@tiptap/starter-kit": "^3.11.1",
-    "antd": "^6.0.1",
-    "axios": "^1.13.2",
-    "date-fns": "^4.1.0",
-    "dayjs": "^1.11.19",
-    "firebase": "^12.4.0",
-    "lodash.debounce": "^4.0.8",
-    "lucide-react": "^0.525.0",
-    "marked": "^17.0.1",
-    "react": "^19.1.0",
-    "react-datepicker": "^9.0.0",
-    "react-dom": "^19.1.0",
-    "react-markdown": "^10.1.0",
-    "react-router-dom": "^6.22.3",
-    "tailwindcss": "^4.1.16",
-    "zustand": "^5.0.8"
-  },
-  "devDependencies": {
-    "@types/node": "^24.10.1",
-    "@vitejs/plugin-react": "^4.7.0",
-    "vite": "^7.0.6"
-  },
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  }
+    "dependencies": {
+        "@ant-design/icons": "^6.1.0",
+        "@blocknote/code-block": "^0.44.0",
+        "@blocknote/core": "^0.44.0",
+        "@blocknote/mantine": "^0.44.0",
+        "@blocknote/react": "^0.44.0",
+        "@dnd-kit/core": "^6.3.1",
+        "@faker-js/faker": "^10.1.0",
+        "@rive-app/react-canvas": "^4.24.0",
+        "@tailwindcss/typography": "^0.5.19",
+        "@tailwindcss/vite": "^4.1.15",
+        "@tiptap/react": "^3.11.1",
+        "@tiptap/starter-kit": "^3.11.1",
+        "antd": "^6.0.1",
+        "axios": "^1.13.2",
+        "date-fns": "^4.1.0",
+        "dayjs": "^1.11.19",
+        "firebase": "^12.4.0",
+        "framer-motion": "^12.24.0",
+        "lodash.debounce": "^4.0.8",
+        "lucide-react": "^0.525.0",
+        "marked": "^17.0.1",
+        "react": "^19.1.0",
+        "react-datepicker": "^9.0.0",
+        "react-dom": "^19.1.0",
+        "react-markdown": "^10.1.0",
+        "react-router-dom": "^6.22.3",
+        "tailwindcss": "^4.1.16",
+        "zustand": "^5.0.8"
+    },
+    "devDependencies": {
+        "@types/node": "^24.10.1",
+        "@vitejs/plugin-react": "^4.7.0",
+        "vite": "^7.0.6"
+    },
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    }
 }

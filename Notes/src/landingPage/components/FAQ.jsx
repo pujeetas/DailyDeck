@@ -1,103 +1,92 @@
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
 
-const FAQ = () => {
-  // State to track which question is open
+const faqs = [
+  {
+    question: "How does AI work with my data?",
+    answer:
+      "DailyDeck uses retrieval-based AI (RAG). When you ask a question, the system only searches your own documents and notes to generate an answer. Your data is never used to train public models.",
+  },
+  {
+    question: "Can I see where AI answers come from?",
+    answer:
+      "Yes. AI-generated answers are always grounded in your content, with references to the exact notes or documents used. You can review or ignore suggestions at any time.",
+  },
+  {
+    question: "Does it work offline?",
+    answer:
+      "Yes. DailyDeck uses a local-first architecture. Your data lives on your device and syncs to the cloud only when you're online. You can write code and check tasks without WiFi.",
+  },
+  {
+    question: "Is there a free tier?",
+    answer:
+      "Absolutely. The Personal plan is free forever and includes unlimited local notes, task management, and basic calendar sync. You only pay for advanced team collaboration features.",
+  },
+];
+
+export default function FAQ() {
   const [openIndex, setOpenIndex] = useState(null);
 
-  const faqs = [
-    {
-      question: "Is DailyDeck free to use?",
-      answer:
-        "Yes, DailyDeck provides all core features (notes, tasks, calendar) for free forever. We plan to introduce a 'Pro' plan later for teams and advanced AI features, but your personal workspace will remain free.",
-    },
-    {
-      question: "Do I need an account?",
-      answer:
-        "Yes. To ensure your data syncs securely between your laptop and phone, you need an account. We don't sell your data, and we don't spam your email.",
-    },
-    {
-      question: "Where is my data stored?",
-      answer:
-        "All your data is encrypted at rest and stored in secure cloud servers (AWS). Your information remains private and is accessible only by you via your login credentials.",
-    },
-    {
-      question: "Can I use this on mobile?",
-      answer:
-        "Absolutely. DailyDeck is fully responsive. You can open it in any mobile browser, or install it as a PWA (Progressive Web App) to use it just like a native app on iOS and Android.",
-    },
-  ];
-
-  const toggleFAQ = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
   return (
-    <section className="px-6 py-24 max-w-3xl mx-auto bg-white">
-      {/* Header */}
-      <div className="text-center mb-16">
-        <h2 className="text-3xl font-bold text-slate-900 mb-4">
-          Frequently Asked Questions
-        </h2>
-        <p className="text-slate-500">
-          Everything you need to know about the product and billing.
-        </p>
-      </div>
+    <section className="py-24 px-6 bg-[#0a0a0a] border-t border-zinc-900">
+      <div className="max-w-3xl mx-auto">
+        {/* HEADER */}
+        <div className="text-center mb-16">
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-zinc-500">
+            Clear answers about privacy, pricing, and how DailyDeck works.
+          </p>
+        </div>
 
-      {/* Accordion List */}
-      <div className="divide-y divide-slate-100 border-t border-b border-slate-100">
-        {faqs.map((item, index) => (
-          <div key={index} className="group">
-            <button
-              onClick={() => toggleFAQ(index)}
-              className="w-full flex justify-between items-center py-6 text-left focus:outline-none"
-            >
-              <span
-                className={`text-lg font-medium transition-colors duration-300 ${
-                  openIndex === index
-                    ? "text-blue-600"
-                    : "text-slate-900 group-hover:text-blue-600"
-                }`}
+        {/* ACCORDION */}
+        <div className="space-y-4">
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index;
+
+            return (
+              <div
+                key={index}
+                className="border border-zinc-800 rounded-2xl bg-[#121214] overflow-hidden"
               >
-                {item.question}
-              </span>
-              <span className="ml-6 shrink-0">
-                {openIndex === index ? (
-                  <Minus className="w-5 h-5 text-blue-600" />
-                ) : (
-                  <Plus className="w-5 h-5 text-slate-400 group-hover:text-blue-600 transition-colors" />
-                )}
-              </span>
-            </button>
+                <button
+                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  className="w-full flex items-center justify-between p-6 text-left hover:bg-zinc-900/50 transition-colors"
+                >
+                  <span className="font-medium text-zinc-200">
+                    {faq.question}
+                  </span>
+                  <div className="text-zinc-500">
+                    {isOpen ? (
+                      <Minus className="w-5 h-5" />
+                    ) : (
+                      <Plus className="w-5 h-5" />
+                    )}
+                  </div>
+                </button>
 
-            {/* Answer (conditionally rendered) */}
-            <div
-              className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                openIndex === index
-                  ? "max-h-48 opacity-100 pb-6"
-                  : "max-h-0 opacity-0"
-              }`}
-            >
-              <p className="text-slate-600 leading-relaxed">{item.answer}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Contact Support Link */}
-      <div className="mt-12 text-center">
-        <p className="text-slate-500">
-          Still have questions?{" "}
-          <a
-            href="mailto:support@dailydeck.com"
-            className="text-slate-900 font-semibold underline underline-offset-2 hover:text-blue-600 transition"
-          >
-            Chat with us
-          </a>
-        </p>
+                {/* ANIMATED CONTENT */}
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                    >
+                      <div className="px-6 pb-6 text-zinc-400 leading-relaxed text-sm">
+                        {faq.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
-};
-
-export default FAQ;
+}

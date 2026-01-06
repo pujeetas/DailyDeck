@@ -4,6 +4,7 @@ import { Bell, Briefcase, Check, Mail, Save, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import Git from "./components/Git";
 import { message } from "antd";
+import Header from "../Header";
 
 export default function ProfileSettings() {
   const [selectedAvatar, setSelectedAvatar] = useState(AVATAR_OPTIONS[0]);
@@ -89,7 +90,8 @@ export default function ProfileSettings() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0B0B0E] text-zinc-200 px-6 py-8">
+    <div className="min-h-screen bg-[#0B0B0E] text-zinc-200">
+      <Header color={"bg-transparent"} border={"border-0"} margin={"mb-4"} />
       <div className="max-w-4xl mx-auto space-y-8">
         <div>
           <h1 className="text-3xl font-semibold">Profile Settings</h1>

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import useUserStore from "../../hooks/useUserStore";
 import UserDropdownMenu from "@/constants/UserDropdownMenu";
 
-const Header = ({ color }) => {
+const Header = ({ color, border, margin, padding }) => {
   const navigate = useNavigate();
   const { user, logout } = useUserStore();
   const today = new Date().toLocaleDateString("en-GB", {
@@ -27,9 +27,11 @@ const Header = ({ color }) => {
 
   return (
     <header
-      className={`w-full h-16 px-6 ${
+      className={`w-full h-16 ${padding ? padding : "px-6"} ${
         color ? color : "bg-[#111113]"
-      } border-b border-white/10 flex items-center justify-between backdrop-blur-lg sticky top-0 z-40 text-zinc-200`}
+      } ${border ? border : "border-b border-white/10"} ${
+        margin ? margin : ""
+      } flex items-center justify-between backdrop-blur-lg sticky top-0 z-40 text-zinc-200`}
     >
       {/* LEFT */}
       <div className="flex gap-4 ">

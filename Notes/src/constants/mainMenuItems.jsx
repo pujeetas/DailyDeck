@@ -34,28 +34,4 @@ export const mainMenuItems = [
     accentColor: "border-emerald-500/20",
     bgGradient: "from-emerald-500/5 to-transparent",
   },
-
-  // -------- Future / Placeholder Modules --------
-
-  {
-    id: "automation-hub",
-    name: "Automation Hub",
-    description:
-      "Design and manage automated workflows for repetitive developer tasks",
-    icon: <Zap className="w-full h-full" />,
-    path: "/automation",
-    color: "text-yellow-400",
-    accentColor: "border-yellow-500/20",
-    bgGradient: "from-yellow-500/5 to-transparent",
-  },
-  {
-    id: "command-center",
-    name: "Command Center",
-    description: "Centralized access to reusable CLI commands and scripts",
-    icon: <Terminal className="w-full h-full" />,
-    path: "/commands",
-    color: "text-slate-400",
-    accentColor: "border-slate-500/20",
-    bgGradient: "from-slate-500/5 to-transparent",
-  },
 ];

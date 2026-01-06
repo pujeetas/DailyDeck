@@ -14,7 +14,6 @@ const DrawerPanel = ({
   setActiveId,
 }) => {
   const [copied, setCopied] = useState(false);
-
   return (
     <Drawer
       title={
@@ -43,7 +42,7 @@ const DrawerPanel = ({
       <div className="flex flex-col h-full gap-6">
         {/* Question Section */}
         {ragQuery && (
-          <div className="bg-gradient-to-br from-[#1a1a2e] to-[#16213e] p-4 rounded-xl border border-blue-900/30 shadow-lg">
+          <div className="bg-linear-to-br from-[#1a1a2e] to-[#16213e] p-4 rounded-xl border border-blue-900/30 shadow-lg">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
               <span className="text-xs font-semibold text-blue-300 uppercase tracking-wider">

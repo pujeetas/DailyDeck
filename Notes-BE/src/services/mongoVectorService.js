@@ -3,7 +3,6 @@ import { embeddingFunction } from "./embeddingFunction.js";
 
 export async function addNoteEmbedding(noteId, title, plainText) {
   if (!plainText.trim()) {
-    console.log("Skipping empty note:", noteId);
     return;
   }
 
@@ -14,20 +13,12 @@ export async function addNoteEmbedding(noteId, title, plainText) {
   await NotesModel.findByIdAndUpdate(noteId, { embedding });
 }
 
-export async function searchNotes(queryText, limit = 5) {
-  console.log("=== searchNotes called ===");
-  console.log("queryText:", queryText);
-  console.log("limit:", limit);
-
+export async function searchNotes(queryText, limit = 5, userId) {
   try {
-    console.log("Generating embeddings...");
     const queryEmbeddings = await embeddingFunction.generate([queryText]);
-    console.log("Embeddings generated:", queryEmbeddings);
 
     const queryEmbedding = queryEmbeddings[0];
-    console.log("Query embedding:", queryEmbedding);
 
-    console.log("Running vector search...");
     const results = await NotesModel.aggregate([
       {
         $vectorSearch: {
@@ -40,14 +31,17 @@ export async function searchNotes(queryText, limit = 5) {
       },
       {
         $project: {
-          _id: 1,
+          userId: 1,
           title: 1,
           score: { $meta: "vectorSearchScore" },
         },
       },
+      {
+        $match: {
+          userId: userId,
+        },
+      },
     ]);
-
-    console.log("Vector search completed, results:", results);
 
     return {
       ids: results.map((doc) => doc._id.toString()),

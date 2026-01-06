@@ -75,22 +75,6 @@ function MainMenu() {
             </button>
           ))}
         </div>
-
-        <div className="mt-16 p-6 bg-zinc-900/30 border border-zinc-800/50 rounded-xl">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-1">
-                Need help getting started?
-              </h3>
-              <p className="text-sm text-zinc-400">
-                Check out our documentation and quick start guides
-              </p>
-            </div>
-            <button className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg text-sm font-medium transition-colors border border-zinc-700/50">
-              View Docs
-            </button>
-          </div>
-        </div>
       </main>
     </div>
   );
