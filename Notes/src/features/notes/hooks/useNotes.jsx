@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   createNote,
   getAllNotes,
@@ -13,6 +13,7 @@ export function useNotes() {
   const [answer, setAnswer] = useState(null);
   const [isLoadingAnswer, setIsLoadingAnswer] = useState(false);
   const [ragOpen, setRagOpen] = useState(false);
+  const isRequestInProgress = useRef(false);
 
   useEffect(() => {
     loadNotes();
@@ -113,9 +114,19 @@ export function useNotes() {
   async function askQuestion(ques) {
     if (!ques || !ques.trim()) {
       console.error("Question is empty");
-
       return;
     }
+    if (isRequestInProgress.current) {
+      setAnswer({
+        question: ques,
+        answer: "A question is already being processed. Please wait...",
+        error: true,
+        relevantNotes: [],
+      });
+      return;
+    }
+
+    isRequestInProgress.current = true;
     setIsLoadingAnswer(true);
     setAnswer(null);
 
@@ -129,14 +140,45 @@ export function useNotes() {
 
       return response.data;
     } catch (error) {
-      console.error("Error getting ques:", error);
+      let errorMessage = "Failed to get answer. Please try again.";
+
+      if (error.response?.status === 429) {
+        errorMessage =
+          "⏱️ Too many requests. Please wait 60 seconds before trying again.";
+      } else if (error.response?.status === 503) {
+        errorMessage =
+          "🔧 AI service is under maintenance. Try again in a few minutes.";
+      } else if (error.response?.status >= 500) {
+        errorMessage =
+          "⚠️ AI service is temporarily unavailable. Please try again later.";
+      } else if (
+        error.code === "ECONNABORTED" ||
+        error.message?.includes("timeout")
+      ) {
+        errorMessage =
+          "⏰ Request timed out. Your question might be too complex or the service is slow.";
+      } else if (!navigator.onLine) {
+        errorMessage = "📡 No internet connection. Please check your network.";
+      } else if (
+        error.response?.status === 401 ||
+        error.response?.status === 403
+      ) {
+        errorMessage = "🔒 Authentication failed. Please log in again.";
+      } else {
+        errorMessage = "❌ Something went wrong. Please try again.";
+      }
       setAnswer({
-        error: error.message || "Failed to get answer",
+        question: ques,
+        answer: errorMessage,
+        error: true,
+        relevantNotes: response.data.relevantNotes,
       });
     } finally {
       setIsLoadingAnswer(false);
+      isRequestInProgress.current = false;
     }
   }
+
   function clearAnswer() {
     setAnswer(null);
   }

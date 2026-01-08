@@ -9,6 +9,7 @@ import {
 } from "../controller/notesController.js";
 
 import { auth } from "../middleware/authMiddleware.js";
+import { questionLimiter } from "../middleware/questionLimiter.js";
 export const notesRoute = express.Router();
 
 notesRoute.post("/createNote", auth, createNote);
@@ -19,4 +20,4 @@ notesRoute.patch("/updateNote/:id", auth, updateNote);
 
 notesRoute.delete("/deleteNote/:id", auth, deleteNote);
 
-notesRoute.post("/question", auth, getQuestion);
+notesRoute.post("/question", questionLimiter, auth, getQuestion);

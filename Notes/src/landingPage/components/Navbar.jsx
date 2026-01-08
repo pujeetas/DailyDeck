@@ -26,8 +26,8 @@ const Navbar = () => {
           onClick={() => navigate("/")}
           className="flex items-center gap-2 cursor-pointer group"
         >
-          <div className="w-8 h-8 bg-zinc-800 rounded-lg flex items-center justify-center border border-zinc-700 group-hover:border-zinc-500 transition-colors">
-            <Command className="w-4 h-4 text-zinc-300" />
+          <div className="w-8 h-8 flex items-center justify-center transition-colors">
+            <Command className="w-5 h-5 text-zinc-300" />
           </div>
           <span className="text-xl font-bold tracking-tight text-white">
             DailyDeck

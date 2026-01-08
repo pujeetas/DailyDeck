@@ -143,24 +143,34 @@ export const getQuestion = async (req, res) => {
       })
       .join("\n\n---\n\n");
     // Call Claude API
-    const message = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 1024,
-      messages: [
-        {
-          role: "user",
-          content: `Based on the following notes, please answer this question: "${question}"Relevant Notes:${context}
+    try {
+      const message = await anthropic.messages.create({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 1024,
+        messages: [
+          {
+            role: "user",
+            content: `Based on the following notes, please answer this question: "${question}"Relevant Notes:${context}
             Please provide a clear and concise answer based only on the information in these notes.`,
-        },
-      ],
-    });
-
-    const answer = message.content[0].text;
-    res.status(200).json({
-      question: question,
-      answer: answer,
-      relevantNotes: notes.map((n) => ({ id: n._id, title: n.title })),
-    });
+          },
+        ],
+      });
+      const answer = message.content[0].text;
+      res.status(200).json({
+        question: question,
+        answer: answer,
+        relevantNotes: notes.map((n) => ({ id: n._id, title: n.title })),
+      });
+    } catch (aiError) {
+      console.error("Claude API error:", aiError);
+      return res.status(200).json({
+        question: question,
+        answer:
+          "AI is temporarily unavailable, but here are relevant notes that might help.",
+        relevantNotes: notes.map((n) => ({ id: n._id, title: n.title })),
+        aiError: true,
+      });
+    }
   } catch (error) {
     console.error("Error in getQuestion:", error);
     res.status(500).json({

@@ -6,11 +6,13 @@ import GenerateControls from "../generator/GenerateControls";
 import PreviewSection from "../generator/PreviewSection";
 import SchemaTreeView from "../generator/SchemaTreeView";
 import ExportOptions from "../ui/ExportOptions";
+import JsonParser from "./JsonParser";
 import { findAndAddChild } from "../utils/findAndAddChild";
 import Header from "@/components/layout/Header";
 
 export default function FakeJsonGenerator() {
   const [messageApi, contextHolder] = message.useMessage();
+  const [activeTab, setActiveTab] = useState("generator");
   const [fields, setFields] = useState([
     { id: Date.now(), name: "firstName", format: "firstname", children: [] },
   ]);
@@ -62,62 +64,100 @@ export default function FakeJsonGenerator() {
 
       {/* Header Bar */}
       <header className="h-14 flex items-center justify-between px-6 bg-[#11141D]">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-6">
           <h1 className="font-bold text-lg tracking-tight">PayloadLab</h1>
-        </div>
-        <GenerateControls
-          count={count}
-          setCount={setCount}
-          onPreview={() => generate(true)}
-          onGenerate={() => generate(false)}
-        />
-      </header>
 
-      <main className="flex-1 grid grid-cols-12 overflow-hidden">
-        {/* Panel 1: Tree Navigation (Left) */}
-        <aside className="col-span-2 border-r border-white/5 bg-[#11141D] p-4 overflow-y-auto">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-4">
-            Schema Tree
-          </p>
-          <SchemaTreeView fields={fields} />
-        </aside>
-
-        {/* Panel 2: Field Editor (Center) */}
-        <section className="col-span-5 border-r border-white/5 p-6 overflow-y-auto bg-[#0E1016]">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">
-              Field Definitions
-            </h2>
+          {/* Tab Switcher */}
+          <div className="flex gap-2 bg-[#0E1016] rounded-lg p-1">
             <button
-              onClick={addField}
-              className="text-xs bg-indigo-600 px-3 py-1.5 rounded-md hover:bg-indigo-500 transition-colors"
+              onClick={() => setActiveTab("generator")}
+              className={`px-4 py-1.5 text-sm rounded-md transition-all ${
+                activeTab === "generator"
+                  ? "bg-indigo-600 text-white shadow-lg"
+                  : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+              }`}
             >
-              + Add Root Field
+              Generator
+            </button>
+            <button
+              onClick={() => setActiveTab("parser")}
+              className={`px-4 py-1.5 text-sm rounded-md transition-all ${
+                activeTab === "parser"
+                  ? "bg-indigo-600 text-white shadow-lg"
+                  : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+              }`}
+            >
+              Parser
             </button>
           </div>
-          <SchemaBuilder
-            fields={fields}
-            updateField={updateField}
-            removeField={removeField}
-            addChildField={(id) => setFields(findAndAddChild(fields, id))}
-          />
-        </section>
+        </div>
 
-        {/* Panel 3: Live Output (Right) */}
-        <section className="col-span-5 p-6 overflow-y-auto bg-[#0B0D12]">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">
-              JSON Output
-            </h2>
-            {previewData && (
-              <ExportOptions
-                data={previewData}
-                setPreviewData={setPreviewData}
+        {/* Only show controls on generator tab */}
+        {activeTab === "generator" && (
+          <GenerateControls
+            count={count}
+            setCount={setCount}
+            onPreview={() => generate(true)}
+            onGenerate={() => generate(false)}
+          />
+        )}
+      </header>
+
+      <main className="flex-1 overflow-hidden">
+        {activeTab === "generator" ? (
+          // GENERATOR VIEW - 3 Panel Layout
+          <div className="grid grid-cols-12 h-full">
+            {/* Panel 1: Tree Navigation (Left) */}
+            <aside className="col-span-2 border-r border-white/5 bg-[#11141D] p-4 overflow-y-auto">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-4">
+                Schema Tree
+              </p>
+              <SchemaTreeView fields={fields} />
+            </aside>
+
+            {/* Panel 2: Field Editor (Center) */}
+            <section className="col-span-5 border-r border-white/5 p-6 overflow-y-auto bg-[#0E1016]">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">
+                  Field Definitions
+                </h2>
+                <button
+                  onClick={addField}
+                  className="text-xs bg-indigo-600 px-3 py-1.5 rounded-md hover:bg-indigo-500 transition-colors"
+                >
+                  + Add Root Field
+                </button>
+              </div>
+              <SchemaBuilder
+                fields={fields}
+                updateField={updateField}
+                removeField={removeField}
+                addChildField={(id) => setFields(findAndAddChild(fields, id))}
               />
-            )}
+            </section>
+
+            {/* Panel 3: Live Output (Right) */}
+            <section className="col-span-5 p-6 overflow-y-auto bg-[#0B0D12]">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">
+                  JSON Output
+                </h2>
+                {previewData && (
+                  <ExportOptions
+                    data={previewData}
+                    setPreviewData={setPreviewData}
+                  />
+                )}
+              </div>
+              <PreviewSection data={previewData} />
+            </section>
           </div>
-          <PreviewSection data={previewData} />
-        </section>
+        ) : (
+          // PARSER VIEW - 2 Column Layout
+          <div className="h-full p-6 bg-[#0E1016]">
+            <JsonParser />
+          </div>
+        )}
       </main>
     </div>
   );

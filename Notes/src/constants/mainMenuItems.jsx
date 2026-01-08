@@ -27,7 +27,7 @@ export const mainMenuItems = [
     id: "payloadLab",
     name: "Payload Lab",
     description:
-      "Generate realistic fake JSON data for API testing and development workflows",
+      "JSON toolkit for developers: Generate mock data with custom schemas, validate and format JSON instantly",
     icon: <Database className="w-full h-full" />,
     path: "/payload-lab",
     color: "text-emerald-400",
