@@ -22,7 +22,11 @@ export const getUserDetailsController = async (req, res) => {
       status: "done",
     });
 
-    const userWithStats = { ...getLoggedUserFromDb, totalNotes, totalTodo };
+    const userWithStats = {
+      ...getLoggedUserFromDb.toObject(),
+      totalNotes,
+      totalTodo,
+    };
 
     res.send(userWithStats);
   } catch (error) {

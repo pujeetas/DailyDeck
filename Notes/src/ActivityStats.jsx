@@ -41,7 +41,7 @@ const ActivityStats = () => {
     {
       id: 3,
       label: "AI Searches",
-      value: user?._doc?.aiSearches || 0,
+      value: user?.aiSearches || 0,
       trend: "All time",
       trendUp: true,
       icon: <Sparkles className="w-4 h-4" />,
@@ -51,11 +51,11 @@ const ActivityStats = () => {
     {
       id: 4,
       label: "Active Streak",
-      value: `${user?._doc?.currentStreak || 0} Days`,
+      value: `${user?.currentStreak || 0} Days`,
       trend:
-        user?._doc?.longestStreak === user?._doc?.currentStreak
+        user?.longestStreak === user?.currentStreak
           ? "Best"
-          : `Best: ${user?._doc?.longestStreak || 0}`,
+          : `Best: ${user?.longestStreak || 0}`,
       trendUp: true,
       icon: <Activity className="w-4 h-4" />,
       color: "text-purple-400",
