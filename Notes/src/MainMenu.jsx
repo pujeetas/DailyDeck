@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "./components/layout/Header";
 import { mainMenuItems } from "./constants/mainMenuItems";
 import { ArrowRight } from "lucide-react";
+import ActivityStats from "./ActivityStats";
 
 function MainMenu() {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ function MainMenu() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
           {mainMenuItems.map((item) => (
             <button
               key={item.id}
@@ -75,6 +76,8 @@ function MainMenu() {
             </button>
           ))}
         </div>
+
+        <ActivityStats />
       </main>
     </div>
   );

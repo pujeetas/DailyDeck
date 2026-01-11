@@ -37,7 +37,6 @@ export const question = (questionText) => {
     return Promise.reject(new Error("Question cannot be empty"));
   }
   return api.post("/question", {
-    // Changed from axios to api
     question: questionText.trim(),
   });
 };

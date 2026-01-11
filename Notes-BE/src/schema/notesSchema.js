@@ -14,7 +14,7 @@ const noteSchema = new Schema(
     },
     embedding: {
       type: [Number],
-      index: true, // For vector search
+      index: true,
     },
     pinned: {
       type: Boolean,

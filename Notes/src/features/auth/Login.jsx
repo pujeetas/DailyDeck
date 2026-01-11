@@ -33,8 +33,11 @@ export default function Login() {
         { withCredentials: true }
       );
 
-      const { user } = response.data;
-      login(user);
+      const userDetailsRes = await axios.get("/api/user/getUserDetails", {
+        withCredentials: true,
+      });
+      console.log(userDetailsRes);
+      login(userDetailsRes.data);
 
       setIsSuccess(true);
       message.success("Welcome back.");

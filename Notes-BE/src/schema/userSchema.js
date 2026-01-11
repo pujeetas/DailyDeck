@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 const { Schema } = mongoose;
-
 const userSchema = new Schema(
   {
     avatarId: {
@@ -31,7 +30,6 @@ const userSchema = new Schema(
     resetToken: {
       type: String,
     },
-
     resetTokenExpiresAt: {
       type: Date,
     },
@@ -81,6 +79,24 @@ const userSchema = new Schema(
       connectedAt: {
         type: Date,
       },
+    },
+    lastActiveDate: {
+      type: Date,
+    },
+    currentStreak: {
+      type: Number,
+      default: 0,
+    },
+    longestStreak: {
+      type: Number,
+      default: 0,
+    },
+    totalNotes: {
+      type: Number,
+    },
+    aiSearches: {
+      type: Number,
+      default: 0,
     },
   },
   {

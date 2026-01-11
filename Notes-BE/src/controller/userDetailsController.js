@@ -1,3 +1,5 @@
+import { NotesModel } from "../schema/notesSchema.js";
+import { TodoModel } from "../schema/todoSchema.js";
 import { UserModel } from "../schema/userSchema.js";
 
 export const getUserDetailsController = async (req, res) => {
@@ -11,7 +13,18 @@ export const getUserDetailsController = async (req, res) => {
       return res.status(400).send("User not found");
     }
 
-    res.send(getLoggedUserFromDb);
+    const totalNotes = await NotesModel.countDocuments({
+      userId: loggedinUser.id,
+    });
+
+    const totalTodo = await TodoModel.countDocuments({
+      userId: loggedinUser.id,
+      status: "done",
+    });
+
+    const userWithStats = { ...getLoggedUserFromDb, totalNotes, totalTodo };
+
+    res.send(userWithStats);
   } catch (error) {
     res.status(400).send(error);
   }

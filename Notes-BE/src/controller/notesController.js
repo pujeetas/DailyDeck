@@ -9,6 +9,7 @@ import {
 import { extractPlainTextFromBlockNote } from "../services/extractPlainTextFromEditor.js";
 
 import { Anthropic } from "@anthropic-ai/sdk";
+import { UserModel } from "../schema/userSchema.js";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -155,6 +156,11 @@ export const getQuestion = async (req, res) => {
           },
         ],
       });
+
+      await UserModel.findByIdAndUpdate(userId, {
+        $inc: { aiSearches: 1 },
+      });
+
       const answer = message.content[0].text;
       res.status(200).json({
         question: question,
