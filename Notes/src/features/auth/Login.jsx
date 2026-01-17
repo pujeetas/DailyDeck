@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Terminal, ArrowRight, Lock, Command } from "lucide-react"; // Changed CheckSquare to Terminal
+import { Terminal, ArrowRight, Lock, Command } from "lucide-react";
 import useUserStore from "@/hooks/useUserStore";
 import { message } from "antd";
 import ForgotPasswordModal from "./ForgotPasswordModal";
@@ -30,7 +30,7 @@ export default function Login() {
           email: form.email,
           password: form.password,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       const userDetailsRes = await axios.get("/api/user/getUserDetails", {

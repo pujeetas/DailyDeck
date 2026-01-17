@@ -72,7 +72,7 @@ const ActivityStats = () => {
           Workspace Metrics
         </h2>
         <span className="text-xs font-mono text-zinc-500 bg-zinc-900/50 px-2 py-1 rounded border border-zinc-800">
-          LAST 7 DAYS
+          ALL TIME
         </span>
       </div>
 
