@@ -56,6 +56,74 @@ DailyDeck solves this by integrating **Markdown Documentation**, **Calendar Visu
 
 ---
 
+---
+
+## 🧪 Testing
+
+![Tests](https://img.shields.io/badge/tests-5%20passing-brightgreen?style=for-the-badge)
+![Coverage](https://img.shields.io/badge/coverage-68.96%25-yellow?style=for-the-badge)
+![Vitest](https://img.shields.io/badge/tested%20with-Vitest-729B1B?style=for-the-badge)
+
+Comprehensive testing using **Vitest** and **React Testing Library** to ensure production-grade quality.
+
+### Run Tests
+```bash
+npm test              # Run all tests in watch mode
+npm run test:ui       # Interactive test UI
+npm run test:coverage # Generate coverage report
+```
+
+### Test Coverage
+**Login Component** - 68.96% coverage
+- ✅ Form rendering and input validation
+- ✅ User interactions (typing, clicking, submitting)
+- ✅ Complete authentication flow with API mocking
+- ✅ Navigation handling after successful login
+- ✅ External dependencies mocked (Axios, React Router, Zustand)
+
+### Testing Philosophy
+- **Unit Tests**: Verify individual component behavior in isolation
+- **Integration Tests**: Test complete user workflows (type → click → submit)
+- **Mocking Strategy**: Mock external APIs and state management for fast, reliable tests
+- **Async Testing**: Proper handling of API calls and navigation
+- **User-Centric**: Tests simulate real user interactions, not implementation details
+
+### Example: Testing Authentication Flow
+```javascript
+it("submits form with valid credentials", async () => {
+  const user = userEvent.setup();
+  
+  // Simulate user typing credentials
+  await user.type(
+    screen.getByPlaceholderText("name@company.com"), 
+    "test@example.com"
+  );
+  await user.type(
+    screen.getByPlaceholderText("••••••••"), 
+    "password123"
+  );
+  
+  // Simulate clicking login button
+  await user.click(screen.getByRole("button", { name: /log in/i }));
+  
+  // Verify API was called with correct credentials
+  await vi.waitFor(() => {
+    expect(axios.post).toHaveBeenCalledWith(
+      "/api/login",
+      { email: "test@example.com", password: "password123" },
+      { withCredentials: true }
+    );
+  });
+  
+  // Verify user store was updated
+  expect(useUserStore().login).toHaveBeenCalled();
+  
+  // Verify navigation to dashboard
+  expect(mockNavigate).toHaveBeenCalledWith("/main");
+});
+```
+---
+
 ## 📂 Project Structure (Feature-Based)
 
 I utilized a **Feature-Based Architecture** to ensure scalability. Instead of grouping by file type (components/hooks), code is grouped by domain.
