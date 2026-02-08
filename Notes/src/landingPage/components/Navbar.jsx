@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Command } from "lucide-react"; // Using an icon for the logo
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -14,40 +13,61 @@ const Navbar = () => {
 
   return (
     <div
-      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
+      className={`fixed top-0 z-50 w-full transition-all duration-500 ${
         scrolled
-          ? "bg-[#0a0a0a]/80 backdrop-blur-md border-b border-zinc-800 py-4"
-          : "bg-transparent border-transparent py-6"
+          ? "bg-[#0a0a08]/90 backdrop-blur-md border-b border-zinc-800/50"
+          : "bg-transparent"
       }`}
     >
-      <header className="flex justify-between items-center px-6 md:px-12 max-w-7xl mx-auto">
-        {/* Logo Area */}
+      <header className="flex justify-between items-center px-6 md:px-10 py-5 max-w-[1400px] mx-auto">
+        {/* Logo — typographic, no icon */}
         <div
           onClick={() => navigate("/")}
-          className="flex items-center gap-2 cursor-pointer group"
+          className="cursor-pointer flex items-baseline gap-2"
         >
-          <div className="w-8 h-8 flex items-center justify-center transition-colors">
-            <Command className="w-5 h-5 text-zinc-300" />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-white">
+          <span
+            className="text-[15px] font-bold text-zinc-100 tracking-tight"
+            style={{ fontFamily: "'JetBrains Mono', monospace" }}
+          >
             DailyDeck
+          </span>
+          <span
+            className="text-[10px] text-amber-500/70 tracking-[0.15em] uppercase font-medium"
+            style={{ fontFamily: "'JetBrains Mono', monospace" }}
+          >
+            v1.0
           </span>
         </div>
 
-        {/* Buttons */}
-        <div className="flex items-center gap-4">
+        {/* Center nav links */}
+        <nav className="hidden md:flex items-center gap-8">
+          {["Features", "Workflow", "Use Cases", "FAQ"].map((item) => (
+            <a
+              key={item}
+              href={`#${item.toLowerCase().replace(" ", "-")}`}
+              className="text-[12px] text-zinc-500 tracking-[0.08em] uppercase hover:text-zinc-200 transition-colors duration-200"
+              style={{ fontFamily: "'JetBrains Mono', monospace" }}
+            >
+              {item}
+            </a>
+          ))}
+        </nav>
+
+        {/* Right actions */}
+        <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/login")}
-            className="hidden md:block px-4 py-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+            className="hidden md:block text-[12px] text-zinc-500 hover:text-zinc-200 transition-colors px-4 py-2"
+            style={{ fontFamily: "'JetBrains Mono', monospace" }}
           >
             Log in
           </button>
-
           <button
             onClick={() => navigate("/signup")}
-            className="px-5 py-2 text-sm font-medium bg-white text-black rounded-lg hover:bg-zinc-200 transition-all hover:scale-105"
+            className="text-[12px] font-bold text-[#0a0a08] bg-amber-500 hover:bg-amber-400 px-5 py-2.5 transition-colors duration-200"
+            style={{ fontFamily: "'JetBrains Mono', monospace" }}
           >
-            Sign up
+            GET STARTED
           </button>
         </div>
       </header>

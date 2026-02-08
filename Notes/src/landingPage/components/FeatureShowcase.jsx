@@ -1,133 +1,245 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Calendar, CheckSquare, FileText, ArrowUpRight } from "lucide-react";
+import { FileText, CheckSquare, Calendar, ArrowUpRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.06, // 60ms stagger
-    },
-  },
-};
+const mono = { fontFamily: "'JetBrains Mono', monospace" };
+const serif = { fontFamily: "'Newsreader', Georgia, serif" };
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
+const features = [
+  {
+    num: "01",
+    title: "The Canvas",
+    subtitle: "Write freely. Think clearly.",
+    description:
+      "A document editor that understands context. Embed tasks, link calendar events, and write in markdown — all in one surface.",
+    icon: <FileText className="w-5 h-5" />,
+    color: "text-orange-400",
+    accent: "bg-orange-500",
+    mockContent: (
+      <div
+        className="space-y-3 p-5"
+        style={{ fontFamily: "'JetBrains Mono', monospace" }}
+      >
+        <div className="h-1.5 bg-zinc-800 rounded w-4/5" />
+        <div className="h-1.5 bg-zinc-800 rounded w-3/5" />
+        <div className="h-1.5 bg-zinc-800 rounded w-2/3" />
+        <div className="mt-4 p-3 bg-blue-500/5 border border-blue-500/15 text-[11px] text-blue-400 flex items-center gap-2">
+          <Calendar className="w-3 h-3" />
+          Meeting: Q3 Strategy — Tomorrow 2PM
+        </div>
+        <div className="p-3 bg-emerald-500/5 border border-emerald-500/15 text-[11px] text-emerald-400 flex items-center gap-2">
+          <CheckSquare className="w-3 h-3" />
+          Review auth refactor PR
+        </div>
+      </div>
+    ),
   },
-};
+  {
+    num: "02",
+    title: "Tasks",
+    subtitle: "Auto-generated. Always current.",
+    description:
+      "Highlight any text to create a task. They inherit context from the document they came from — no copy-pasting between apps.",
+    icon: <CheckSquare className="w-5 h-5" />,
+    color: "text-emerald-400",
+    accent: "bg-emerald-500",
+    mockContent: (
+      <div
+        className="space-y-2 p-5"
+        style={{ fontFamily: "'JetBrains Mono', monospace" }}
+      >
+        {[
+          { label: "Refactor Auth Flow", done: true },
+          { label: "Update API docs", done: true },
+          { label: "Ship hero section", done: false },
+          { label: "Database indexes", done: false },
+        ].map((task) => (
+          <div
+            key={task.label}
+            className="flex items-center gap-3 py-2 border-b border-zinc-800/50 last:border-0"
+          >
+            <div
+              className={`w-4 h-4 border flex items-center justify-center text-[9px] ${
+                task.done
+                  ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-500"
+                  : "border-zinc-700 text-transparent"
+              }`}
+            >
+              ✓
+            </div>
+            <span
+              className={`text-[12px] ${task.done ? "text-zinc-600 line-through" : "text-zinc-300"}`}
+            >
+              {task.label}
+            </span>
+          </div>
+        ))}
+        <div className="pt-2 text-[10px] text-zinc-700">
+          4 tasks · 2 completed
+        </div>
+      </div>
+    ),
+  },
+  {
+    num: "03",
+    title: "Calendar",
+    subtitle: "Two-way sync with your notes.",
+    description:
+      "See your day in context. Time-block tasks from your documents directly onto the calendar. No more blind scheduling.",
+    icon: <Calendar className="w-5 h-5" />,
+    color: "text-blue-400",
+    accent: "bg-blue-500",
+    mockContent: (
+      <div
+        className="space-y-1 p-5"
+        style={{ fontFamily: "'JetBrains Mono', monospace" }}
+      >
+        {[
+          {
+            time: "09:00",
+            label: "Deep Work Block",
+            sub: "Auth Refactor",
+            active: true,
+          },
+          { time: "10:30", label: "Team Standup", sub: null, active: false },
+          { time: "11:00", label: null, sub: null, active: false },
+          {
+            time: "14:00",
+            label: "Q3 Strategy",
+            sub: "Linked from Canvas",
+            active: false,
+          },
+        ].map((slot) => (
+          <div key={slot.time} className="flex gap-3 py-2">
+            <span className="text-[11px] text-zinc-600 w-10 shrink-0 text-right pt-0.5">
+              {slot.time}
+            </span>
+            {slot.label ? (
+              <div
+                className={`flex-1 p-2.5 border-l-2 ${
+                  slot.active
+                    ? "border-blue-500 bg-blue-500/5"
+                    : "border-zinc-800 bg-zinc-900/30"
+                }`}
+              >
+                <span
+                  className={`text-[12px] font-medium ${slot.active ? "text-blue-300" : "text-zinc-400"}`}
+                >
+                  {slot.label}
+                </span>
+                {slot.sub && (
+                  <p className="text-[10px] text-zinc-600 mt-0.5">{slot.sub}</p>
+                )}
+              </div>
+            ) : (
+              <div className="flex-1 border-b border-zinc-800/30 mb-2" />
+            )}
+          </div>
+        ))}
+      </div>
+    ),
+  },
+];
 
 export default function FeatureShowcase() {
-  return (
-    <section className="py-32 px-6 border-t border-zinc-900 relative overflow-hidden bg-[#0a0a0a]">
-      {/* Decorative Background Blob */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+  const navigate = useNavigate();
 
-      <div className="max-w-6xl mx-auto relative z-10">
+  return (
+    <section
+      id="features"
+      className="py-28 px-6 bg-[#0a0a08] border-t border-zinc-800/40"
+    >
+      <div className="max-w-[1400px] mx-auto">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="mb-20"
         >
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-            Three powerful tools. <br />
-            <span className="text-zinc-500">One fluent workflow.</span>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-[1px] bg-amber-600/50" />
+            <span
+              className="text-[11px] text-amber-600/80 tracking-[0.25em] uppercase"
+              style={mono}
+            >
+              Core System
+            </span>
+          </div>
+          <h2
+            className="text-[clamp(2rem,4vw,3.5rem)] text-zinc-100 leading-[1.1] tracking-[-0.02em]"
+            style={serif}
+          >
+            Three tools.{" "}
+            <span className="italic text-zinc-500">One surface.</span>
           </h2>
         </motion.div>
 
-        {/* BENTO GRID */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6"
-        >
-          {/* CARD 1: The Canvas (Wide) */}
-          <motion.div
-            variants={cardVariants}
-            whileHover="hover" // Triggers children variants with "hover" key
-            className="md:col-span-2 glow-card rounded-3xl p-8 relative overflow-hidden group cursor-default"
-          >
-            {/* Hover Lift Effect */}
+        {/* Feature panels — stacked, not bento */}
+        <div className="space-y-6">
+          {features.map((feature, i) => (
             <motion.div
-              className="absolute inset-0 bg-transparent"
-              whileHover={{ scale: 1.01, y: -4 }}
-              transition={{ duration: 0.2 }}
-            />
-
-            <div className="relative z-10">
-              <div className="flex justify-between items-start mb-8">
-                <div className="bg-zinc-900/80 p-3 rounded-xl border border-zinc-700">
-                  <FileText className="w-6 h-6 text-orange-500" />
+              key={feature.num}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, delay: i * 0.1 }}
+              className="group border border-zinc-800/60 bg-[#0c0c0a] hover:border-zinc-700/60 transition-colors duration-300"
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px]">
+                {/* Left: Description */}
+                <div className="p-8 md:p-10 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-4 mb-6">
+                      <span
+                        className="text-[11px] text-zinc-700 tracking-wider"
+                        style={mono}
+                      >
+                        {feature.num}
+                      </span>
+                      <div
+                        className={`w-8 h-8 flex items-center justify-center ${feature.color}`}
+                      >
+                        {feature.icon}
+                      </div>
+                    </div>
+                    <h3
+                      className="text-2xl md:text-3xl font-semibold text-zinc-100 mb-2 tracking-[-0.01em]"
+                      style={serif}
+                    >
+                      {feature.title}
+                    </h3>
+                    <p className="text-[13px] text-zinc-600 mb-4" style={mono}>
+                      {feature.subtitle}
+                    </p>
+                    <p
+                      className="text-[15px] text-zinc-500 leading-[1.7] max-w-md"
+                      style={serif}
+                    >
+                      {feature.description}
+                    </p>
+                  </div>
+                  <div className="mt-8">
+                    <button
+                      className="inline-flex items-center gap-2 text-[11px] text-zinc-600 group-hover:text-zinc-400 transition-colors cursor-pointer"
+                      style={mono}
+                      onClick={() => navigate("/login")}
+                    >
+                      LEARN MORE
+                      <ArrowUpRight className="w-3 h-3" />
+                    </button>
+                  </div>
                 </div>
-                <ArrowUpRight className="text-zinc-600 group-hover:text-white transition-colors" />
-              </div>
 
-              <h3 className="text-2xl font-bold text-white mb-2">The Canvas</h3>
-              <p className="text-zinc-400 mb-12 max-w-sm">
-                Write freely. Drag tasks directly into your document or embed
-                your calendar schedule inline.
-              </p>
-            </div>
-
-            {/* Mock UI - Reacts to Parent Hover */}
-            <motion.div
-              variants={{
-                hover: { x: 6, opacity: 1 },
-                rest: { x: 0, opacity: 0.8 },
-              }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="absolute bottom-0 right-0 w-[85%] h-[200px] bg-[#0a0a0a] rounded-tl-2xl border-l border-t border-zinc-800 p-6"
-            >
-              <div className="space-y-4">
-                <div className="h-2 bg-zinc-800 rounded w-3/4"></div>
-                <div className="h-2 bg-zinc-800 rounded w-1/2"></div>
-                <div className="h-10 bg-blue-500/10 border border-blue-500/20 rounded-lg w-full mt-6 flex items-center px-4 gap-3 text-xs text-blue-400 font-mono-tech">
-                  <Calendar className="w-3 h-3" />
-                  <span>Meeting: Q3 Strategy</span>
+                {/* Right: Mock UI */}
+                <div className="border-t lg:border-t-0 lg:border-l border-zinc-800/60 bg-[#0b0b09] min-h-[280px] flex flex-col justify-center">
+                  {feature.mockContent}
                 </div>
               </div>
             </motion.div>
-          </motion.div>
-
-          {/* RIGHT COLUMN */}
-          <div className="flex flex-col gap-6">
-            {/* CARD 2: Calendar */}
-            <motion.div
-              variants={cardVariants}
-              whileHover={{ scale: 1.01, y: -4 }}
-              className="flex-1 bg-blue-600 rounded-3xl p-8 text-white relative overflow-hidden cursor-default"
-            >
-              <Calendar className="w-8 h-8 text-blue-200 mb-6" />
-              <h3 className="text-xl font-bold mb-1">Calendar</h3>
-              <p className="text-blue-100 text-sm opacity-80">
-                Syncs two-way with Notes.
-              </p>
-            </motion.div>
-
-            {/* CARD 3: Tasks */}
-            <motion.div
-              variants={cardVariants}
-              whileHover={{ scale: 1.01, y: -4 }}
-              className="flex-1 glow-card rounded-3xl p-8 relative overflow-hidden group cursor-default"
-            >
-              <div className="flex justify-between items-center mb-6">
-                <CheckSquare className="w-8 h-8 text-emerald-500" />
-                <span className="text-xs font-mono-tech text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded">
-                  5 ACTIVE
-                </span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1">Tasks</h3>
-              <p className="text-zinc-500 text-sm">Auto-generated from docs.</p>
-            </motion.div>
-          </div>
-        </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

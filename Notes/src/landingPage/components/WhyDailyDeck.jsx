@@ -1,60 +1,101 @@
 import React from "react";
-import { Layers, Zap, Focus } from "lucide-react"; // Ensure you have lucide-react installed
+import { motion } from "framer-motion";
 
-const WhyDailyDeck = () => {
-  const reasons = [
-    {
-      icon: <Layers className="w-6 h-6 text-blue-600" />,
-      title: "Stop Context Switching",
-      description:
-        "Your notes, tasks, and calendar shouldn't live in different apps. We bring them together so you stop losing focus while toggling tabs.",
-    },
-    {
-      icon: <Zap className="w-6 h-6 text-orange-500" />,
-      title: "Zero Friction Input",
-      description:
-        "Capture ideas instantly. The interface is designed to get out of your way, so you can log thoughts faster than you forget them.",
-    },
-    {
-      icon: <Focus className="w-6 h-6 text-emerald-600" />,
-      title: "Designed for Deep Work",
-      description:
-        "No cluttered sidebars or complex menus. Just a calm, distraction-free environment built to help you finish what you start.",
-    },
-  ];
+const mono = { fontFamily: "'JetBrains Mono', monospace" };
+const serif = { fontFamily: "'Newsreader', Georgia, serif" };
 
+const pillars = [
+  {
+    num: "01",
+    title: "Your tools should serve you",
+    body: "Most productivity apps demand you learn their system. We built the opposite — a workspace that conforms to how you already think and work.",
+  },
+  {
+    num: "02",
+    title: "Context is everything",
+    body: "Switching between 5 tabs to find one thought is a design failure, not a workflow. Your notes, tasks, and schedule belong in the same mental space.",
+  },
+  {
+    num: "03",
+    title: "Speed is respect",
+    body: "Every millisecond of latency is time stolen from your flow state. DailyDeck is local-first, instant-input, zero-friction by default.",
+  },
+];
+
+export default function WhyDailyDeck() {
   return (
-    <section className="px-6 py-24 bg-white max-w-7xl mx-auto ">
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
-          Why we built DailyDeck
-        </h2>
-        <p className="text-lg text-slate-600 leading-relaxed">
-          Most tools force you to manage the software instead of your work. We
-          built a workspace that respects your attention span.
-        </p>
-      </div>
-
-      {/* 3 Pillars Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 transition-all duration-300 ease-spring hover:-translate-y-2">
-        {reasons.map((item, idx) => (
-          <div
-            key={idx}
-            className="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-lg hover:shadow-slate-200/50 transition-all duration-300 group"
+    <section className="py-28 px-6 bg-[#0a0a08] border-t border-zinc-800/40">
+      <div className="max-w-[1400px] mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-16 lg:gap-24">
+          {/* Left — sticky label */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="lg:sticky lg:top-32 lg:self-start"
           >
-            <div className="w-12 h-12 bg-white rounded-2xl border border-slate-200 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              {item.icon}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-[1px] bg-amber-600/50" />
+              <span
+                className="text-[11px] text-amber-600/80 tracking-[0.25em] uppercase"
+                style={mono}
+              >
+                Philosophy
+              </span>
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-3">
-              {item.title}
-            </h3>
-            <p className="text-slate-500 leading-relaxed">{item.description}</p>
+            <h2
+              className="text-[clamp(2rem,4vw,3rem)] text-zinc-100 leading-[1.1] tracking-[-0.02em] mb-5"
+              style={serif}
+            >
+              Why we built <span className="italic text-amber-500">this.</span>
+            </h2>
+            <p
+              className="text-[15px] text-zinc-600 leading-[1.7]"
+              style={serif}
+            >
+              Not another project management tool. A quiet system that respects
+              your attention.
+            </p>
+          </motion.div>
+
+          {/* Right — pillars */}
+          <div>
+            {pillars.map((pillar, i) => (
+              <motion.div
+                key={pillar.num}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: i * 0.1 }}
+                className={`py-10 ${i < pillars.length - 1 ? "border-b border-zinc-800/50" : ""}`}
+              >
+                <div className="flex items-start gap-6">
+                  <span
+                    className="text-[11px] text-zinc-700 tracking-wider mt-1.5 shrink-0"
+                    style={mono}
+                  >
+                    {pillar.num}
+                  </span>
+                  <div>
+                    <h3
+                      className="text-xl font-semibold text-zinc-200 mb-3 tracking-[-0.01em]"
+                      style={serif}
+                    >
+                      {pillar.title}
+                    </h3>
+                    <p
+                      className="text-[15px] text-zinc-500 leading-[1.75] max-w-lg"
+                      style={serif}
+                    >
+                      {pillar.body}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </section>
   );
-};
-
-export default WhyDailyDeck;
+}

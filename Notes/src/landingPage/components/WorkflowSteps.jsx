@@ -1,43 +1,112 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  FileText,
-  CheckSquare,
-  Calendar,
-  ArrowRight,
-  CornerDownRight,
-} from "lucide-react";
+import { FileText, CheckSquare, Calendar } from "lucide-react";
+
+const mono = { fontFamily: "'JetBrains Mono', monospace" };
+const serif = { fontFamily: "'Newsreader', Georgia, serif" };
 
 const steps = [
   {
     id: 0,
+    num: "01",
     title: "Capture",
     description:
-      "Dump thoughts, code snippets, and meeting notes into the global inbox. Markdown supported.",
+      "Dump thoughts, code snippets, and meeting notes into the global inbox. Markdown native. No friction.",
     color: "text-orange-400",
-    border: "border-orange-500/50",
-    bg: "bg-orange-500/10",
-    icon: <FileText className="w-5 h-5" />,
+    accentBg: "bg-orange-500",
+    accentBorder: "border-orange-500",
+    icon: <FileText className="w-4 h-4" />,
+    preview: (
+      <div
+        className="space-y-2 text-[12px]"
+        style={{ fontFamily: "'JetBrains Mono', monospace" }}
+      >
+        <div className="text-zinc-600 text-[10px] mb-3">
+          Drafts / Quick Notes.md
+        </div>
+        <div className="text-zinc-300">## Project Alpha Ideas</div>
+        <div className="text-zinc-500">- Need to refactor the auth flow</div>
+        <div className="text-zinc-500">
+          - <span className="text-blue-400">@Sarah</span> mentioned API rate
+          limits
+        </div>
+        <div className="text-zinc-500">- [ ] Check database indexes</div>
+      </div>
+    ),
   },
   {
     id: 1,
+    num: "02",
     title: "Organize",
     description:
-      "Highlight text to create tasks. Drag blocks to rearrange priority. The system parses dates automatically.",
+      "Highlight text to create tasks. Drag to reprioritize. Dates are parsed automatically from your writing.",
     color: "text-emerald-400",
-    border: "border-emerald-500/50",
-    bg: "bg-emerald-500/10",
-    icon: <CheckSquare className="w-5 h-5" />,
+    accentBg: "bg-emerald-500",
+    accentBorder: "border-emerald-500",
+    icon: <CheckSquare className="w-4 h-4" />,
+    preview: (
+      <div
+        className="space-y-2"
+        style={{ fontFamily: "'JetBrains Mono', monospace" }}
+      >
+        <div className="text-zinc-600 text-[10px] mb-3">Tasks / Sprint-32</div>
+        <div className="flex items-center gap-3 p-2.5 bg-emerald-500/5 border border-emerald-500/15">
+          <div className="w-3.5 h-3.5 border border-emerald-500/50 flex items-center justify-center text-emerald-500 text-[8px]">
+            ✓
+          </div>
+          <span className="text-[12px] text-zinc-300">Refactor Auth Flow</span>
+          <span className="ml-auto text-[10px] text-zinc-600">
+            from Quick Notes
+          </span>
+        </div>
+        <div className="flex items-center gap-3 p-2.5 bg-zinc-900/30 border border-zinc-800/50">
+          <div className="w-3.5 h-3.5 border border-zinc-700" />
+          <span className="text-[12px] text-zinc-400">
+            Check database indexes
+          </span>
+        </div>
+      </div>
+    ),
   },
   {
     id: 2,
+    num: "03",
     title: "Review",
     description:
-      "See your day in the context of your deadlines. Time-block your tasks directly on the calendar.",
+      "See your day in the context of deadlines. Time-block tasks directly on the calendar. Ship with clarity.",
     color: "text-blue-400",
-    border: "border-blue-500/50",
-    bg: "bg-blue-500/10",
-    icon: <Calendar className="w-5 h-5" />,
+    accentBg: "bg-blue-500",
+    accentBorder: "border-blue-500",
+    icon: <Calendar className="w-4 h-4" />,
+    preview: (
+      <div
+        className="space-y-1"
+        style={{ fontFamily: "'JetBrains Mono', monospace" }}
+      >
+        <div className="text-zinc-600 text-[10px] mb-3">Calendar / Today</div>
+        <div className="flex gap-3">
+          <span className="text-[11px] text-zinc-600 w-10 text-right">
+            09:00
+          </span>
+          <div className="flex-1 p-2.5 border-l-2 border-blue-500 bg-blue-500/5">
+            <div className="text-[12px] text-blue-300 font-medium">
+              Deep Work Block
+            </div>
+            <div className="text-[10px] text-zinc-600 mt-0.5">
+              Focus: Auth Refactor
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3">
+          <span className="text-[11px] text-zinc-600 w-10 text-right">
+            10:30
+          </span>
+          <div className="flex-1 p-2.5 border-l-2 border-zinc-800">
+            <div className="text-[12px] text-zinc-500">Team Standup</div>
+          </div>
+        </div>
+      </div>
+    ),
   },
 ];
 
@@ -45,197 +114,112 @@ export default function WorkflowSteps() {
   const [activeStep, setActiveStep] = useState(0);
 
   return (
-    <section className="py-32 px-6 bg-[#0a0a0a] border-t border-zinc-900">
-      <div className="max-w-6xl mx-auto">
+    <section
+      id="workflow"
+      className="py-28 px-6 bg-[#0a0a08] border-t border-zinc-800/40"
+    >
+      <div className="max-w-[1400px] mx-auto">
+        {/* Header */}
         <div className="mb-20">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-            A system that <br />
-            <span className="text-zinc-500">adapts to you.</span>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-[1px] bg-amber-600/50" />
+            <span
+              className="text-[11px] text-amber-600/80 tracking-[0.25em] uppercase"
+              style={mono}
+            >
+              Workflow
+            </span>
+          </div>
+          <h2
+            className="text-[clamp(2rem,4vw,3.5rem)] text-zinc-100 leading-[1.1] tracking-[-0.02em]"
+            style={serif}
+          >
+            A system that{" "}
+            <span className="italic text-zinc-500">adapts to you.</span>
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          {/* LEFT COLUMN: Step Selection */}
-          <div className="flex flex-col gap-6">
-            {steps.map((step, index) => {
-              const isActive = activeStep === index;
-              return (
-                <motion.div
-                  key={step.id}
-                  layout // <--- MUST-DO: Enables smooth layout resizing
+        {/* Steps — single column with expanding panels */}
+        <div className="max-w-3xl">
+          {steps.map((step, index) => {
+            const isActive = activeStep === index;
+            return (
+              <div key={step.id} className="relative">
+                {/* Vertical connector line */}
+                {index < steps.length - 1 && (
+                  <div className="absolute left-[11px] top-[40px] bottom-0 w-[1px] bg-zinc-800/60" />
+                )}
+
+                <div
                   onClick={() => setActiveStep(index)}
-                  initial={false}
-                  animate={{
-                    backgroundColor: isActive
-                      ? "rgba(39, 39, 42, 0.4)"
-                      : "rgba(39, 39, 42, 0)",
-                    borderColor: isActive
-                      ? "rgba(63, 63, 70, 0.8)"
-                      : "transparent",
-                    y: isActive ? -4 : 0, // <--- SUBTLE FOCUS MOTION
-                  }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className={`
-                    relative p-6 rounded-2xl border cursor-pointer group 
-                    ${!isActive && "hover:bg-zinc-900/30 border-transparent"}
-                  `}
+                  className="cursor-pointer group"
                 >
-                  <div className="flex items-start gap-4">
+                  {/* Step header row */}
+                  <div className="flex items-start gap-6 py-6">
+                    {/* Timeline dot */}
                     <div
-                      className={`mt-1 p-2 rounded-lg ${
-                        isActive ? step.bg : "bg-zinc-900"
-                      } transition-colors duration-300`}
+                      className={`relative z-10 mt-1 w-[23px] h-[23px] flex items-center justify-center border transition-colors duration-300 ${
+                        isActive
+                          ? `${step.accentBorder} ${step.color}`
+                          : "border-zinc-700 text-zinc-600"
+                      }`}
                     >
-                      <div
-                        className={`${isActive ? step.color : "text-zinc-500"}`}
-                      >
-                        {step.icon}
-                      </div>
+                      {step.icon}
                     </div>
 
-                    <div>
-                      <h3
-                        className={`text-xl font-bold mb-2 transition-colors duration-300 ${
-                          isActive ? "text-white" : "text-zinc-500"
-                        }`}
-                      >
-                        {step.title}
-                      </h3>
+                    <div className="flex-1">
+                      <div className="flex items-baseline gap-4">
+                        <span
+                          className="text-[10px] text-zinc-700 tracking-wider"
+                          style={mono}
+                        >
+                          {step.num}
+                        </span>
+                        <h3
+                          className={`text-xl font-semibold tracking-[-0.01em] transition-colors duration-300 ${
+                            isActive
+                              ? "text-zinc-100"
+                              : "text-zinc-500 group-hover:text-zinc-300"
+                          }`}
+                          style={serif}
+                        >
+                          {step.title}
+                        </h3>
+                      </div>
 
-                      {/* Smooth Collapse/Expand of Description */}
-                      <motion.div
-                        initial={false}
-                        animate={{
-                          height: isActive ? "auto" : 0,
-                          opacity: isActive ? 1 : 0,
-                        }}
-                        className="overflow-hidden"
-                      >
-                        <p className="text-zinc-400 leading-relaxed text-sm pb-2">
-                          {step.description}
-                        </p>
-                      </motion.div>
+                      {/* Expandable content */}
+                      <AnimatePresence>
+                        {isActive && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{
+                              duration: 0.35,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
+                            className="overflow-hidden"
+                          >
+                            <p
+                              className="text-[15px] text-zinc-500 leading-[1.7] mt-3 mb-5 max-w-lg"
+                              style={serif}
+                            >
+                              {step.description}
+                            </p>
+
+                            {/* Inline preview panel */}
+                            <div className="p-5 bg-[#0c0c0a] border border-zinc-800/60 mb-2">
+                              {step.preview}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </div>
-
-                  {/* Active Indicator Bar */}
-                  {isActive && (
-                    <motion.div
-                      layoutId="active-bar"
-                      className={`absolute left-0 top-6 bottom-6 w-1 rounded-r-full ${step.bg.replace(
-                        "/10",
-                        ""
-                      )}`}
-                    />
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
-
-          {/* RIGHT COLUMN: Mock Interface */}
-          <div className="relative h-[500px] bg-[#121214] border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl">
-            {/* Window Controls */}
-            <div className="absolute top-0 w-full h-12 border-b border-zinc-800 flex items-center px-4 gap-2 bg-[#18181b]">
-              <div className="w-3 h-3 rounded-full bg-red-500/20"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-500/20"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500/20"></div>
-            </div>
-
-            {/* DYNAMIC CONTENT SWAP */}
-            <div className="p-8 pt-20 h-full">
-              <AnimatePresence mode="wait">
-                {/* ^^^ MUST-DO: Ensures exit animations play before enter */}
-
-                {activeStep === 0 && (
-                  <motion.div
-                    key="step-0"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.25 }}
-                    className="space-y-4"
-                  >
-                    <div className="text-zinc-500 font-mono-tech text-xs mb-4">
-                      Drafts / Quick Notes.md
-                    </div>
-                    <div className="text-2xl text-white font-bold">
-                      Project Alpha Ideas
-                    </div>
-                    <div className="text-zinc-400 space-y-2 font-mono text-sm">
-                      <p>- Need to refactor the auth flow</p>
-                      <p>
-                        - <span className="text-blue-400">@Sarah</span>{" "}
-                        mentioned the API rate limits
-                      </p>
-                      <p>- [ ] Check database indexes</p>
-                    </div>
-                  </motion.div>
-                )}
-
-                {activeStep === 1 && (
-                  <motion.div
-                    key="step-1"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.25 }}
-                    className="space-y-4"
-                  >
-                    <div className="text-zinc-500 font-mono-tech text-xs mb-4">
-                      Tasks / Sprint-32
-                    </div>
-                    <div className="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800 flex items-center gap-3">
-                      <div className="w-5 h-5 rounded border border-emerald-500/50 bg-emerald-500/10 flex items-center justify-center text-emerald-500">
-                        <CheckSquare className="w-3 h-3" />
-                      </div>
-                      <span className="text-zinc-200 text-sm">
-                        Refactor Auth Flow
-                      </span>
-                    </div>
-                    <div className="ml-8 flex items-center gap-2 text-zinc-500 text-xs">
-                      <CornerDownRight className="w-3 h-3" />
-                      <span>Extracted from "Quick Notes"</span>
-                    </div>
-                  </motion.div>
-                )}
-
-                {activeStep === 2 && (
-                  <motion.div
-                    key="step-2"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.25 }}
-                    className="space-y-4"
-                  >
-                    <div className="text-zinc-500 font-mono-tech text-xs mb-4">
-                      Calendar / Today
-                    </div>
-                    <div className="flex gap-4">
-                      <div className="text-zinc-500 text-sm w-12 text-right">
-                        09:00
-                      </div>
-                      <div className="flex-1 bg-blue-500/10 border border-blue-500/20 p-3 rounded-lg">
-                        <div className="text-blue-200 text-sm font-bold">
-                          Deep Work Block
-                        </div>
-                        <div className="text-blue-400/60 text-xs mt-1">
-                          Focus: Auth Refactor
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex gap-4 opacity-50">
-                      <div className="text-zinc-500 text-sm w-12 text-right">
-                        10:00
-                      </div>
-                      <div className="flex-1 border-t border-zinc-800 mt-3"></div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
