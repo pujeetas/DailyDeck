@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Code2, Briefcase, CornerDownRight } from "lucide-react";
+import { ArrowRight, GitBranch, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const mono = { fontFamily: "'JetBrains Mono', monospace" };
 const serif = { fontFamily: "'Newsreader', Georgia, serif" };
@@ -8,11 +9,12 @@ const serif = { fontFamily: "'Newsreader', Georgia, serif" };
 export default function Hero() {
   const [step, setStep] = useState(0);
   const [text, setText] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const sequence = [
-      { text: "role: Developer", action: 1 },
-      { text: "role: Founder", action: 2 },
+      { text: "search: auth flow notes", action: 1 },
+      { text: "import github/issues --repo=myapp", action: 2 },
     ];
     let currentIndex = 0;
     let charIndex = 0;
@@ -99,20 +101,20 @@ export default function Hero() {
                 className="block text-[clamp(3.2rem,8vw,6.5rem)] font-semibold text-zinc-100 leading-[0.95] tracking-[-0.03em]"
                 style={serif}
               >
-                One workspace
+                Dev workspace
               </span>
               <span className="flex items-baseline gap-3 md:gap-5 flex-wrap mt-2">
                 <span
                   className="text-[clamp(3.2rem,8vw,6.5rem)] font-semibold italic text-amber-500 leading-[0.95] tracking-[-0.03em]"
                   style={serif}
                 >
-                  for builders
+                  that thinks.
                 </span>
                 <span
                   className="text-[clamp(1rem,1.5vw,1.2rem)] text-zinc-700"
                   style={mono}
                 >
-                  // who ship
+                  // RAG-powered
                 </span>
               </span>
             </motion.h1>
@@ -124,9 +126,9 @@ export default function Hero() {
               className="mt-8 text-[17px] text-zinc-500 max-w-lg leading-[1.75]"
               style={serif}
             >
-              Notes, tasks, and calendar fused into a single system that adapts
-              to how your brain works — whether you ship code, manage products,
-              or run a company.
+              Notes with AI-powered retrieval, tasks that sync with GitHub
+              issues, and a calendar — fused into one system built for how
+              developers actually work.
             </motion.p>
 
             <motion.div
@@ -138,6 +140,7 @@ export default function Hero() {
               <button
                 className="group inline-flex items-center gap-3 px-7 py-3.5 bg-amber-500 text-[#0a0a08] text-[13px] font-bold tracking-wide hover:bg-amber-400 transition-colors"
                 style={mono}
+                onClick={() => navigate("/login")}
               >
                 START BUILDING
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
@@ -185,7 +188,7 @@ export default function Hero() {
                 <AnimatePresence mode="wait">
                   {step === 1 && (
                     <motion.div
-                      key="dev"
+                      key="rag"
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
@@ -193,54 +196,47 @@ export default function Hero() {
                       className="space-y-3"
                     >
                       <div className="flex items-center gap-2 mb-4">
-                        <Code2 className="w-3.5 h-3.5 text-emerald-500" />
+                        <Search className="w-3.5 h-3.5 text-amber-500" />
                         <span
-                          className="text-[10px] text-emerald-500 tracking-[0.15em] uppercase"
+                          className="text-[10px] text-amber-500 tracking-[0.15em] uppercase"
                           style={mono}
                         >
-                          Dev Mode Activated
+                          RAG Search · 3 results
                         </span>
                       </div>
                       <div
-                        className="p-3 bg-zinc-900/50 border border-zinc-800 text-[12px] text-zinc-400"
+                        className="p-3 bg-zinc-900/50 border border-zinc-800 text-[12px]"
                         style={mono}
                       >
-                        <span className="text-purple-400">git</span> commit -m
-                        "feat: ship hero section"
+                        <span className="text-amber-400">notes/</span>
+                        <span className="text-zinc-300">auth-refactor.md</span>
+                        <p className="text-zinc-600 mt-1 text-[11px]">
+                          "...switched to JWT refresh tokens with Redis session
+                          store..."
+                        </p>
                       </div>
                       <div
-                        className="flex items-center gap-2 text-[11px]"
+                        className="p-3 bg-zinc-900/50 border border-zinc-800 text-[12px]"
                         style={mono}
                       >
-                        <CornerDownRight className="w-3 h-3 text-zinc-700" />
-                        <span className="text-zinc-600">PR #402</span>
-                        <span className="text-emerald-500 ml-auto">
-                          ● Merged
-                        </span>
+                        <span className="text-amber-400">notes/</span>
+                        <span className="text-zinc-300">standup-dec-04.md</span>
+                        <p className="text-zinc-600 mt-1 text-[11px]">
+                          "...auth flow blocked by rate limiter config..."
+                        </p>
                       </div>
-                      <div className="mt-4 pt-3 border-t border-zinc-800/50">
-                        <div
-                          className="flex justify-between text-[10px] text-zinc-600"
-                          style={mono}
-                        >
-                          <span>Sprint velocity</span>
-                          <span className="text-zinc-400">23 pts</span>
-                        </div>
-                        <div className="mt-2 h-1 bg-zinc-800 overflow-hidden">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: "76%" }}
-                            transition={{ duration: 0.8, delay: 0.3 }}
-                            className="h-full bg-emerald-500"
-                          />
-                        </div>
+                      <div
+                        className="mt-2 pt-2 border-t border-zinc-800/50 text-[10px] text-zinc-700"
+                        style={mono}
+                      >
+                        Retrieved in 42ms · Semantic match
                       </div>
                     </motion.div>
                   )}
 
                   {step === 2 && (
                     <motion.div
-                      key="founder"
+                      key="github"
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
@@ -248,47 +244,60 @@ export default function Hero() {
                       className="space-y-3"
                     >
                       <div className="flex items-center gap-2 mb-4">
-                        <Briefcase className="w-3.5 h-3.5 text-blue-400" />
+                        <GitBranch className="w-3.5 h-3.5 text-emerald-500" />
                         <span
-                          className="text-[10px] text-blue-400 tracking-[0.15em] uppercase"
+                          className="text-[10px] text-emerald-500 tracking-[0.15em] uppercase"
                           style={mono}
                         >
-                          Founder Mode Activated
+                          GitHub Sync · 4 issues imported
                         </span>
                       </div>
-                      <div className="space-y-2.5">
-                        <div className="flex items-center gap-3 p-3 bg-zinc-900/50 border border-zinc-800">
-                          <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                      {[
+                        {
+                          id: "#142",
+                          title: "Fix auth token refresh loop",
+                          label: "bug",
+                          labelColor:
+                            "text-red-400 border-red-500/30 bg-red-500/5",
+                        },
+                        {
+                          id: "#138",
+                          title: "Add rate limiting to API",
+                          label: "feat",
+                          labelColor:
+                            "text-blue-400 border-blue-500/30 bg-blue-500/5",
+                        },
+                        {
+                          id: "#135",
+                          title: "Update DB indexes for search",
+                          label: "perf",
+                          labelColor:
+                            "text-amber-400 border-amber-500/30 bg-amber-500/5",
+                        },
+                      ].map((issue) => (
+                        <div
+                          key={issue.id}
+                          className="flex items-center gap-3 p-2.5 bg-zinc-900/50 border border-zinc-800"
+                          style={mono}
+                        >
+                          <span className="text-[11px] text-zinc-600">
+                            {issue.id}
+                          </span>
+                          <span className="text-[12px] text-zinc-300 flex-1">
+                            {issue.title}
+                          </span>
                           <span
-                            className="text-[12px] text-zinc-300"
-                            style={mono}
+                            className={`text-[9px] px-1.5 py-0.5 border ${issue.labelColor}`}
                           >
-                            Investor Meeting — 2:00 PM
+                            {issue.label}
                           </span>
                         </div>
-                        <div className="px-3">
-                          <div
-                            className="flex justify-between text-[10px] text-zinc-600 mb-1.5"
-                            style={mono}
-                          >
-                            <span>Seed Round Deck</span>
-                            <span className="text-zinc-400">75%</span>
-                          </div>
-                          <div className="h-1 bg-zinc-800 overflow-hidden">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              animate={{ width: "75%" }}
-                              transition={{ duration: 0.8, delay: 0.3 }}
-                              className="h-full bg-blue-500"
-                            />
-                          </div>
-                        </div>
-                      </div>
+                      ))}
                       <div
-                        className="mt-3 pt-3 border-t border-zinc-800/50 text-[10px] text-zinc-700"
+                        className="mt-2 pt-2 border-t border-zinc-800/50 text-[10px] text-zinc-700"
                         style={mono}
                       >
-                        3 decisions pending · 1 blocker
+                        myapp/issues · Synced just now
                       </div>
                     </motion.div>
                   )}
@@ -315,6 +324,35 @@ export default function Hero() {
             <div className="absolute -bottom-4 left-6 right-6 h-6 bg-[#08080a] border border-zinc-800/20 -z-20" />
           </motion.div>
         </div>
+
+        {/* Bottom metric strip */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="flex flex-wrap items-center gap-x-12 gap-y-3 pt-10 border-t border-zinc-800/40"
+        >
+          {[
+            { num: "12k+", label: "active workspaces" },
+            { num: "3.2M", label: "tasks completed" },
+            { num: "<50ms", label: "input latency" },
+          ].map((stat) => (
+            <div key={stat.label} className="flex items-baseline gap-2">
+              <span
+                className="text-lg font-semibold text-zinc-300"
+                style={serif}
+              >
+                {stat.num}
+              </span>
+              <span
+                className="text-[10px] text-zinc-700 tracking-wide"
+                style={mono}
+              >
+                {stat.label}
+              </span>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
