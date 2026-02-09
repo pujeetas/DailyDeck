@@ -1,6 +1,7 @@
 import { GithubOutlined } from "@ant-design/icons";
 import useTodoStore from "../store/useTodoStore";
 import { message } from "antd";
+import { formatDate } from "@/features/utils/formatDate";
 
 export default function TaskCard({
   task,
@@ -151,6 +152,11 @@ export default function TaskCard({
           {task.issueId && (
             <span className="text-[10px] font-mono text-zinc-500 bg-zinc-900/80 px-1.5 py-0.5 rounded">
               {task.issueId}
+            </span>
+          )}
+          {task.updatedAt && (
+            <span className="text-[10px] text-zinc-500">
+              {formatDate(task.updatedAt)}
             </span>
           )}
           {task.subTask?.length > 0 && (

@@ -69,7 +69,7 @@ export default function Hero() {
           }}
         />
         {/* Warm corner glow */}
-        <div className="absolute top-0 right-0 w-[600px] h-[400px] bg-amber-500/[0.03] blur-[150px]" />
+        <div className="absolute top-0 right-0 w-[600px] h-[400px] bg-amber-500/3 blur-[150px]" />
       </div>
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-10 pt-32 pb-20 w-full">
@@ -324,35 +324,6 @@ export default function Hero() {
             <div className="absolute -bottom-4 left-6 right-6 h-6 bg-[#08080a] border border-zinc-800/20 -z-20" />
           </motion.div>
         </div>
-
-        {/* Bottom metric strip */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="flex flex-wrap items-center gap-x-12 gap-y-3 pt-10 border-t border-zinc-800/40"
-        >
-          {[
-            { num: "12k+", label: "active workspaces" },
-            { num: "3.2M", label: "tasks completed" },
-            { num: "<50ms", label: "input latency" },
-          ].map((stat) => (
-            <div key={stat.label} className="flex items-baseline gap-2">
-              <span
-                className="text-lg font-semibold text-zinc-300"
-                style={serif}
-              >
-                {stat.num}
-              </span>
-              <span
-                className="text-[10px] text-zinc-700 tracking-wide"
-                style={mono}
-              >
-                {stat.label}
-              </span>
-            </div>
-          ))}
-        </motion.div>
       </div>
     </section>
   );

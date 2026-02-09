@@ -64,7 +64,17 @@ export const updateUserDetailsController = async (req, res) => {
     const user = await UserModel.findByIdAndUpdate(req.user.id, updateData, {
       new: true,
     }).select("-password");
-    res.json({ success: true, user });
+    const totalNotes = await NotesModel.countDocuments({ userId: req.user.id });
+    const totalTodo = await TodoModel.countDocuments({
+      userId: req.user.id,
+      status: "done",
+    });
+    const userWithStats = {
+      ...user.toObject(),
+      totalNotes,
+      totalTodo,
+    };
+    res.json({ success: true, user: userWithStats });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

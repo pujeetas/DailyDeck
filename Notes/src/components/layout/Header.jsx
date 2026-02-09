@@ -4,14 +4,16 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../hooks/useUserStore";
 import UserDropdownMenu from "@/constants/UserDropdownMenu";
-import { ConfigProvider, theme } from "antd"; // Import theme
+import { ConfigProvider, theme } from "antd";
+
+const mono = { fontFamily: "'JetBrains Mono', monospace" };
 
 const Header = ({ color, border, margin, padding }) => {
   const navigate = useNavigate();
   const { user, logout } = useUserStore();
   const today = new Date().toLocaleDateString("en-GB", {
     day: "2-digit",
-    month: "long",
+    month: "short",
     year: "numeric",
   });
 
@@ -23,54 +25,72 @@ const Header = ({ color, border, margin, padding }) => {
     } catch (error) {
       console.error(error);
     }
-  }; 
+  };
+
+  const iconBtn =
+    "cursor-pointer w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-amber-500 hover:bg-zinc-800/50 transition-all";
 
   return (
     <ConfigProvider
       theme={{
         algorithm: theme.darkAlgorithm,
         token: {
-          colorBgElevated: "#1E1E22",
-          colorBgContainer: "#111113",
-          colorText: "#ffffff", // Bright white for main text
-          colorTextSecondary: "#9ca3af", // Gray for secondary text (email)
-          colorBorder: "#2f2f2f",
+          colorBgElevated: "#0e0e0c",
+          colorBgContainer: "#0a0a08",
+          colorText: "#e4e4e7",
+          colorTextSecondary: "#71717a",
+          colorBorder: "#27272a",
+          borderRadius: 0,
         },
       }}
     >
       <header
-        className={`w-full h-16 ${padding ? padding : "px-6"} ${
-          color ? color : "bg-[#111113]"
-        } ${border ? border : "border-b border-white/10"} ${
-          margin ? margin : ""
-        } flex items-center justify-between backdrop-blur-lg sticky top-0 z-40 text-zinc-200`}
+        className={`w-full h-14 ${padding || "px-6 md:px-10"} ${
+          color || "bg-[#0a0a08]/90 backdrop-blur-md"
+        } ${border || "border-b border-zinc-800/50"} ${
+          margin || ""
+        } flex items-center justify-between sticky top-0 z-40 text-zinc-200`}
       >
         {/* LEFT */}
-        <div className="flex gap-4 ">
-          <button className="cursor-pointer" onClick={() => navigate("/main")}>
+        <div className="flex items-center gap-5">
+          <button
+            className="cursor-pointer text-zinc-500 hover:text-amber-500 transition-colors"
+            onClick={() => navigate("/main")}
+          >
             <HomeFilled />
           </button>
-          <div className="flex flex-col leading-tight min-w-fit">
-            <span className="text-sm font-medium">
-              Welcome {user.firstName}
+
+          <div className="w-px h-4 bg-zinc-800" />
+
+          <div className="flex items-baseline gap-3">
+            <span
+              className="text-[13px] font-medium text-zinc-300"
+              style={mono}
+            >
+              {user.firstName}
             </span>
-            <span className="text-[11px] text-zinc-200">{today}</span>
+            <span
+              className="text-[12px] text-zinc-400 tracking-wide"
+              style={mono}
+            >
+              {today}
+            </span>
           </div>
         </div>
 
         {/* RIGHT */}
-        <div className="flex items-center gap-2">
-          <button className="w-9 h-9 flex items-center justify-center rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-[#1E1E22] transition">
-            <Bell className="w-4 h-4" />
+        <div className="flex items-center gap-1">
+          <button className={iconBtn}>
+            <Bell className="w-3.5 h-3.5" />
           </button>
 
           <UserDropdownMenu handleLogout={handleLogout} />
 
           <button
             onClick={handleLogout}
-            className="w-9 h-9 flex items-center justify-center rounded-lg text-zinc-400 hover:text-red-400 hover:bg-[#1E1E22] transition"
+            className="cursor-pointer w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-red-400 hover:bg-zinc-800/50 transition-all"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-3.5 h-3.5" />
           </button>
         </div>
       </header>

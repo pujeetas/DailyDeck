@@ -6,6 +6,7 @@ import {
   deleteNoteRequest,
   question,
 } from "../services/notesService";
+import useUserStore from "@/hooks/useUserStore";
 
 export function useNotes() {
   const [notes, setNotes] = useState([]);
@@ -28,9 +29,17 @@ export function useNotes() {
 
     try {
       const res = await createNote(payload);
-      const newNoteData = res.data;
+      const newNoteData = res.data.note;
       setNotes((prev) => [newNoteData, ...prev]);
       setActiveId(newNoteData._id);
+
+      const currentUser = useUserStore.getState().user;
+      useUserStore.setState({
+        user: {
+          ...currentUser,
+          totalNotes: res.data.totalNotes,
+        },
+      });
       return newNoteData;
     } catch (error) {
       console.error("Error creating note:", error);
@@ -52,7 +61,7 @@ export function useNotes() {
       return;
     }
     setNotes((prev) =>
-      prev.map((n) => (n._id === id ? { ...n, ...update } : n))
+      prev.map((n) => (n._id === id ? { ...n, ...update } : n)),
     );
     try {
       return await updateNoteRequest(id, update);
@@ -69,11 +78,19 @@ export function useNotes() {
       return;
     }
     try {
-      await deleteNoteRequest(id);
+      const res = await deleteNoteRequest(id);
       setNotes((prev) => prev.filter((n) => n._id !== id));
       if (activeId === id) {
         setActiveId(null);
       }
+
+      const currentUser = useUserStore.getState().user;
+      useUserStore.setState({
+        user: {
+          ...currentUser,
+          totalNotes: res.data.totalNotes,
+        },
+      });
     } catch (error) {
       console.error("Error deleting note:", error);
     }
@@ -87,7 +104,7 @@ export function useNotes() {
 
     // Optimistic update
     setNotes((prev) =>
-      prev.map((n) => (n._id === id ? { ...n, pinned: newPinnedState } : n))
+      prev.map((n) => (n._id === id ? { ...n, pinned: newPinnedState } : n)),
     );
 
     try {
@@ -97,7 +114,7 @@ export function useNotes() {
 
       // Revert on error
       setNotes((prev) =>
-        prev.map((n) => (n._id === id ? { ...n, pinned: !newPinnedState } : n))
+        prev.map((n) => (n._id === id ? { ...n, pinned: !newPinnedState } : n)),
       );
     }
   }

@@ -36,13 +36,15 @@ export const createNote = async (req, res) => {
 
     await newNote.save();
 
+    const totalNotes = await NotesModel.countDocuments({ userId: req.user.id });
+
     // Add to vector search
     const plainText = extractPlainTextFromBlockNote(newNote.body);
     if (plainText.trim()) {
       await addNoteEmbedding(newNote._id.toString(), newNote.title, plainText);
     }
 
-    res.status(201).json(newNote);
+    res.status(201).json({ note: newNote, totalNotes });
   } catch (error) {
     res.status(400).send("Something went wrong: " + error.message);
   }
@@ -75,7 +77,7 @@ export const updateNote = async (req, res) => {
     const noteInDB = await NotesModel.findByIdAndUpdate(
       noteId,
       detailsToUpdate,
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!noteInDB) {
@@ -106,7 +108,9 @@ export const deleteNote = async (req, res) => {
       return res.status(404).send("Note not found");
     }
 
-    res.json({ message: "Note Deleted", _id: deleteNoteId });
+    const totalNotes = await NotesModel.countDocuments({ userId: req.user.id });
+
+    res.json({ message: "Note Deleted", _id: deleteNoteId, totalNotes });
   } catch (error) {
     res.status(400).send("Something went wrong: " + error.message);
   }
@@ -157,15 +161,20 @@ export const getQuestion = async (req, res) => {
         ],
       });
 
-      await UserModel.findByIdAndUpdate(userId, {
-        $inc: { aiSearches: 1 },
-      });
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        {
+          $inc: { aiSearches: 1 },
+        },
+        { new: true },
+      );
 
       const answer = message.content[0].text;
       res.status(200).json({
         question: question,
         answer: answer,
         relevantNotes: notes.map((n) => ({ id: n._id, title: n.title })),
+        aiSearches: updatedUser.aiSearches,
       });
     } catch (aiError) {
       console.error("Claude API error:", aiError);

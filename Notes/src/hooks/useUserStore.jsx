@@ -27,8 +27,8 @@ const useUserStore = create(
     }),
     {
       name: "user-storage",
-    }
-  )
+    },
+  ),
 );
 
 export default useUserStore;

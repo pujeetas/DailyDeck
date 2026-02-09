@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import { ConfigProvider, theme } from "antd";
 import DrawerPanel from "./DrawerPanel";
 import Header from "@/components/layout/Header";
+import useUserStore from "@/hooks/useUserStore";
 
 export default function NotesPage() {
   const {
@@ -50,7 +51,7 @@ export default function NotesPage() {
         }
         await updateNote(id, updates);
       }, 1000),
-    [updateNote]
+    [updateNote],
   );
   useEffect(() => {
     return () => {
@@ -61,12 +62,22 @@ export default function NotesPage() {
   const handleAskQuestion = useCallback(
     async (question) => {
       try {
-        await askQuestion(question);
+        const data = await askQuestion(question);
+        if (data?.aiSearches) {
+          const currentUser = useUserStore.getState().user;
+          useUserStore.setState({
+            user: {
+              ...currentUser,
+              aiSearches: data.aiSearches,
+            },
+          });
+        }
+        console.log("Response:", data.aiSearches);
       } catch (error) {
         console.error("Failed to ask question:", error);
       }
     },
-    [askQuestion]
+    [askQuestion],
   );
 
   return (

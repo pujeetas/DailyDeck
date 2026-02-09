@@ -93,6 +93,7 @@ const userSchema = new Schema(
     },
     totalNotes: {
       type: Number,
+      default: 0,
     },
     aiSearches: {
       type: Number,
@@ -101,7 +102,7 @@ const userSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export const UserModel = mongoose.model("User", userSchema);

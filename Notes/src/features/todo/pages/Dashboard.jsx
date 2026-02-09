@@ -76,14 +76,24 @@ export default function Dashboard() {
 
   return (
     <AntApp>
-      <div className="relative min-h-screen w-full bg-[#0A0A0A] text-neutral-200 selection:bg-neutral-500/30">
-        <div
-          className="fixed inset-0 z-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse 80% 50% at 50% 40%, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))",
-          }}
-        />
+      <div className="relative min-h-screen w-full bg-[#0a0a08] text-zinc-200 selection:bg-amber-500/30">
+        {/* Background — consistent with all pages */}
+        <div className="fixed inset-0 z-0 pointer-events-none">
+          <div
+            className="absolute inset-0 opacity-[0.018]"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+            }}
+          />
+          <div
+            className="absolute inset-0 opacity-[0.02]"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(0deg, #fff 0px, transparent 1px, transparent 3px)",
+              backgroundSize: "100% 3px",
+            }}
+          />
+        </div>
 
         <BoardHeader
           onCreateTask={handleCreateBtn}
@@ -111,7 +121,7 @@ export default function Dashboard() {
 
         {view === "board" ? (
           <main className="flex-1 pt-6 px-6 pb-6 overflow-x-auto relative z-10">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 w-full min-w-max">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 w-full min-w-max">
               <DndContext
                 onDragStart={handleDragStart}
                 onDragEnd={onDragEnd}
@@ -139,7 +149,7 @@ export default function Dashboard() {
 
                 <DragOverlay dropAnimation={null}>
                   {activeTask ? (
-                    <div className=" cursor-grabbing pointer-events-none">
+                    <div className="cursor-grabbing pointer-events-none">
                       <TaskCard
                         task={activeTask}
                         dragHandleProps={{}}

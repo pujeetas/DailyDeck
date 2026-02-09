@@ -3,6 +3,7 @@ import { DeleteOutlined, PushpinOutlined } from "@ant-design/icons";
 import { PanelRightClose } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { formatDate } from "../utils/formatDate";
 
 export default function NotesList({
   notes,
@@ -98,7 +99,9 @@ export default function NotesList({
               </div>
 
               <div className="flex justify-between items-center mt-2">
-                <span className="text-[10px] text-gray-400">{n.updatedAt}</span>
+                <span className="text-[10px] text-gray-400">
+                  {formatDate(n.updatedAt)}
+                </span>
 
                 <button
                   onClick={(e) => {
