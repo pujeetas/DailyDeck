@@ -1,28 +1,20 @@
+const mono = { fontFamily: "'JetBrains Mono', monospace" };
+
 const FilterBar = ({ setActiveFilter, activeFilter }) => {
   const filters = ["All", "Today", "High Priority", "Overdue"];
 
-  const handleFilter = (f) => {
-    setActiveFilter(f);
-  };
-
   return (
-    <div
-      className="flex items-center gap-3 px-4 py-2
-  bg-neutral-900/40 backdrop-blur-md
-  border border-white/5
-  rounded-full"
-    >
-      {filters.map((f, i) => (
+    <div className="flex items-center gap-1 px-1 py-1 bg-[#0c0c0a] border border-zinc-800/60">
+      {filters.map((f) => (
         <button
-          onClick={() => handleFilter(f)}
+          onClick={() => setActiveFilter(f)}
           key={f}
-          className={`px-3 py-1.5 rounded-full border transition-all whitespace-nowrap
-              ${
-                activeFilter === f
-                  ? "bg-zinc-100 text-zinc-900 border-zinc-100"
-                  : "bg-transparent text-zinc-400 border-transparent hover:border-zinc-700 hover:bg-zinc-900/60 hover:text-zinc-100"
-              }
-            `}
+          className={`cursor-pointer px-3 py-1.5 text-[13px] tracking-wide transition-all whitespace-nowrap ${
+            activeFilter === f
+              ? "bg-zinc-800 text-zinc-100"
+              : "text-zinc-600 hover:text-zinc-300 hover:bg-zinc-800/40"
+          }`}
+          style={mono}
         >
           {f}
         </button>

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Calendar, ConfigProvider, Flex, theme, Tooltip, App } from "antd";
 import dayjs from "dayjs";
 import useTodoStore from "./store/useTodoStore";
-import { useEffect } from "react";
+
+const mono = { fontFamily: "'JetBrains Mono', monospace" };
 
 const CalendarBoard = ({
   setIsEditModalOpen,
@@ -10,28 +11,24 @@ const CalendarBoard = ({
   setIsAddModalOpen,
 }) => {
   const { message } = App.useApp();
+
   useEffect(() => {
-    message.info("Tip: Double-click a date to add a new task", 4);
+    message.info("Double-click a date to add a new task", 4);
   }, []);
 
   const { detailsList } = useTodoStore();
 
   const getTasksForDate = (value) => {
     const currentCellDate = value.format("YYYY-MM-DD");
-
     return detailsList.filter(
-      (task) => dayjs(task.dueDate).format("YYYY-MM-DD") === currentCellDate
+      (task) => dayjs(task.dueDate).format("YYYY-MM-DD") === currentCellDate,
     );
   };
 
   const handleToolTip = (id) => {
     const taskToEdit = detailsList.find((task) => task._id === id);
-
     if (taskToEdit) {
-      setTaskForm({
-        ...taskToEdit,
-        subTask: taskToEdit.subTask || [],
-      });
+      setTaskForm({ ...taskToEdit, subTask: taskToEdit.subTask || [] });
       setIsEditModalOpen(true);
     }
   };
@@ -46,7 +43,6 @@ const CalendarBoard = ({
       subTask: [],
       dueDate: value.toISOString(),
     });
-
     setIsAddModalOpen(true);
   };
 
@@ -64,37 +60,39 @@ const CalendarBoard = ({
 
     return (
       <div className="relative mt-1">
-        {/* tasks list */}
         <ul
-          className="ml-2 p-0 list-none space-y-1"
+          className="ml-1 p-0 list-none space-y-0.5"
           onDoubleClick={() => handleDoubleClick(value)}
         >
           {dailyTasks.map((task) => (
             <li key={task._id}>
               <Tooltip title={`${task.title} (${task.status})`}>
                 <Flex
-                  gap={2}
+                  gap={4}
                   align="center"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleToolTip(task._id);
                   }}
+                  className="cursor-pointer hover:bg-zinc-800/40 px-1 py-0.5 transition-colors"
                 >
                   <span
+                    className="w-1.5 h-1.5 shrink-0"
                     style={{
-                      fontSize: 24,
-                      color:
+                      backgroundColor:
                         task.priority === "high"
                           ? "#ef4444"
                           : task.priority === "medium"
-                          ? "#facc15"
-                          : "#22c55e",
+                            ? "#f59e0b"
+                            : "#22c55e",
                     }}
+                  />
+                  <span
+                    className="text-[11px] text-zinc-400 truncate"
+                    style={mono}
                   >
-                    •
+                    {task.title}
                   </span>
-
-                  {task.title}
                 </Flex>
               </Tooltip>
             </li>
@@ -105,29 +103,24 @@ const CalendarBoard = ({
   };
 
   return (
-    <div className="p-4 bg-[#141414] rounded-xl border border-zinc-800 shadow-sm">
+    <div className="mx-6 md:mx-10 mb-6 bg-[#0c0c0a] border border-zinc-800/60 p-4 relative z-10">
       <ConfigProvider
         theme={{
           algorithm: theme.darkAlgorithm,
           token: {
-            colorPrimary: "#6366f1",
+            colorPrimary: "#f59e0b",
+            borderRadius: 0,
+            fontFamily: "'JetBrains Mono', monospace",
           },
           components: {
             Calendar: {
-              // 1. Transparent Backgrounds
               fullBg: "transparent",
               colorBgContainer: "transparent",
-
-              // 2. Text Colors
-              colorText: "#e4e4e7",
-              colorTextDisabled: "#52525b",
-              colorTextHeading: "#a1a1aa",
-
-              // 3. Selected Day Styling
-              controlItemBgActive: "#27272a",
-
-              // 4. Cell Borders
-              colorSplit: "#27272a",
+              colorText: "#d4d4d8",
+              colorTextDisabled: "#3f3f46",
+              colorTextHeading: "#71717a",
+              controlItemBgActive: "#1c1c1a",
+              colorSplit: "#27272a50",
             },
           },
         }}
@@ -138,19 +131,23 @@ const CalendarBoard = ({
           className="dark-calendar-override"
         />
 
-        <div className="flex items-center gap-4 text-xs text-zinc-400 mt-3">
-          <div className="flex items-center gap-1">
-            <span className="text-red-500 text-base">•</span>
-            High
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="text-yellow-400 text-base">•</span>
-            Medium
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="text-green-500 text-base">•</span>
-            Low
-          </div>
+        {/* Legend */}
+        <div className="flex items-center gap-5 mt-3 pt-3 border-t border-zinc-800/40">
+          {[
+            { label: "High", color: "#ef4444" },
+            { label: "Medium", color: "#f59e0b" },
+            { label: "Low", color: "#22c55e" },
+          ].map((item) => (
+            <div key={item.label} className="flex items-center gap-2">
+              <span
+                className="w-1.5 h-1.5"
+                style={{ backgroundColor: item.color }}
+              />
+              <span className="text-[10px] text-zinc-600" style={mono}>
+                {item.label}
+              </span>
+            </div>
+          ))}
         </div>
       </ConfigProvider>
     </div>

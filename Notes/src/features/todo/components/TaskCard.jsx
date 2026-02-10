@@ -3,6 +3,8 @@ import useTodoStore from "../store/useTodoStore";
 import { message } from "antd";
 import { formatDate } from "@/features/utils/formatDate";
 
+const mono = { fontFamily: "'JetBrains Mono', monospace" };
+
 export default function TaskCard({
   task,
   setTaskForm,
@@ -14,7 +16,7 @@ export default function TaskCard({
       high: "bg-red-500/10 text-red-400 border-red-500/30",
       medium: "bg-amber-500/10 text-amber-300 border-amber-500/30",
       low: "bg-sky-500/10 text-sky-300 border-sky-500/30",
-    }[task.priority] || "bg-zinc-800/60 text-zinc-300 border-zinc-700";
+    }[task.priority] || "bg-zinc-800/60 text-zinc-500 border-zinc-700";
 
   const { deleteTodo, toggleFocus, detailsList } = useTodoStore();
 
@@ -36,40 +38,40 @@ export default function TaskCard({
   return (
     <div
       onClick={() => handleEditClick(task._id)}
-      className="group relative flex flex-col gap-2 p-3.5 mb-3 bg-neutral-800/40 hover:bg-neutral-700/40 
-      border border-white/10 shadow-[0_1px_4px_rgba(0,0,0,0.25)] hover:border-white/20 rounded-xl transition-colors duration-150 cursor-pointer overflow-hidden select-none"
+      className="group relative flex flex-col gap-2 p-3.5 mb-2 bg-[#0e0e0c] hover:bg-[#121210]
+        border border-zinc-800/60 hover:border-zinc-700/60
+        transition-colors duration-150 cursor-pointer overflow-hidden select-none"
     >
-      {/* Top Row: Priority (Drag Handle) + Actions */}
+      {/* Top Row */}
       <div className="flex items-start justify-between gap-3">
-        {/* DRAG HANDLE AREA */}
         <div
           {...dragHandleProps}
           onClick={(e) => e.stopPropagation()}
           className="flex items-center gap-2 cursor-grab active:cursor-grabbing"
         >
-          {/* Visual Drag Icon */}
-          <span className="text-zinc-600 group-hover:text-zinc-400 transition-colors">
+          <span className="text-zinc-700 group-hover:text-zinc-500 transition-colors text-[10px]">
             ⠿
           </span>
           <span
-            className={`text-[10px] uppercase font-semibold px-2 py-0.5 rounded-md border ${priorityStyles}`}
+            className={`text-[10px] uppercase font-medium px-2 py-0.5 border ${priorityStyles}`}
+            style={mono}
           >
-            {task.priority || "No Priority"}
+            {task.priority || "—"}
           </span>
         </div>
 
-        {/* Hover Actions (Buttons) */}
-        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1.5">
+        {/* Hover actions */}
+        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
           {task.status !== "done" && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onToggleFocus(task._id, task.focused);
               }}
-              className={`p-1.5 rounded-md transition ${
+              className={`p-1 transition text-[12px] ${
                 task.focused
-                  ? "text-yellow-300"
-                  : "text-zinc-400 hover:text-zinc-100"
+                  ? "text-amber-400"
+                  : "text-zinc-600 hover:text-amber-400"
               }`}
             >
               {task.focused ? "★" : "☆"}
@@ -82,11 +84,9 @@ export default function TaskCard({
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
+              className="p-1 text-zinc-600 hover:text-zinc-300 transition"
             >
-              <GithubOutlined
-                className="text-zinc-400 hover:text-zinc-100 p-1.5 mt-1"
-                style={{ fontSize: 15 }}
-              />
+              <GithubOutlined style={{ fontSize: 13 }} />
             </a>
           )}
 
@@ -95,11 +95,11 @@ export default function TaskCard({
               e.stopPropagation();
               handleEditClick(task._id);
             }}
-            className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 transition"
+            className="p-1 text-zinc-600 hover:text-zinc-300 transition"
           >
             <svg
-              width="14"
-              height="14"
+              width="13"
+              height="13"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
@@ -115,11 +115,11 @@ export default function TaskCard({
               e.stopPropagation();
               deleteTodo(task._id);
             }}
-            className="p-1.5 rounded-md hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition"
+            className="p-1 text-zinc-600 hover:text-red-400 transition"
           >
             <svg
-              width="14"
-              height="14"
+              width="13"
+              height="13"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
@@ -136,43 +136,52 @@ export default function TaskCard({
       </div>
 
       {/* Title */}
-      <h4 className="text-sm font-medium text-neutral-100 leading-snug line-clamp-2">
+      <h4
+        className="text-[13px] font-medium text-zinc-200 leading-snug line-clamp-2"
+        style={mono}
+      >
         {task.title || "Untitled task"}
       </h4>
 
       {task.description && (
-        <p className="text-[11px] text-zinc-500 line-clamp-1 mt-0.5">
+        <p
+          className="text-[11px] text-zinc-600 line-clamp-1"
+          style={{ fontFamily: "'Newsreader', Georgia, serif" }}
+        >
           {task.description}
         </p>
       )}
 
       {/* Footer */}
-      <div className="flex items-center justify-between pt-2 mt-1 border-t border-white/5">
+      <div className="flex items-center justify-between pt-2 mt-1 border-t border-zinc-800/40">
         <div className="flex items-center gap-2">
           {task.issueId && (
-            <span className="text-[10px] font-mono text-zinc-500 bg-zinc-900/80 px-1.5 py-0.5 rounded">
+            <span
+              className="text-[10px] text-zinc-400 bg-[#0a0a08] px-1.5 py-0.5 border border-zinc-800/60"
+              style={mono}
+            >
               {task.issueId}
             </span>
           )}
           {task.updatedAt && (
-            <span className="text-[10px] text-zinc-500">
+            <span className="text-[10px] text-zinc-400" style={mono}>
               {formatDate(task.updatedAt)}
             </span>
           )}
           {task.subTask?.length > 0 && (
-            <span className="text-[10px] text-zinc-500">
+            <span className="text-[10px] text-zinc-700" style={mono}>
               {task.subTask.filter((s) => s.complete).length}/
-              {task.subTask.length} subtasks
+              {task.subTask.length}
             </span>
           )}
         </div>
 
-        {/* Tech Stack */}
         <div className="flex flex-wrap gap-1 justify-end max-w-[55%]">
           {task.tech?.slice(0, 3).map((t, i) => (
             <span
               key={i}
-              className="text-[10px] px-1.5 py-0.5 rounded-md bg-zinc-800/80 text-zinc-300"
+              className="text-[10px] px-1.5 py-0.5 bg-zinc-800/60 text-zinc-500 border border-zinc-800/40"
+              style={mono}
             >
               {t}
             </span>
@@ -180,12 +189,12 @@ export default function TaskCard({
         </div>
       </div>
 
-      {/* Blocked Indicator */}
+      {/* Blocked indicator */}
       {task.blocked && (
-        <div className="absolute -right-1 -top-1">
-          <span className="flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
+        <div className="absolute -right-0.5 -top-0.5">
+          <span className="flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full bg-red-400 opacity-75" />
+            <span className="relative inline-flex h-2.5 w-2.5 bg-red-500" />
           </span>
         </div>
       )}

@@ -1,168 +1,114 @@
-/* ================================
-   INPUT FIELD
-   ================================ */
+/* INPUT FIELD */
 .dark-antd-date {
-    background-color: #18181b !important;
-    /* bg-neutral-900 */
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    /* border-white/10 */
+    background-color: #0e0e0c !important;
+    border: 1px solid #27272a80 !important;
     color: #e4e4e7 !important;
-    /* text-zinc-200 */
-    border-radius: 6px;
+    border-radius: 0 !important;
     padding: 4px 10px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 13px !important;
 }
 
 .dark-antd-date input {
     background: transparent !important;
     color: #e4e4e7 !important;
-    /* text-zinc-200 */
+    font-family: 'JetBrains Mono', monospace !important;
 }
 
 .dark-antd-date input::placeholder {
-    color: #71717a !important;
-    /* text-zinc-500 */
+    color: #52525b !important;
     opacity: 1 !important;
 }
 
 .dark-antd-date:hover {
-    border-color: rgba(255, 255, 255, 0.2) !important;
-    /* border-white/20 */
+    border-color: #3f3f46 !important;
 }
 
-/* ================================
-   POPUP PANEL (Calendar)
-   ================================ */
-.dark-antd-date-popup .ant-picker-panel {
-    background-color: #18181b !important;
-    /* bg-neutral-900 */
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+.dark-antd-date.ant-picker-focused {
+    border-color: rgba(245, 158, 11, 0.5) !important;
+    box-shadow: none !important;
 }
 
-/* Header */
-.dark-antd-date-popup .ant-picker-header {
-    background-color: #18181b !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+/* POPUP PANEL */
+.dark-antd-date-popup .ant-picker-panel,
+.dark-antd-date .ant-picker-panel {
+    background-color: #0e0e0c !important;
+    border: 1px solid #27272a80;
+    border-radius: 0 !important;
 }
 
-.dark-antd-date-popup .ant-picker-header-view {
-    color: #fafafa !important;
-    /* text-neutral-50 */
+.dark-antd-date-popup .ant-picker-header,
+.dark-antd-date .ant-picker-header {
+    background-color: #0e0e0c !important;
+    border-bottom: 1px solid #27272a80;
+}
+
+.dark-antd-date-popup .ant-picker-header-view,
+.dark-antd-date .ant-picker-header-view {
+    color: #d4d4d8 !important;
     font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
 }
 
-/* Navigation Arrows */
 .dark-antd-date-popup .ant-picker-header-next-btn,
-.dark-antd-date-popup .ant-picker-header-prev-btn {
-    color: #a1a1aa !important;
-    /* zinc-400 */
+.dark-antd-date-popup .ant-picker-header-prev-btn,
+.dark-antd-date .ant-picker-header-next-btn,
+.dark-antd-date .ant-picker-header-prev-btn {
+    color: #71717a !important;
 }
 
 .dark-antd-date-popup .ant-picker-header-next-btn:hover,
-.dark-antd-date-popup .ant-picker-header-prev-btn:hover {
-    color: #fafafa !important;
-    /* white */
-}
-
-/* ================================
-   DAYS GRID
-   ================================ */
-.dark-antd-date-popup .ant-picker-cell {
+.dark-antd-date-popup .ant-picker-header-prev-btn:hover,
+.dark-antd-date .ant-picker-header-next-btn:hover,
+.dark-antd-date .ant-picker-header-prev-btn:hover {
     color: #d4d4d8 !important;
-    /* zinc-300 */
 }
 
-.dark-antd-date-popup .ant-picker-cell-inner {
-    border-radius: 6px !important;
+/* DAYS GRID */
+.dark-antd-date-popup .ant-picker-cell,
+.dark-antd-date .ant-picker-cell {
+    color: #a1a1aa !important;
 }
 
-/* Hover */
-.dark-antd-date-popup .ant-picker-cell-inner:hover {
-    background-color: #27272a !important;
-    /* zinc-800 */
+.dark-antd-date-popup .ant-picker-cell-inner,
+.dark-antd-date .ant-picker-cell-inner {
+    border-radius: 0 !important;
+}
+
+.dark-antd-date-popup .ant-picker-cell-inner:hover,
+.dark-antd-date .ant-picker-cell-inner:hover {
+    background-color: #1c1c1a !important;
     color: white !important;
 }
 
-/* Selected Day */
-.dark-antd-date-popup .ant-picker-cell-selected .ant-picker-cell-inner {
-    background-color: rgb(37, 99, 235) !important;
-    /* blue-600 */
-    color: white !important;
+/* Selected */
+.dark-antd-date-popup .ant-picker-cell-selected .ant-picker-cell-inner,
+.dark-antd-date .ant-picker-cell-selected .ant-picker-cell-inner {
+    background-color: #f59e0b !important;
+    color: #0a0a08 !important;
 }
 
 /* Today */
-.dark-antd-date-popup .ant-picker-cell-today .ant-picker-cell-inner {
-    border: 1px solid #38bdf8 !important;
-    /* sky-400 */
-    color: #38bdf8 !important;
-}
-
-/* Weekday Labels */
-.dark-antd-date-popup .ant-picker-content th {
-    color: #a1a1aa !important;
-    /* zinc-400 */
-}
-
-/* Shadow Around Calendar Popup */
-.dark-antd-date-popup {
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
-}
-
-/* When the popup is rendered inside the DatePicker root (using getPopupContainer)
-   apply the same dark styles to descendant .ant-picker elements */
-.dark-antd-date .ant-picker-panel {
-    background-color: #18181b !important;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-}
-
-.dark-antd-date .ant-picker-header {
-    background-color: #18181b !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.dark-antd-date .ant-picker-header-view {
-    color: #fafafa !important;
-    font-weight: 500;
-}
-
-.dark-antd-date .ant-picker-header-next-btn,
-.dark-antd-date .ant-picker-header-prev-btn {
-    color: #a1a1aa !important;
-}
-
-.dark-antd-date .ant-picker-header-next-btn:hover,
-.dark-antd-date .ant-picker-header-prev-btn:hover {
-    color: #fafafa !important;
-}
-
-.dark-antd-date .ant-picker-cell {
-    color: #d4d4d8 !important;
-}
-
-.dark-antd-date .ant-picker-cell-inner {
-    border-radius: 6px !important;
-}
-
-.dark-antd-date .ant-picker-cell-inner:hover {
-    background-color: #27272a !important;
-    color: white !important;
-}
-
-.dark-antd-date .ant-picker-cell-selected .ant-picker-cell-inner {
-    background-color: rgb(37, 99, 235) !important;
-    color: white !important;
-}
-
+.dark-antd-date-popup .ant-picker-cell-today .ant-picker-cell-inner,
 .dark-antd-date .ant-picker-cell-today .ant-picker-cell-inner {
-    border: 1px solid #38bdf8 !important;
-    color: #38bdf8 !important;
+    border: 1px solid rgba(245, 158, 11, 0.5) !important;
+    color: #f59e0b !important;
 }
 
+/* Weekday labels */
+.dark-antd-date-popup .ant-picker-content th,
 .dark-antd-date .ant-picker-content th {
-    color: #a1a1aa !important;
+    color: #52525b !important;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+/* Shadow */
+.dark-antd-date-popup {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6) !important;
 }
 
 .dark-antd-date .ant-picker-panel {
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6) !important;
 }

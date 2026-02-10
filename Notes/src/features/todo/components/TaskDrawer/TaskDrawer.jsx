@@ -8,9 +8,10 @@ import DateInput from "./DatePicker";
 import FormInputGit from "./inputs/FormInputGit";
 import useTodoStore from "../../store/useTodoStore";
 import { useState } from "react";
-
 import { ConfigProvider, message, Modal, Select, theme } from "antd";
 import { techOptions } from "@/constants/techOptions";
+
+const mono = { fontFamily: "'JetBrains Mono', monospace" };
 
 export default function TaskDrawer({
   open,
@@ -20,9 +21,7 @@ export default function TaskDrawer({
   mode = "add",
 }) {
   const isEdit = mode === "edit";
-
   const { getGitDetails, loading } = useTodoStore();
-
   const [isValuePresent, setIsValuePresent] = useState(false);
   const [pendingURL, setPendingURL] = useState("");
 
@@ -42,7 +41,6 @@ export default function TaskDrawer({
         message.error(issue.message);
         return;
       }
-
       setTaskForm((prev) => ({
         ...prev,
         title: issue.title,
@@ -57,27 +55,21 @@ export default function TaskDrawer({
 
   return (
     <div
-      className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-200
-      ${
-        open
-          ? "opacity-100 pointer-events-auto"
-          : "opacity-0 pointer-events-none"
-      }`}
+      className={`fixed inset-0 bg-[#0a0a08]/70 backdrop-blur-sm z-50 transition-opacity duration-200
+      ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
       onClick={onClose}
     >
-      {/* Drawer Panel */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`fixed right-0 top-0 h-full w-full max-w-md 
-          bg-[#18181B] text-zinc-100
-          border-l border-white/10 shadow-2xl shadow-black/40
+        className={`fixed right-0 top-0 h-full w-full max-w-md
+          bg-[#0c0c0a] text-zinc-100
+          border-l border-zinc-800/60 shadow-2xl shadow-black/40
           transition-transform duration-200 ease-out
           ${open ? "translate-x-0" : "translate-x-full"}
           flex flex-col`}
       >
         <DrawerHeader isEdit={isEdit} onClose={onClose} />
 
-        {/* Form */}
         <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
           <FormInput
             label="Title"
@@ -102,10 +94,7 @@ export default function TaskDrawer({
             label="Git URL"
             value={taskForm.gitURL || ""}
             onChange={(e) =>
-              setTaskForm({
-                ...taskForm,
-                gitURL: e.target.value,
-              })
+              setTaskForm({ ...taskForm, gitURL: e.target.value })
             }
             loading={loading}
             handleImport={handleImport}
@@ -115,25 +104,27 @@ export default function TaskDrawer({
             theme={{
               components: {
                 Select: {
-                  borderRadius: 8,
+                  borderRadius: 0,
                   controlHeight: 40,
-                  colorBgContainer: "#0E0E10",
-                  colorBorder: "rgba(255,255,255,0.1)",
-                  colorText: "#E4E4E7",
-                  colorTextPlaceholder: "#6B7280",
-                  optionSelectedBg: "#0E0E10",
-                  colorBgElevated: "#0E0E10",
+                  colorBgContainer: "#0e0e0c",
+                  colorBorder: "#27272a80",
+                  colorText: "#e4e4e7",
+                  colorTextPlaceholder: "#52525b",
+                  optionSelectedBg: "#1c1c1a",
+                  colorBgElevated: "#0e0e0c",
+                  fontFamily: "'JetBrains Mono', monospace",
                 },
               },
             }}
           >
-            <label className="text-[11px] font-medium text-zinc-400 uppercase tracking-[0.14em] mb-1.5 block">
+            <label
+              className="text-[10px] text-zinc-600 uppercase tracking-[0.15em] mb-1.5 block"
+              style={mono}
+            >
               Tech Stack
             </label>
-
             <Select
               style={{ width: "100%", marginBottom: 15 }}
-              label="Tech Stack"
               mode="tags"
               value={taskForm.tech}
               onChange={(tech) => setTaskForm({ ...taskForm, tech })}
@@ -143,10 +134,12 @@ export default function TaskDrawer({
 
             <TwoColumn>
               <div>
-                <label className="text-[11px] font-medium text-zinc-400 uppercase tracking-[0.14em] mb-1.5 block">
+                <label
+                  className="text-[10px] text-zinc-600 uppercase tracking-[0.15em] mb-1.5 block"
+                  style={mono}
+                >
                   Status
                 </label>
-
                 <Select
                   style={{ width: "100%" }}
                   value={taskForm.status}
@@ -161,12 +154,13 @@ export default function TaskDrawer({
                   ]}
                 />
               </div>
-
               <div>
-                <label className="text-[11px] font-medium text-zinc-400 uppercase tracking-[0.14em] mb-1.5 block">
+                <label
+                  className="text-[10px] text-zinc-600 uppercase tracking-[0.15em] mb-1.5 block"
+                  style={mono}
+                >
                   Priority
                 </label>
-
                 <Select
                   style={{ width: "100%" }}
                   value={taskForm.priority}
@@ -189,7 +183,6 @@ export default function TaskDrawer({
             value={taskForm.dueDate}
             onChange={(date) => setTaskForm({ ...taskForm, dueDate: date })}
           />
-
           <FormTextarea taskForm={taskForm} setTaskForm={setTaskForm} />
           <DrawerSubtask taskForm={taskForm} setTaskForm={setTaskForm} />
         </div>
@@ -198,6 +191,7 @@ export default function TaskDrawer({
           <ConfigProvider
             theme={{
               algorithm: theme.darkAlgorithm,
+              token: { borderRadius: 0 },
             }}
           >
             <Modal

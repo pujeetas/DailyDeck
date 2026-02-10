@@ -1,5 +1,7 @@
 import useTodoStore from "../../store/useTodoStore";
 
+const mono = { fontFamily: "'JetBrains Mono', monospace" };
+
 const DrawerFooter = ({ taskForm, onClose, isEdit }) => {
   const { createTodo, updateTodo } = useTodoStore((state) => state);
 
@@ -12,23 +14,22 @@ const DrawerFooter = ({ taskForm, onClose, isEdit }) => {
     await updateTodo(taskForm._id, taskForm);
     onClose(false);
   }
+
   return (
-    <div className="px-6 pb-5 pt-4 border-t border-white/10 bg-[#18181B] flex justify-end gap-3">
+    <div className="px-6 pb-5 pt-4 border-t border-zinc-800/50 bg-[#0a0a08] flex justify-end gap-2">
       <button
         onClick={onClose}
-        className="px-4 py-2.5 rounded-lg border border-white/10 text-zinc-300 
-               hover:bg-zinc-800 hover:text-zinc-100 text-sm font-medium transition"
+        className="px-4 py-2.5 border border-zinc-800/60 text-zinc-500 hover:text-zinc-300 hover:border-zinc-700 text-[12px] transition-colors"
+        style={mono}
       >
-        Cancel
+        CANCEL
       </button>
       <button
-        onClick={() => {
-          isEdit ? handleEdit() : handleCreate();
-        }}
-        className="px-5 py-2.5 rounded-lg bg-indigo-500 text-white 
-               hover:bg-indigo-400 text-sm font-semibold transition shadow-md shadow-indigo-500/30 active:scale-95"
+        onClick={() => (isEdit ? handleEdit() : handleCreate())}
+        className="px-5 py-2.5 bg-amber-500 text-[#0a0a08] hover:bg-amber-400 text-[12px] font-bold tracking-wide transition-colors active:scale-[0.98]"
+        style={mono}
       >
-        {isEdit ? "Save Changes" : "Create Task"}
+        {isEdit ? "SAVE CHANGES" : "CREATE TASK"}
       </button>
     </div>
   );

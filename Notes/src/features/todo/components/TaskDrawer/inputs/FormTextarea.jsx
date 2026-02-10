@@ -1,7 +1,12 @@
+const mono = { fontFamily: "'JetBrains Mono', monospace" };
+
 const FormTextarea = ({ setTaskForm, taskForm }) => {
   return (
     <div>
-      <label className="text-[11px] font-medium text-zinc-400 uppercase tracking-[0.14em] mb-1.5 block">
+      <label
+        className="text-[10px] text-zinc-600 uppercase tracking-[0.15em] mb-1.5 block"
+        style={mono}
+      >
         Description
       </label>
       <textarea
@@ -10,10 +15,9 @@ const FormTextarea = ({ setTaskForm, taskForm }) => {
           setTaskForm({ ...taskForm, description: e.target.value })
         }
         rows={4}
-        className="w-full px-3 py-2.5 rounded-lg bg-[#0E0E10] border border-white/10 
-               text-zinc-100 placeholder-zinc-500 outline-none text-sm font-mono
-               focus:border-neutral-500 resize-none"
+        className="w-full px-3 py-2.5 bg-[#0e0e0c] border border-zinc-800 text-[13px] text-zinc-100 placeholder:text-zinc-600 outline-none focus:border-amber-500/50 resize-none transition-colors"
         placeholder="Notes, debugging steps, commands, or code snippets..."
+        style={mono}
       />
     </div>
   );

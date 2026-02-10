@@ -1,3 +1,5 @@
+const mono = { fontFamily: "'JetBrains Mono', monospace" };
+
 export default function FormInputGit({
   label,
   value,
@@ -8,49 +10,45 @@ export default function FormInputGit({
 }) {
   const validateGitUrl = (url) => {
     if (!url || typeof url !== "string") return false;
-    const pattern = new RegExp(
-      "^https?://github\\.com/([^/]+)/([^/]+)/issues/(\\d+)$"
+    return /^https?:\/\/github\.com\/([^/]+)\/([^/]+)\/issues\/(\d+)$/.test(
+      url,
     );
-    return pattern.test(url);
   };
   const isValid = validateGitUrl(value);
+
   return (
     <div>
-      {/* Label */}
       <div className="flex justify-between items-end mb-1.5">
-        <label className="text-[11px] font-medium text-zinc-400 uppercase tracking-[0.14em] block">
+        <label
+          className="text-[10px] text-zinc-600 uppercase tracking-[0.15em] block"
+          style={mono}
+        >
           {label}
         </label>
-
         <button
           type="button"
           onClick={() => handleImport(value)}
           disabled={loading || !isValid}
-          className={`
-            text-[10px] font-semibold px-2 py-0.5 rounded transition-all uppercase tracking-wider
-            ${
-              loading || !isValid
-                ? "text-zinc-600 cursor-not-allowed"
-                : "text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 cursor-pointer"
-            }
-          `}
+          className={`text-[10px] font-bold px-2 py-0.5 tracking-wider uppercase transition-colors ${
+            loading || !isValid
+              ? "text-zinc-700 cursor-not-allowed"
+              : "text-amber-500 hover:text-amber-400 cursor-pointer"
+          }`}
+          style={mono}
         >
-          {loading ? "Loading..." : "Import"}
+          {loading ? "LOADING..." : "IMPORT"}
         </button>
       </div>
-
       <input
         type="text"
         value={value}
         onChange={onChange}
         disabled={loading}
         placeholder={placeholder}
-        className={`
-          w-full px-3 py-2.5 rounded-lg bg-[#0E0E10] border border-white/10
-          text-zinc-100 placeholder-zinc-500 outline-none text-sm transition-all
-          focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500/40
-          ${loading ? "opacity-50 cursor-wait" : ""}
-        `}
+        className={`w-full px-3 py-2.5 bg-[#0e0e0c] border border-zinc-800 text-[13px] text-zinc-100 placeholder:text-zinc-600 outline-none focus:border-amber-500/50 transition-colors ${
+          loading ? "opacity-50 cursor-wait" : ""
+        }`}
+        style={mono}
       />
     </div>
   );
