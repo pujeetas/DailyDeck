@@ -6,7 +6,7 @@ const DrawerHeader = ({ isEdit, onClose }) => {
     <div className="px-6 pt-6 pb-4 border-b border-zinc-800/50 flex items-start justify-between gap-4">
       <div>
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-6 h-[1px] bg-amber-600/50" />
+          <div className="w-6 h-px bg-amber-600/50" />
           <span
             className="text-[10px] text-amber-600/80 tracking-[0.25em] uppercase"
             style={mono}

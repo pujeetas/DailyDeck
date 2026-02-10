@@ -40,7 +40,7 @@ export default function FocusList() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-[1px] bg-amber-600/50" />
+              <div className="w-8 h-px bg-amber-600/50" />
               <span
                 className="text-[11px] text-amber-600/80 tracking-[0.25em] uppercase"
                 style={mono}
