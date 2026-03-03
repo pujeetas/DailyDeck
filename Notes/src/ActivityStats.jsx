@@ -7,6 +7,8 @@ const serif = { fontFamily: "'Newsreader', Georgia, serif" };
 const ActivityStats = () => {
   const { user } = useUserStore();
 
+  console.log(user);
+
   const stats = [
     {
       id: 1,

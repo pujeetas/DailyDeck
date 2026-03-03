@@ -2,31 +2,23 @@ import { Link, useLocation } from "react-router-dom";
 import { LineChartOutlined } from "@ant-design/icons";
 import { Book, Star } from "lucide-react";
 
+const mono = { fontFamily: "'JetBrains Mono', monospace" };
+
 const Sidebar = () => {
   const location = useLocation();
 
   const menuItems = [
-    { icon: <Book />, path: "/to-do", label: "Tasks" },
-    { icon: <LineChartOutlined />, path: "/analytics", label: "Analytics" },
+    { icon: <Book size={18} />, path: "/to-do", label: "Tasks" },
     {
-      icon: <Star />,
-      path: "/to-do/focus",
-      label: "Focus List",
+      icon: <LineChartOutlined style={{ fontSize: 18 }} />,
+      path: "/analytics",
+      label: "Analytics",
     },
+    { icon: <Star size={18} />, path: "/to-do/focus", label: "Focus" },
   ];
 
   return (
-    <aside
-      className="
-        h-screen w-20
-        flex flex-col items-center
-        py-6 gap-8
-        bg-[#111113]
-        border-r border-white/10
-        text-zinc-400
-        sticky left-0 top-0
-        backdrop-blur-xl "
-    >
+    <aside className="h-screen w-[72px] flex flex-col items-center py-6 gap-6 bg-[#0a0a08] border-r border-zinc-800/50 text-zinc-500 sticky left-0 top-0">
       {menuItems.map((item) => {
         const isActive = location.pathname === item.path;
 
@@ -36,43 +28,27 @@ const Sidebar = () => {
             to={item.path}
             className="relative flex flex-col items-center gap-1 group"
           >
-            {/* Active indicator */}
             {isActive && (
-              <span
-                className="
-                  absolute -left-3
-                  h-8 w-1.5 rounded-full
-                  bg-indigo-500
-                "
-              />
+              <span className="absolute -left-[14px] top-1 h-7 w-[2px] bg-amber-500" />
             )}
 
-            {/* Icon container */}
             <div
-              className={`
-                w-11 h-11 flex items-center justify-center 
-                rounded-lg text-xl
-                transition-all duration-200
-                ${
-                  isActive
-                    ? "bg-[#1E1E22] text-indigo-400"
-                    : "text-zinc-500 group-hover:text-zinc-200 group-hover:bg-[#1E1E22]"
-                }
-              `}
+              className={`w-10 h-10 flex items-center justify-center transition-all duration-200 ${
+                isActive
+                  ? "bg-zinc-800/50 text-amber-500"
+                  : "text-zinc-600 group-hover:text-zinc-300 group-hover:bg-zinc-800/30"
+              }`}
             >
               {item.icon}
             </div>
 
-            {/* Label (global friendly) */}
             <span
-              className={`
-                text-[11px] font-medium transition
-                ${
-                  isActive
-                    ? "text-indigo-400"
-                    : "text-zinc-500 group-hover:text-zinc-300"
-                }
-              `}
+              className={`text-[9px] tracking-wider uppercase transition-colors ${
+                isActive
+                  ? "text-amber-500"
+                  : "text-zinc-700 group-hover:text-zinc-400"
+              }`}
+              style={mono}
             >
               {item.label}
             </span>

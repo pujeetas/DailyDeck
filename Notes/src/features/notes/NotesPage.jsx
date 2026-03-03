@@ -72,7 +72,6 @@ export default function NotesPage() {
             },
           });
         }
-        console.log("Response:", data.aiSearches);
       } catch (error) {
         console.error("Failed to ask question:", error);
       }

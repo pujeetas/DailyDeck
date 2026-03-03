@@ -11,15 +11,10 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { message } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import useUserStore from "@/hooks/useUserStore";
-
-/*
-  FONTS — same as landing page:
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Newsreader:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
-*/
 
 const mono = { fontFamily: "'JetBrains Mono', monospace" };
 const serif = { fontFamily: "'Newsreader', Georgia, serif" };
@@ -83,6 +78,19 @@ const SignupPage = () => {
         : "border-zinc-800 focus:border-amber-500/50 focus:bg-[#111110]"
     }`;
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("oauth") === "success") {
+      axios
+        .get("/api/verify", { withCredentials: true })
+        .then((res) => {
+          signUp(res.data.user);
+          navigate("/main");
+        })
+        .catch(() => navigate("/login"));
+    }
+  }, [navigate, signUp]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0a0a08] p-4 relative overflow-hidden">
       {/* Background */}
@@ -101,8 +109,8 @@ const SignupPage = () => {
             backgroundSize: "100% 3px",
           }}
         />
-        <div className="absolute top-0 right-0 w-[500px] h-[400px] bg-amber-500/[0.025] blur-[150px]" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[300px] bg-blue-500/[0.02] blur-[120px]" />
+        <div className="absolute top-0 right-0 w-[500px] h-[400px] bg-amber-500/2.5 blur-[150px]" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[300px] bg-blue-500/2 blur-[120px]" />
       </div>
 
       <AnimatePresence>
@@ -119,7 +127,7 @@ const SignupPage = () => {
               {/* Header */}
               <div className="mb-8">
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="w-8 h-[1px] bg-amber-600/50" />
+                  <div className="w-8 h-px bg-amber-600/50" />
                   <span
                     className="text-[10px] text-amber-600/80 tracking-[0.25em] uppercase"
                     style={mono}
@@ -142,6 +150,7 @@ const SignupPage = () => {
               <div className="grid grid-cols-2 gap-3 mb-7">
                 <button
                   type="button"
+                  onClick={() => (window.location.href = "/api/auth/google")}
                   className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
                   style={mono}
                 >
@@ -150,6 +159,7 @@ const SignupPage = () => {
                 </button>
                 <button
                   type="button"
+                  onClick={() => (window.location.href = "/api/auth/github")}
                   className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
                   style={mono}
                 >
@@ -326,7 +336,7 @@ const SignupPage = () => {
             {/* RIGHT — Brand panel */}
             <div className="hidden md:flex flex-col justify-between bg-[#0e0e0c] p-10 lg:p-12 relative overflow-hidden border-l border-zinc-800/60 order-1 md:order-2">
               {/* Subtle glow */}
-              <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-amber-500/[0.04] rounded-full blur-[120px] -mr-20 -mt-20" />
+              <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-amber-500/4 rounded-full blur-[120px] -mr-20 -mt-20" />
 
               <div className="relative z-10">
                 {/* Brand */}

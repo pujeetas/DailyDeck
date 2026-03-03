@@ -8,6 +8,9 @@ import { userRoute } from "./src/route/userRoute.js";
 import { notesRoute } from "./src/route/notesRoute.js";
 import { todoRoute } from "./src/route/todoRoute.js";
 
+import session from "express-session";
+import passport from "./src/config/passport.js";
+
 const app = express();
 
 // CORS configuration
@@ -15,7 +18,7 @@ const allowedOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
   : ["http://localhost:5173", "https://daily-deck-ten.vercel.app"];
 
-// CORS middleware - handles both regular requests and preflight
+// CORS middleware
 app.use(
   cors({
     origin: allowedOrigins,
@@ -25,13 +28,29 @@ app.use(
     exposedHeaders: ["Set-Cookie"],
     preflightContinue: false,
     optionsSuccessStatus: 204,
-  })
+  }),
 );
 
 // Body parsing middleware
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "your-secret-key-change-this",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
+  }),
+);
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Health check
 app.get("/api/health", (req, res) => {
@@ -119,5 +138,4 @@ if (!process.env.VERCEL) {
     });
 }
 
-// Export handler for Vercel serverless functions
 export default handler;

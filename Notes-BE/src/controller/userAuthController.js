@@ -13,6 +13,8 @@ import { ERRORS } from "../constants/errorMessages.js";
 import { STATUS } from "../constants/statusCodes.js";
 import nodemailer from "nodemailer";
 
+import jwt from "jsonwebtoken";
+
 // signup user
 export const signupUser = async (req, res) => {
   try {
@@ -188,7 +190,7 @@ export const forgotPassword = async (req, res) => {
       {
         email: email,
       },
-      { $set: { resetToken: hashedToken, resetTokenExpiresAt: expiresAt } }
+      { $set: { resetToken: hashedToken, resetTokenExpiresAt: expiresAt } },
     );
     if (saveHashToken.modifiedCount === 0) {
       throw new Error("Failed to save token");
@@ -271,7 +273,7 @@ export const resetPassword = async (req, res) => {
           resetToken: "",
           resetTokenExpiresAt: "",
         },
-      }
+      },
     );
 
     return res.status(STATUS.OK).json({
@@ -282,5 +284,56 @@ export const resetPassword = async (req, res) => {
     return res
       .status(STATUS.SERVER_ERROR)
       .json({ message: ERRORS.SERVER_ERROR });
+  }
+};
+
+export const googleAuthCallback = async (req, res) => {
+  try {
+    const payload = { id: req.user._id, email: req.user.email };
+    const jwtToken = createToken(payload);
+
+    res.cookie("token", jwtToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    const origin = process.env.CORS_ORIGIN.replace(/\/$/, "");
+    return res.redirect(`${origin}/signup?oauth=success`);
+  } catch (error) {
+    console.error("Google OAuth error:", error);
+    const origin = process.env.CORS_ORIGIN.replace(/\/$/, "");
+    return res.redirect(`${origin}/login?error=auth_failed`);
+  }
+};
+
+export const verifyUser = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+
+    if (!token) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await UserModel.findById(decoded.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error("Verify error:", error);
+    return res.status(401).json({ message: "Invalid token" });
   }
 };

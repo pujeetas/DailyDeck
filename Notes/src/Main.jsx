@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "../styles.css";
@@ -7,14 +7,15 @@ import ProtectedRoute from "./ProtectedRoute";
 import Profile from "./components/layout/profile/Profile";
 import ResetPassword from "./features/auth/ResetPassword";
 import FakeJsonGenerator from "./features/mockLab/layout/FakeJsonGenerator";
+import useUserStore from "./hooks/useUserStore";
 
 const LandingPage = lazy(() => import("./landingPage/LandingPage"));
 const SignupPage = lazy(() => import("./features/auth/SignupPage"));
 const Login = lazy(() => import("./features/auth/Login"));
 const MainMenu = lazy(() => import("../src/MainMenu"));
 const NotesPage = lazy(() => import("../src/features/notes/NotesPage"));
-const DashboardRouter = lazy(() =>
-  import("./features/todo/pages/DashboardRouter")
+const DashboardRouter = lazy(
+  () => import("./features/todo/pages/DashboardRouter"),
 );
 const Dashboard = lazy(() => import("./features/todo/pages/Dashboard"));
 const FocusList = lazy(() => import("./features/todo/components/FocusList"));
@@ -65,6 +66,11 @@ const router = createBrowserRouter([
 ]);
 
 function Main() {
+  const { checkAuth } = useUserStore();
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
   return (
     <div className="antd-dark-theme">
       <Suspense fallback={<LoadingCard />}>
