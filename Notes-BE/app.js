@@ -7,6 +7,7 @@ import { authRoute } from "./src/route/authRoute.js";
 import { userRoute } from "./src/route/userRoute.js";
 import { notesRoute } from "./src/route/notesRoute.js";
 import { todoRoute } from "./src/route/todoRoute.js";
+import MongoStore from "connect-mongo";
 
 import session from "express-session";
 import passport from "./src/config/passport.js";
