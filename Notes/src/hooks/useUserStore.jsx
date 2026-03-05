@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import axios from "axios";
+const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 const useUserStore = create(
   persist(
@@ -11,7 +12,7 @@ const useUserStore = create(
       //function to verify token
       checkAuth: async () => {
         try {
-          const response = await axios.get("/api/verify", {
+          const response = await axios.get(`${API}/api/verify`, {
             withCredentials: true,
           });
           if (response.data.user) {

@@ -19,6 +19,8 @@ export default function Login() {
 
   const { login } = useUserStore();
 
+  const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -175,7 +177,9 @@ export default function Login() {
                 <div className="grid grid-cols-2 gap-3 mb-4">
                   <button
                     type="button"
-                    onClick={() => (window.location.href = "/api/auth/google")}
+                    onClick={() =>
+                      (window.location.href = `${API}/api/auth/google`)
+                    }
                     className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
                     style={mono}
                   >
@@ -184,7 +188,9 @@ export default function Login() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => (window.location.href = "/api/auth/github")}
+                    onClick={() =>
+                      (window.location.href = `${API}/api/auth/github`)
+                    }
                     className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
                     style={mono}
                   >

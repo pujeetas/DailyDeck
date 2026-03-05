@@ -33,6 +33,8 @@ const SignupPage = () => {
   const [errors, setErrors] = useState({});
   const { signUp } = useUserStore();
 
+  const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
   const onChange = (e) => {
     setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
     if (errors[e.target.name]) {
@@ -82,7 +84,7 @@ const SignupPage = () => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("oauth") === "success") {
       axios
-        .get("/api/verify", { withCredentials: true })
+        .get(`${API}/api/verify`, { withCredentials: true })
         .then((res) => {
           signUp(res.data.user);
           navigate("/main");
@@ -151,8 +153,7 @@ const SignupPage = () => {
                 <button
                   type="button"
                   onClick={() =>
-                    (window.location.href =
-                      "https://daily-deck-oaxd.vercel.app/api/auth/google")
+                    (window.location.href = `${API}/api/auth/google`)
                   }
                   className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
                   style={mono}
@@ -162,7 +163,9 @@ const SignupPage = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => (window.location.href = "/api/auth/github")}
+                  onClick={() =>
+                    (window.location.href = `${API}/api/auth/github`)
+                  }
                   className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
                   style={mono}
                 >
