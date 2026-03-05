@@ -54,6 +54,37 @@ DailyDeck solves this by integrating **Markdown Documentation**, **Calendar Visu
 * **Optimistic UI:** Instant visual feedback on task updates.
 * **Responsive:** Fully adaptive grid layouts for sidebar and dashboard widgets.
 
+## 🔐 Authentication
+
+### Multi-Provider OAuth Support
+DailyDeck supports multiple authentication methods for seamless access:
+
+#### **Email/Password Authentication**
+- Traditional signup flow with JWT-based session management
+- Secure password hashing using bcrypt
+- Password reset functionality via email tokens
+
+#### **Google OAuth 2.0**
+- One-click sign-in with Google accounts
+- Automatic user provisioning on first login
+- Passport.js integration for secure token exchange
+
+#### **GitHub OAuth**
+- Developer-friendly authentication
+- Access using existing GitHub credentials
+- Perfect for engineering-focused workflows
+
+### Security Features
+- **HttpOnly Cookies:** JWT tokens stored in secure, HttpOnly cookies to prevent XSS attacks
+- **Session Persistence:** MongoDB-backed session store for serverless deployments (Vercel)
+- **Environment-based Security:** Dynamic cookie settings (secure/sameSite) based on production vs development
+- **Cross-Origin Support:** Proper CORS configuration for frontend-backend communication
+
+### OAuth Configuration
+Both Google and GitHub OAuth are configured using Passport.js strategies:
+- Session serialization/deserialization for user state management
+- Automatic user creation on first OAuth login
+- Seamless linking of OAuth accounts to existing email accounts
 ---
 
 ---
