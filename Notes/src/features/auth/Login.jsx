@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Terminal, ArrowRight, Lock, Mail } from "lucide-react";
+import { Terminal, ArrowRight, Lock, Mail, Github, Chrome } from "lucide-react";
 import useUserStore from "@/hooks/useUserStore";
 import { message } from "antd";
 import ForgotPasswordModal from "./ForgotPasswordModal";
@@ -74,7 +74,7 @@ export default function Login() {
             backgroundSize: "100% 3px",
           }}
         />
-        <div className="absolute top-0 right-0 w-[500px] h-[400px] bg-amber-500/[0.025] blur-[150px]" />
+        <div className="absolute top-0 right-0 w-[500px] h-[400px] bg-amber-500/2.5 blur-[150px]" />
       </div>
 
       <AnimatePresence>
@@ -88,7 +88,7 @@ export default function Login() {
           >
             {/* LEFT — Brand panel */}
             <div className="hidden md:flex flex-col justify-between bg-[#0e0e0c] p-10 lg:p-12 relative overflow-hidden border-r border-zinc-800/60">
-              <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-amber-500/[0.04] rounded-full blur-[120px] -mr-20 -mt-20" />
+              <div className="absolute top-0 right-0 w-[300px] h-[300px] `bg-amber-500/4 rounded-full blur-[120px] -mr-20 -mt-20" />
 
               <div className="relative z-10">
                 <div className="flex items-baseline gap-2 mb-12">
@@ -152,7 +152,7 @@ export default function Login() {
             <div className="p-8 md:p-12 flex flex-col justify-center">
               <div className="mb-8">
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="w-8 h-[1px] bg-amber-600/50" />
+                  <div className="w-8 h-px bg-amber-600/50" />
                   <span
                     className="text-[10px] text-amber-600/80 tracking-[0.25em] uppercase"
                     style={mono}
@@ -172,6 +172,38 @@ export default function Login() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <button
+                    type="button"
+                    onClick={() => (window.location.href = "/api/auth/google")}
+                    className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
+                    style={mono}
+                  >
+                    <Chrome size={15} />
+                    Google
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => (window.location.href = "/api/auth/github")}
+                    className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
+                    style={mono}
+                  >
+                    <Github size={15} />
+                    GitHub
+                  </button>
+                </div>
+
+                {/* Divider - ADD THIS */}
+                <div className="relative flex items-center mb-4">
+                  <div className="grow border-t border-zinc-800/60" />
+                  <span
+                    className="shrink-0 mx-4 text-[10px] text-zinc-700 uppercase tracking-[0.15em]"
+                    style={mono}
+                  >
+                    Or continue with
+                  </span>
+                  <div className="grow border-t border-zinc-800/60" />
+                </div>
                 {/* Email */}
                 <div className="space-y-1.5">
                   <label

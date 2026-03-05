@@ -35,7 +35,7 @@ const ForgotPasswordModal = ({
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-[#0a0a08]/80 backdrop-blur-sm"
@@ -47,7 +47,7 @@ const ForgotPasswordModal = ({
         {/* Header */}
         <div className="mb-7">
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-8 h-[1px] bg-amber-600/50" />
+            <div className="w-8 h-px bg-amber-600/50" />
             <span
               className="text-[10px] text-amber-600/80 tracking-[0.25em] uppercase"
               style={mono}
