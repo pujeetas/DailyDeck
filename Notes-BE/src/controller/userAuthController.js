@@ -300,11 +300,11 @@ export const googleAuthCallback = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    const origin = process.env.CORS_ORIGIN.replace(/\/$/, "");
+    const origin = process.env.FRONTEND_URL || process.env.CORS_ORIGIN;
     return res.redirect(`${origin}/signup?oauth=success`);
   } catch (error) {
     console.error("Google OAuth error:", error);
-    const origin = process.env.CORS_ORIGIN.replace(/\/$/, "");
+    const origin = process.env.FRONTEND_URL || process.env.CORS_ORIGIN;
     return res.redirect(`${origin}/login?error=auth_failed`);
   }
 };
