@@ -2,7 +2,7 @@ import axios from "axios";
 import { create } from "zustand";
 
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"}/api`,
   withCredentials: true,
 });
 
@@ -52,7 +52,7 @@ const useTodoStore = create((set) => ({
     try {
       set((state) => ({
         detailsList: state.detailsList.map((t) =>
-          t._id === id ? { ...t, focused: !t.focused } : t
+          t._id === id ? { ...t, focused: !t.focused } : t,
         ),
       }));
       await api.patch(`/updateTodo/${id}`, {
@@ -69,7 +69,7 @@ const useTodoStore = create((set) => ({
     try {
       set((state) => ({
         detailsList: state.detailsList.map((t) =>
-          t._id === id ? { ...t, status: "done", focused: false } : t
+          t._id === id ? { ...t, status: "done", focused: false } : t,
         ),
       }));
       await api.patch(`/updateTodo/${id}`, {
@@ -85,19 +85,19 @@ const useTodoStore = create((set) => ({
 
   subTaskStatus: async (todoId, subTaskId) => {
     try {
-      set((state) => ({
+      (set((state) => ({
         detailsList: state.detailsList.map((todo) =>
           todo._id === todoId
             ? {
                 ...todo,
                 subTask: todo.subTask.map((st) =>
-                  st.id === subTaskId ? { ...st, complete: !st.complete } : st
+                  st.id === subTaskId ? { ...st, complete: !st.complete } : st,
                 ),
               }
-            : todo
+            : todo,
         ),
       })),
-        await useTodoStore.getState().fetchAllTodo();
+        await useTodoStore.getState().fetchAllTodo());
     } catch (error) {
       console.log(error);
     }
@@ -107,7 +107,7 @@ const useTodoStore = create((set) => ({
     try {
       set((state) => ({
         detailsList: state.detailsList.map((t) =>
-          ids.includes(t._id) ? { ...t, focused: false } : t
+          ids.includes(t._id) ? { ...t, focused: false } : t,
         ),
       }));
       await api.patch(`/bulkUnfocus`, {
