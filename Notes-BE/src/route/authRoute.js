@@ -25,11 +25,18 @@ authRoute.post("/reset-password/:userId/:token", resetPassword);
 // Google OAuth
 authRoute.get(
   "/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] }),
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    session: false,
+    state: false,
+  }),
 );
 authRoute.get(
   "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+    session: false,
+  }),
   googleAuthCallback,
 );
 
