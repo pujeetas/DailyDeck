@@ -5,6 +5,7 @@
 ![Node](https://img.shields.io/badge/Node.js-18+-green?style=for-the-badge&logo=node.js)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green?style=for-the-badge&logo=mongodb)
 ![Tailwind](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?style=for-the-badge&logo=docker)
 
 > **"Context switching is the killer of productivity."**
 
@@ -22,6 +23,59 @@ DailyDeck solves this by integrating **Markdown Documentation**, **Calendar Visu
 
 ---
 
+## 🐳 Running with Docker
+
+The entire stack is containerized using Docker and Docker Compose. No manual setup required.
+
+### Prerequisites
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
+
+### Quick Start
+```bash
+# Clone the repo
+git clone https://github.com/pujeetas/DailyDeck.git
+cd DailyDeck
+
+# Add your environment variables
+cp Notes-BE/.env.example Notes-BE/.env
+# Edit Notes-BE/.env with your MongoDB URI, API keys, etc.
+
+# Start everything with one command
+docker-compose up
+```
+
+| Service  | URL |
+|----------|-----|
+| Frontend | http://localhost:5173 |
+| Backend  | http://localhost:3000 |
+| Health Check | http://localhost:3000/api/health |
+
+### Stop the app
+```bash
+docker-compose down
+```
+
+### Docker Architecture
+```
+DailyDeck/
+  ├── Notes/
+  │     ├── Dockerfile        # Multi-stage build (Node.js → nginx)
+  │     └── .dockerignore
+  ├── Notes-BE/
+  │     ├── Dockerfile        # Node.js backend
+  │     └── .dockerignore
+  └── docker-compose.yml      # Orchestrates both services
+```
+
+**Multi-stage build:** Frontend uses a two-stage Docker build — Stage 1 compiles the React app using Node.js, Stage 2 serves the `/dist` output via nginx. This reduces the final image size to **101MB** compared to **~300MB+** with a Node.js server.
+
+| Image | Size |
+|-------|------|
+| dailydeck-frontend | 101MB (nginx) |
+| dailydeck-backend | 304MB (Node.js) |
+
+---
+
 ## 🛠 Tech Stack & Architecture
 
 ### Frontend (Client)
@@ -36,6 +90,17 @@ DailyDeck solves this by integrating **Markdown Documentation**, **Calendar Visu
 * **Database:** MongoDB (Atlas) with Mongoose ODMs
 * **Architecture:** Service-Controller Layer pattern (Separation of Concerns)
 
+### AI & Search
+* **RAG Pipeline:** MongoDB Vector Search + Cohere Embeddings + Anthropic Claude API
+* **Semantic Search:** Sub-200ms query latency across 1000+ embedded documents
+* **Why MongoDB over Pinecone:** Evaluated Pinecone and Weaviate — chose MongoDB Vector Search for operational simplicity, unified data layer, and avoiding an additional managed service
+
+### DevOps
+* **Containerization:** Docker + Docker Compose
+* **Frontend Serving:** nginx (production), Vite (development)
+* **Deployment:** Vercel (frontend + backend serverless)
+* **CI/CD:** Git-based deployments via Vercel
+
 ---
 
 ## ✨ Key Features
@@ -45,9 +110,10 @@ DailyDeck solves this by integrating **Markdown Documentation**, **Calendar Visu
 * **Smart Filters:** One-click filtering for "Today", "High Priority", and "Overdue" tasks.
 * **Visual Priority:** Block-style rendering with color-coded borders to identify critical path items immediately.
 
-### 2. Developer-First Notes
+### 2. Developer-First Notes with AI Search
 * **Rich Text Editor:** Slash commands (`/`), code blocks, and markdown support.
-* **Integrated Workflow:** Keep documentation alongside your task board.
+* **RAG-Powered Search:** Ask questions about your notes in natural language — Claude AI answers using your actual documents via MongoDB Vector Search.
+* **Semantic Understanding:** Finds relevant notes even when exact keywords don't match.
 
 ### 3. Production-Grade UI/UX
 * **Enterprise Dark Mode:** Custom `ConfigProvider` overrides for Ant Design to ensure perfect contrast.
@@ -79,13 +145,6 @@ DailyDeck supports multiple authentication methods for seamless access:
 - **Session Persistence:** MongoDB-backed session store for serverless deployments (Vercel)
 - **Environment-based Security:** Dynamic cookie settings (secure/sameSite) based on production vs development
 - **Cross-Origin Support:** Proper CORS configuration for frontend-backend communication
-
-### OAuth Configuration
-Both Google and GitHub OAuth are configured using Passport.js strategies:
-- Session serialization/deserialization for user state management
-- Automatic user creation on first OAuth login
-- Seamless linking of OAuth accounts to existing email accounts
----
 
 ---
 
@@ -124,7 +183,6 @@ npm run test:coverage # Generate coverage report
 it("submits form with valid credentials", async () => {
   const user = userEvent.setup();
   
-  // Simulate user typing credentials
   await user.type(
     screen.getByPlaceholderText("name@company.com"), 
     "test@example.com"
@@ -134,10 +192,8 @@ it("submits form with valid credentials", async () => {
     "password123"
   );
   
-  // Simulate clicking login button
   await user.click(screen.getByRole("button", { name: /log in/i }));
   
-  // Verify API was called with correct credentials
   await vi.waitFor(() => {
     expect(axios.post).toHaveBeenCalledWith(
       "/api/login",
@@ -146,13 +202,11 @@ it("submits form with valid credentials", async () => {
     );
   });
   
-  // Verify user store was updated
   expect(useUserStore().login).toHaveBeenCalled();
-  
-  // Verify navigation to dashboard
   expect(mockNavigate).toHaveBeenCalledWith("/main");
 });
 ```
+
 ---
 
 ## 📂 Project Structure (Feature-Based)
@@ -172,12 +226,16 @@ src/
 │       └── store/      # Zustand Slice for Tasks
 ├── components/         # Shared UI (Layouts, Buttons)
 └── services/           # API Integration Layer
+```
 
-🚦 Roadmap & Future Scope
-This project is evolving from a productivity tool into an EngOps (Engineering Operations) platform.
+---
 
-[x] MVP: Notes, Tasks, Kanban, Dark Mode.
-[x] Visual Planning: Calendar View Implementation.
-[ ] Phase 2 (Automation): GitHub Webhook integration to auto-move cards based on PR status.
-[ ] Phase 3 (Analytics): Velocity tracking and "Cycle Time" charts.
-[ ] Phase 4 (AI): RAG-based search to query notes and tasks using natural language.
+## 🚦 Roadmap & Future Scope
+
+- [x] MVP: Notes, Tasks, Kanban, Dark Mode
+- [x] Visual Planning: Calendar View Implementation
+- [x] AI Search: RAG-based semantic search using MongoDB Vector Search + Claude AI
+- [x] Containerization: Docker + Docker Compose with multi-stage builds
+- [ ] Phase 2 (Automation): GitHub Webhook integration to auto-move cards based on PR status
+- [ ] Phase 3 (Analytics): Velocity tracking and "Cycle Time" charts
+- [ ] Phase 4 (AI Agent): Tool-calling agent to create tasks, search notes, and query GitHub via natural language
