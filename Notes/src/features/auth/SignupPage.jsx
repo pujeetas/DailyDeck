@@ -149,7 +149,7 @@ const SignupPage = () => {
               </div>
 
               {/* Social buttons */}
-              <div className="grid grid-cols-2 gap-3 mb-7">
+              {/* <div className="grid grid-cols-2 gap-3 mb-7">
                 <button
                   type="button"
                   onClick={() =>
@@ -172,7 +172,7 @@ const SignupPage = () => {
                   <Github size={15} />
                   GitHub
                 </button>
-              </div>
+              </div> */}
 
               {/* Divider */}
               <div className="relative flex items-center mb-7">

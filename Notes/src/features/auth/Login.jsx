@@ -174,7 +174,7 @@ export default function Login() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-                <div className="grid grid-cols-2 gap-3 mb-4">
+                {/* <div className="grid grid-cols-2 gap-3 mb-4">
                   <button
                     type="button"
                     onClick={() =>
@@ -197,7 +197,7 @@ export default function Login() {
                     <Github size={15} />
                     GitHub
                   </button>
-                </div>
+                </div> */}
 
                 {/* Divider - ADD THIS */}
                 <div className="relative flex items-center mb-4">
