@@ -150,7 +150,10 @@ const SignupPage = () => {
               <div className="grid grid-cols-2 gap-3 mb-7">
                 <button
                   type="button"
-                  onClick={() => (window.location.href = "/api/auth/google")}
+                  onClick={() =>
+                    (window.location.href =
+                      "https://daily-deck-oaxd.vercel.app/api/auth/google")
+                  }
                   className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
                   style={mono}
                 >
