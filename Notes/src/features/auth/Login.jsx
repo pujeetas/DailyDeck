@@ -6,10 +6,9 @@ import { Terminal, ArrowRight, Lock, Mail, Github, Chrome } from "lucide-react";
 import useUserStore from "@/hooks/useUserStore";
 import { message } from "antd";
 import ForgotPasswordModal from "./ForgotPasswordModal";
-import { API_BASE_URL } from "@/config/api";
-
-const mono = { fontFamily: "'JetBrains Mono', monospace" };
-const serif = { fontFamily: "'Newsreader', Georgia, serif" };
+import { ENDPOINTS } from "@/config/endpoints";
+import { mono, serif, inputClasses } from "@/config/theme";
+import { MESSAGES, ROUTES } from "@/config/constants";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -21,44 +20,38 @@ export default function Login() {
   const { login } = useUserStore();
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/api/login`,
+      await axios.post(
+        ENDPOINTS.LOGIN,
         { email: form.email, password: form.password },
         { withCredentials: true },
       );
 
-      const userDetailsRes = await axios.get(
-        `${API_BASE_URL}/api/user/getUserDetails`,
-        {
-          withCredentials: true,
-        },
-      );
+      const userDetailsRes = await axios.get(ENDPOINTS.GET_USER_DETAILS, {
+        withCredentials: true,
+      });
       login(userDetailsRes.data);
 
       setIsSuccess(true);
-      message.success("Welcome back.");
-      setTimeout(() => navigate("/main"), 600);
+      message.success(MESSAGES.LOGIN_SUCCESS);
+      setTimeout(() => navigate(ROUTES.MAIN), 600);
     } catch (error) {
       if (error.response) {
-        message.error(error.response.data.message || "Invalid credentials.");
+        message.error(error.response.data.message || MESSAGES.LOGIN_ERROR);
       } else if (error.request) {
-        message.error("Server unreachable.");
+        message.error(MESSAGES.SERVER_ERROR);
       } else {
-        message.error("Login failed.");
+        message.error(MESSAGES.GENERIC_ERROR);
       }
       setLoading(false);
     }
   };
-
-  const inputClasses =
-    "w-full pl-10 pr-4 py-3 border border-zinc-800 text-[14px] text-white placeholder:text-zinc-600 bg-[#0e0e0c] outline-none transition-all duration-200 focus:border-amber-500/50 focus:bg-[#111110]";
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0a0a08] p-4 relative overflow-hidden">
@@ -92,7 +85,7 @@ export default function Login() {
           >
             {/* LEFT — Brand panel */}
             <div className="hidden md:flex flex-col justify-between bg-[#0e0e0c] p-10 lg:p-12 relative overflow-hidden border-r border-zinc-800/60">
-              <div className="absolute top-0 right-0 w-[300px] h-[300px] `bg-amber-500/4 rounded-full blur-[120px] -mr-20 -mt-20" />
+              <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-amber-500/4 rounded-full blur-[120px] -mr-20 -mt-20" />
 
               <div className="relative z-10">
                 <div className="flex items-baseline gap-2 mb-12">
@@ -180,7 +173,7 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() =>
-                      (window.location.href = `${API_BASE_URL}/api/auth/google`)
+                      (window.location.href = ENDPOINTS.GOOGLE_AUTH)
                     }
                     className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
                     style={mono}
@@ -191,7 +184,7 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() =>
-                      (window.location.href = `${API_BASE_URL}/api/auth/github`)
+                      (window.location.href = ENDPOINTS.GITHUB_AUTH)
                     }
                     className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
                     style={mono}
@@ -201,7 +194,7 @@ export default function Login() {
                   </button>
                 </div>
 
-                {/* Divider - ADD THIS */}
+                {/* Divider*/}
                 <div className="relative flex items-center mb-4">
                   <div className="grow border-t border-zinc-800/60" />
                   <span
@@ -304,7 +297,7 @@ export default function Login() {
                 <p className="text-[13px] text-zinc-600" style={serif}>
                   Don't have an account?{" "}
                   <button
-                    onClick={() => navigate("/signup")}
+                    onClick={() => navigate(ROUTES.SIGNUP)}
                     className="text-amber-500 font-medium hover:text-amber-400 transition-colors"
                   >
                     Create account

@@ -15,9 +15,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import useUserStore from "@/hooks/useUserStore";
-
-const mono = { fontFamily: "'JetBrains Mono', monospace" };
-const serif = { fontFamily: "'Newsreader', Georgia, serif" };
+import { ENDPOINTS } from "@/config/endpoints";
+import { mono, serif } from "@/config/theme";
+import { MESSAGES, REGEX, ROUTES, VALIDATION } from "@/config/constants";
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -33,8 +33,6 @@ const SignupPage = () => {
   const [errors, setErrors] = useState({});
   const { signUp } = useUserStore();
 
-  const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-
   const onChange = (e) => {
     setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
     if (errors[e.target.name]) {
@@ -44,10 +42,10 @@ const SignupPage = () => {
 
   const validate = () => {
     const e = {};
-    if (!form.firstName.trim()) e.firstName = "First name required";
-    if (!form.lastName.trim()) e.lastName = "Last name required";
-    if (!/^\S+@\S+\.\S+$/.test(form.email)) e.email = "Valid email required";
-    if (form.password.length < 6) e.password = "Min 6 characters";
+    if (!form.firstName.trim()) e.firstName = VALIDATION.FIRST_NAME_REQUIRED;
+    if (!form.lastName.trim()) e.lastName = VALIDATION.LAST_NAME_REQUIRED;
+    if (!REGEX.EMAIL.test(form.email)) e.email = VALIDATION.EMAIL_INVALID;
+    if (form.password.length < 6) e.password = VALIDATION.PASSWORD_TOO_SHORT;
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -58,17 +56,15 @@ const SignupPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("/api/signup", form, {
+      const response = await axios.post(ENDPOINTS.SIGNUP, form, {
         withCredentials: true,
       });
       signUp(response.data.user);
       setIsSuccess(true);
-      message.success("Signup successful.");
-      setTimeout(() => navigate("/main"), 600);
+      message.success(MESSAGES.SIGNUP_SUCCESS);
+      setTimeout(() => navigate(ROUTES.MAIN), 600);
     } catch (error) {
-      message.error(
-        error.response?.data?.message || "Signup failed. Try again.",
-      );
+      message.error(error.response?.data?.message || MESSAGES.SIGNUP_ERROR);
       setLoading(false);
     }
   };
@@ -84,12 +80,12 @@ const SignupPage = () => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("oauth") === "success") {
       axios
-        .get(`${API}/api/verify`, { withCredentials: true })
+        .get(ENDPOINTS.VERIFY, { withCredentials: true })
         .then((res) => {
           signUp(res.data.user);
-          navigate("/main");
+          navigate(ROUTES.MAIN);
         })
-        .catch(() => navigate("/login"));
+        .catch(() => navigate(ROUTES.LOGIN));
     }
   }, [navigate, signUp]);
 
@@ -152,9 +148,7 @@ const SignupPage = () => {
               <div className="grid grid-cols-2 gap-3 mb-7">
                 <button
                   type="button"
-                  onClick={() =>
-                    (window.location.href = `${API}/api/auth/google`)
-                  }
+                  onClick={() => (window.location.href = ENDPOINTS.GOOGLE_AUTH)}
                   className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
                   style={mono}
                 >
@@ -163,9 +157,7 @@ const SignupPage = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() =>
-                    (window.location.href = `${API}/api/auth/github`)
-                  }
+                  onClick={() => (window.location.href = ENDPOINTS.GITHUB_AUTH)}
                   className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
                   style={mono}
                 >
@@ -300,7 +292,7 @@ const SignupPage = () => {
                     />
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
+                      onClick={() => setShowPassword((prev) => !prev)}
                       className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-zinc-400 transition-colors"
                     >
                       {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
@@ -331,7 +323,7 @@ const SignupPage = () => {
               >
                 Already have an account?{" "}
                 <button
-                  onClick={() => navigate("/login")}
+                  onClick={() => navigate(ROUTES.LOGIN)}
                   className="text-amber-500 font-medium hover:text-amber-400 transition-colors"
                 >
                   Log in

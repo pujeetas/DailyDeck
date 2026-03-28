@@ -1,14 +1,11 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Lock, ArrowRight, CheckCircle2, Mail } from "lucide-react";
+import { Lock, ArrowRight, CheckCircle2 } from "lucide-react";
 import { message } from "antd";
 import axios from "axios";
-
-const mono = { fontFamily: "'JetBrains Mono', monospace" };
-const serif = { fontFamily: "'Newsreader', Georgia, serif" };
-
-const inputClasses =
-  "w-full pl-10 pr-4 py-3 border border-zinc-800 text-[14px] text-white placeholder:text-zinc-600 bg-[#0e0e0c] outline-none transition-all duration-200 focus:border-amber-500/50 focus:bg-[#111110]";
+import { ENDPOINTS } from "@/config/endpoints";
+import { mono, serif, inputClasses } from "@/config/theme";
+import { MESSAGES, ROUTES } from "@/config/constants";
 
 export default function ResetPassword() {
   const { userId, token } = useParams();
@@ -19,23 +16,23 @@ export default function ResetPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!userId || !token) {
-      message.error("Invalid or expired reset link");
-      return;
+
+    if (form.password.length < 6) {
+      return message.error(MESSAGES.PASSWORD_MIN_LENGTH);
     }
     if (form.password !== form.confirmPassword) {
-      return message.error("Passwords do not match!");
+      return message.error(MESSAGES.PASSWORDS_MISMATCH);
     }
     setLoading(true);
     try {
-      await axios.post(`/api/reset-password/${userId}/${token}`, {
+      await axios.post(ENDPOINTS.RESET_PASSWORD(userId, token), {
         password: form.password,
       });
       setIsSuccess(true);
-      message.success("Password updated successfully!");
+      message.success(MESSAGES.RESET_PASSWORD_UPDATE_SUCCESS);
     } catch (error) {
       message.error(
-        error.response?.data?.message || "Link expired or invalid.",
+        error.response?.data?.message || MESSAGES.RESET_LINK_EXPIRED,
       );
     } finally {
       setLoading(false);
@@ -53,7 +50,7 @@ export default function ResetPassword() {
             Invalid Reset Link
           </h2>
           <button
-            onClick={() => navigate("/login")}
+            onClick={() => navigate(ROUTES.LOGIN)}
             className="px-6 py-2.5 bg-amber-500 text-[#0a0a08] text-[13px] font-bold tracking-wide hover:bg-amber-400 transition-colors"
             style={mono}
           >
@@ -126,12 +123,13 @@ export default function ResetPassword() {
                     />
                     <input
                       type="password"
+                      name="password"
                       required
                       placeholder="••••••••"
                       className={inputClasses}
                       style={mono}
                       onChange={(e) =>
-                        setForm({ ...form, password: e.target.value })
+                        setForm((s) => ({ ...s, password: e.target.value }))
                       }
                     />
                   </div>
@@ -151,12 +149,16 @@ export default function ResetPassword() {
                     />
                     <input
                       type="password"
+                      name="confirmPassword"
                       required
                       placeholder="••••••••"
                       className={inputClasses}
                       style={mono}
                       onChange={(e) =>
-                        setForm({ ...form, confirmPassword: e.target.value })
+                        setForm((s) => ({
+                          ...s,
+                          confirmPassword: e.target.value,
+                        }))
                       }
                     />
                   </div>
@@ -198,7 +200,7 @@ export default function ResetPassword() {
                 Your password has been successfully updated.
               </p>
               <button
-                onClick={() => navigate("/login")}
+                onClick={() => navigate(ROUTES.LOGIN)}
                 className="w-full py-3.5 bg-amber-500 text-[#0a0a08] text-[13px] font-bold tracking-wide hover:bg-amber-400 transition-colors"
                 style={mono}
               >

@@ -1,38 +1,39 @@
-import React, { useState } from "react";
-import { Loader2, ArrowLeft, Mail } from "lucide-react";
-import axios from "axios";
+import { MESSAGES } from "@/config/constants";
+import { ENDPOINTS } from "@/config/endpoints";
+import { inputClasses, mono, serif } from "@/config/theme";
 import { message } from "antd";
+import axios from "axios";
+import { ArrowLeft, Loader2, Mail } from "lucide-react";
+import { useState } from "react";
 
-const mono = { fontFamily: "'JetBrains Mono', monospace" };
-const serif = { fontFamily: "'Newsreader', Georgia, serif" };
+const ForgotPasswordModal = ({ forgotPassword, setForgotPassword }) => {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
-const ForgotPasswordModal = ({
-  forgotPassword,
-  setForgotPassword,
-  loading,
-}) => {
   if (!forgotPassword) return null;
 
-  const [email, setEmail] = useState("");
-
-  async function handleForgotPassword(e) {
+  const handleForgotPassword = async (e) => {
     e.preventDefault();
     if (!email) {
-      return message.error("Please enter your email address to continue.");
+      return message.error(MESSAGES.EMAIL_REQUIRED);
     }
+    setLoading(true);
     try {
       await axios.post(
-        "/api/forgotPassword",
+        ENDPOINTS.FORGOT_PASSWORD,
         { email },
         { withCredentials: true },
       );
-      message.success("Reset link sent if email exists.");
+      message.success(MESSAGES.RESET_PASSWORD_SUCCESS);
+      setForgotPassword(false);
     } catch (error) {
       message.error(
-        error.response?.data?.message || "Password Reset failed. Try again.",
+        error.response?.data?.message || MESSAGES.RESET_PASSWORD_ERROR,
       );
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
@@ -84,7 +85,7 @@ const ForgotPasswordModal = ({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@company.com"
-                className="w-full pl-10 pr-4 py-3 border border-zinc-800 text-[14px] text-white placeholder:text-zinc-600 bg-[#0e0e0c] outline-none transition-all duration-200 focus:border-amber-500/50 focus:bg-[#111110]"
+                className={inputClasses}
                 style={mono}
               />
             </div>
