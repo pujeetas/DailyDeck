@@ -1,12 +1,13 @@
-import { useNotes } from "./hooks/useNotes";
-import Sidebar from "./Sidebar";
-import Editor from "./Editor/Editor";
+import Header from "@/components/layout/Header";
+import { UI_TEXT } from "@/config/constants";
+import { AntdDarkProvider } from "@/config/theme";
+import useUserStore from "@/hooks/useUserStore";
 import debounce from "lodash.debounce";
 import { useCallback, useEffect, useMemo } from "react";
-import { ConfigProvider, theme } from "antd";
 import DrawerPanel from "./DrawerPanel";
-import Header from "@/components/layout/Header";
-import useUserStore from "@/hooks/useUserStore";
+import Editor from "./Editor/Editor";
+import { useNotes } from "./hooks/useNotes";
+import Sidebar from "./Sidebar";
 
 export default function NotesPage() {
   const {
@@ -31,7 +32,7 @@ export default function NotesPage() {
     if (isLoadingAnswer || answer) {
       setRagOpen(true);
     }
-  }, [isLoadingAnswer, answer]);
+  }, [isLoadingAnswer, answer, setRagOpen]);
 
   const ragQuery = answer?.question || "";
   const ragResponse = answer?.answer || "";
@@ -46,7 +47,6 @@ export default function NotesPage() {
     () =>
       debounce(async (id, updates) => {
         if (!id) {
-          console.error("No active note ID");
           return;
         }
         await updateNote(id, updates);
@@ -72,9 +72,7 @@ export default function NotesPage() {
             },
           });
         }
-      } catch (error) {
-        console.error("Failed to ask question:", error);
-      }
+      } catch (error) {}
     },
     [askQuestion],
   );
@@ -108,40 +106,11 @@ export default function NotesPage() {
             />
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-gray-400">
-              <p className="text-lg">Select a note or create a new one.</p>
+              <p className="text-lg">{UI_TEXT.NOTES_EMPTY}</p>
             </div>
           )}
         </div>
-        <ConfigProvider
-          theme={{
-            algorithm: theme.darkAlgorithm,
-            token: {
-              colorBgElevated: "#262626",
-              colorBgContainer: "#262626",
-              colorText: "#e5e7eb",
-              colorTextSecondary: "#9ca3af",
-              colorBorder: "#2f2f2f",
-              colorSplit: "#2f2f2f",
-              borderRadiusLG: 8,
-            },
-            components: {
-              Drawer: {
-                headerBg: "#262626",
-                bodyBg: "#262626",
-                footerBg: "#262626",
-              },
-              Input: {
-                colorBgContainer: "#1f1f1f",
-                colorBorder: "#333333",
-                colorText: "#e5e7eb",
-                colorTextPlaceholder: "#6b7280",
-              },
-              Button: {
-                colorPrimary: "#3b82f6",
-              },
-            },
-          }}
-        >
+        <AntdDarkProvider>
           <DrawerPanel
             open={ragOpen}
             onClose={() => {
@@ -154,7 +123,7 @@ export default function NotesPage() {
             ragSources={ragSources}
             setActiveId={setActiveId}
           />
-        </ConfigProvider>
+        </AntdDarkProvider>
       </div>
     </div>
   );

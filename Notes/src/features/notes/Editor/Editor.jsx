@@ -3,10 +3,12 @@ import "@blocknote/mantine/style.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { codeBlockOptions } from "@blocknote/code-block";
 import "@blocknote/react/style.css";
-import { Divider } from "antd";
+import { Divider, message } from "antd";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { BlockNoteSchema, createCodeBlockSpec } from "@blocknote/core";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import { DRAWER_TEXT, UI_TEXT } from "@/config/constants";
+import { handleQues } from "../utils/editorUtils";
 
 const schema = BlockNoteSchema.create().extend({
   blockSpecs: {
@@ -47,9 +49,7 @@ const Editor = ({
   });
 
   const handleTitleChange = (e) => {
-    const newTitle = e.target.value;
-    setLocalTitle(newTitle);
-    onTitleChange(newTitle);
+    setLocalTitle(e.target.value);
   };
 
   const handleTitleBlur = () => {
@@ -59,39 +59,8 @@ const Editor = ({
     }
   };
 
-  const handleQues = (editor) => {
-    const cursorPosition = editor.getTextCursorPosition();
-    const currentBlock = cursorPosition.block;
-
-    if (!currentBlock.content || !currentBlock.content[0]) {
-      setAskAIBtn(false);
-      setCurrentQuestion("");
-      return;
-    }
-
-    const textContent = currentBlock.content[0].text;
-
-    if (!textContent.trim().startsWith("/ask")) {
-      setAskAIBtn(false);
-      setCurrentQuestion("");
-      return;
-    }
-
-    const question = textContent.replace(/^\/ask\s*/i, "").trim();
-
-    if (!question) {
-      setAskAIBtn(true);
-      setCurrentQuestion("");
-      return;
-    }
-
-    setAskAIBtn(true);
-    setCurrentQuestion(question);
-  };
-
   const handleRagQues = useCallback(async () => {
     if (!currentQuestion || !currentQuestion.trim()) {
-      console.warn("No question to send");
       return;
     }
 
@@ -103,11 +72,9 @@ const Editor = ({
       setAskAIBtn(false);
       setCurrentQuestion("");
     } catch (error) {
-      console.error("Error sending question:", error);
-      // Optionally show error to user
-      alert("Failed to send question. Please try again.");
+      message.error("Failed to send question. Please try again.");
     }
-  }, [currentQuestion, onAskQuestion, editor]);
+  }, [currentQuestion, onAskQuestion]);
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-[#1f1f1f] py-12 px-6">
@@ -119,7 +86,7 @@ const Editor = ({
             onChange={handleTitleChange}
             onBlur={handleTitleBlur}
             autoFocus
-            placeholder="Untitled"
+            placeholder={UI_TEXT.FALLBACK_NOTE_TITLE}
             className="w-full bg-transparent text-gray-200 text-4xl font-bold 
             outline-none border-none placeholder:text-gray-500"
           />
@@ -128,7 +95,9 @@ const Editor = ({
             onClick={() => setIsEditingTitle(true)}
             className="text-gray-200 text-4xl font-bold cursor-text hover:text-white transition"
           >
-            {localTitle || <span className="text-gray-500">Untitled</span>}
+            {localTitle || (
+              <span className="text-gray-500">{DRAWER_TEXT.TITLE}</span>
+            )}
           </div>
         )}
       </div>
@@ -142,7 +111,9 @@ const Editor = ({
         <BlockNoteView
           editor={editor}
           onChange={() => {
-            handleQues(editor);
+            const { showBtn, question } = handleQues(editor);
+            setAskAIBtn(showBtn);
+            setCurrentQuestion(question);
             onChange({ body: editor.document });
           }}
           theme="dark"
@@ -159,7 +130,7 @@ const Editor = ({
               {/* Tooltip */}
               {showTooltip && (
                 <div className="absolute bottom-full right-0 mb-2 px-3 py-1.5 bg-[#3b82f6] text-white text-sm rounded-md whitespace-nowrap shadow-lg">
-                  Ask your notes
+                  {DRAWER_TEXT.TITLE}
                   <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-[#3b82f6]" />
                 </div>
               )}

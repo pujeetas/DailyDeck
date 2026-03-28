@@ -1,9 +1,10 @@
 import useUserStore from "@/hooks/useUserStore";
 import { DeleteOutlined, PushpinOutlined } from "@ant-design/icons";
-import { PanelRightClose } from "lucide-react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, PanelRightClose } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../utils/formatDate";
+import { ROUTES, UI_TEXT } from "@/config/constants";
+import { useMemo } from "react";
 
 export default function NotesList({
   notes,
@@ -15,11 +16,15 @@ export default function NotesList({
   setIsSidebarClose,
 }) {
   const { user } = useUserStore();
-  const today = new Date().toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
+  const today = useMemo(
+    () =>
+      new Date().toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      }),
+    [],
+  );
   const navigate = useNavigate();
 
   return (
@@ -27,7 +32,7 @@ export default function NotesList({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-[11px] font-semibold text-gray-400 tracking-wider">
-          NOTES
+          {UI_TEXT.NOTES_HEADER}
         </h3>
 
         <PanelRightClose
@@ -39,7 +44,7 @@ export default function NotesList({
 
       <div className="flex flex-col leading-tight mb-6">
         <span className="text-sm text-zinc-300 font-medium">
-          Welcome, {user?.firstName || "User"}
+          Welcome, {user?.firstName || UI_TEXT.FALLBACK_NAME}
         </span>
         <span className="text-[11px] text-zinc-500">{today}</span>
       </div>
@@ -50,18 +55,18 @@ export default function NotesList({
         className="cursor-pointer w-full bg-[#333333] text-gray-200 py-2 rounded-md text-sm 
         hover:bg-[#3f3f3f] transition-colors mb-4"
       >
-        New Note
+        {UI_TEXT.NEW_NOTE}
       </button>
 
       {/* Notes */}
       <div className="flex flex-col gap-2 flex-1">
-        {notes.map((n, index) => {
+        {notes.map((n) => {
           const isActive = activeId === n._id;
           const isPinned = n.pinned;
 
           return (
             <div
-              key={n._id || n.id || index}
+              key={n._id}
               onClick={() => onSelect(n._id)}
               className={`group p-3 rounded-md cursor-pointer transition-colors relative
                 ${
@@ -78,7 +83,7 @@ export default function NotesList({
 
               <div className="flex justify-between mb-1">
                 <div className="font-medium text-gray-200 text-sm line-clamp-1">
-                  {n.title || "Untitled"}
+                  {n.title || UI_TEXT.FALLBACK_NOTE_TITLE}
                 </div>
 
                 <button
@@ -120,7 +125,7 @@ export default function NotesList({
 
       {/* Go to Main Menu */}
       <button
-        onClick={() => navigate("/main")} // or navigate("/") if routing
+        onClick={() => navigate(ROUTES.MAIN)}
         className="cursor-pointer mt-4 flex items-center gap-2 text-[11px] text-gray-500 
              hover:text-gray-300 transition-colors group"
       >
@@ -128,7 +133,7 @@ export default function NotesList({
           size={14}
           className="opacity-60 group-hover:opacity-100 transition"
         />
-        <span>Go to main menu</span>
+        <span>{UI_TEXT.GO_TO_MAIN}</span>
       </button>
     </section>
   );

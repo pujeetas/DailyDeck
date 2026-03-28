@@ -1,6 +1,7 @@
 import { Drawer, Spin, Button, Typography } from "antd";
 import { CopyOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { DRAWER_TEXT, UI_TEXT } from "@/config/constants";
 
 const { Paragraph, Text } = Typography;
 
@@ -14,12 +15,24 @@ const DrawerPanel = ({
   setActiveId,
 }) => {
   const [copied, setCopied] = useState(false);
+  const timeoutRef = useRef(null);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(ragResponse);
+    setCopied(true);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => setCopied(false), 2000);
+  };
+
+  useEffect(() => {
+    return () => clearTimeout(timeoutRef.current);
+  }, []);
   return (
     <Drawer
       title={
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
-          <span className="text-lg font-semibold">Ask your notes</span>
+          <span className="text-lg font-semibold">{DRAWER_TEXT.TITLE}</span>
         </div>
       }
       placement="right"
@@ -46,7 +59,7 @@ const DrawerPanel = ({
             <div className="flex items-center gap-2 mb-2">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
               <span className="text-xs font-semibold text-blue-300 uppercase tracking-wider">
-                Your Question
+                {DRAWER_TEXT.YOUR_QUESTION}
               </span>
             </div>
             <div className="text-sm text-gray-100 leading-relaxed">
@@ -66,10 +79,10 @@ const DrawerPanel = ({
               </div>
               <div className="text-center space-y-2">
                 <p className="text-gray-300 font-medium">
-                  Searching your notes…
+                  {DRAWER_TEXT.SEARCHING}
                 </p>
                 <p className="text-xs text-gray-500">
-                  This may take a few moments
+                  {DRAWER_TEXT.SEARCHING_SUBTITLE}
                 </p>
               </div>
             </div>
@@ -82,7 +95,7 @@ const DrawerPanel = ({
                   strong
                   className="text-sm text-green-300 uppercase tracking-wider"
                 >
-                  Answer
+                  {DRAWER_TEXT.ANSWER}
                 </Text>
               </div>
 
@@ -111,7 +124,7 @@ const DrawerPanel = ({
                 </svg>
               </div>
               <p className="text-gray-400 text-[15px] mb-2">
-                Ask a question to search your notes
+                {DRAWER_TEXT.EMPTY_STATE}
               </p>
               <p className="text-xs text-gray-600">
                 Type{" "}
@@ -133,11 +146,11 @@ const DrawerPanel = ({
                 type="secondary"
                 className="text-xs font-semibold text-purple-300 uppercase tracking-wider"
               >
-                Sources ({ragSources.length})
+                {DRAWER_TEXT.SOURCES} ({ragSources.length})
               </Text>
             </div>
             <div className="flex flex-wrap gap-2">
-              {ragSources.map((source, index) => (
+              {ragSources.map((source) => (
                 <button
                   key={source.id}
                   onClick={() => setActiveId?.(source.id)}
@@ -148,7 +161,7 @@ const DrawerPanel = ({
                 >
                   <span className="flex items-center gap-1.5">
                     <span className="w-1 h-1 rounded-full bg-purple-400 group-hover:bg-blue-400 transition-colors"></span>
-                    {source.title || "Untitled"}
+                    {source.title || UI_TEXT.FALLBACK_NOTE_TITLE}
                   </span>
                 </button>
               ))}
@@ -162,11 +175,7 @@ const DrawerPanel = ({
             <Button
               aria-label="Copy answer"
               icon={copied ? <CheckOutlined /> : <CopyOutlined />}
-              onClick={async () => {
-                await navigator.clipboard.writeText(ragResponse);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-              }}
+              onClick={handleCopy}
               className={`flex-1 h-10 ${
                 copied
                   ? "bg-green-600 hover:bg-green-700 border-green-600"
@@ -174,34 +183,17 @@ const DrawerPanel = ({
               } text-white font-medium transition-all duration-200`}
               type="primary"
             >
-              {copied ? " Copied!" : "Copy Answer"}
+              {copied ? DRAWER_TEXT.COPIED : DRAWER_TEXT.COPY}{" "}
             </Button>
             <Button
               onClick={onClose}
               className="h-10 px-6 border-[#3f3f3f] hover:border-gray-500 text-gray-300 hover:text-gray-100"
             >
-              Close
+              {DRAWER_TEXT.CLOSE}
             </Button>
           </div>
         )}
       </div>
-
-      {/* Custom Scrollbar Styles */}
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #3f3f3f;
-          border-radius: 3px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #4f4f4f;
-        }
-      `}</style>
     </Drawer>
   );
 };
