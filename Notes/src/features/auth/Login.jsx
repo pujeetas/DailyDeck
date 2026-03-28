@@ -6,6 +6,7 @@ import { Terminal, ArrowRight, Lock, Mail, Github, Chrome } from "lucide-react";
 import useUserStore from "@/hooks/useUserStore";
 import { message } from "antd";
 import ForgotPasswordModal from "./ForgotPasswordModal";
+import { API_BASE_URL } from "@/config/api";
 
 const mono = { fontFamily: "'JetBrains Mono', monospace" };
 const serif = { fontFamily: "'Newsreader', Georgia, serif" };
@@ -19,8 +20,6 @@ export default function Login() {
 
   const { login } = useUserStore();
 
-  const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -30,14 +29,17 @@ export default function Login() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "/api/login",
+        `${API_BASE_URL}/api/login`,
         { email: form.email, password: form.password },
         { withCredentials: true },
       );
 
-      const userDetailsRes = await axios.get("/api/user/getUserDetails", {
-        withCredentials: true,
-      });
+      const userDetailsRes = await axios.get(
+        `${API_BASE_URL}/api/user/getUserDetails`,
+        {
+          withCredentials: true,
+        },
+      );
       login(userDetailsRes.data);
 
       setIsSuccess(true);
@@ -178,7 +180,7 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() =>
-                      (window.location.href = `${API}/api/auth/google`)
+                      (window.location.href = `${API_BASE_URL}/api/auth/google`)
                     }
                     className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
                     style={mono}
@@ -189,7 +191,7 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() =>
-                      (window.location.href = `${API}/api/auth/github`)
+                      (window.location.href = `${API_BASE_URL}/api/auth/github`)
                     }
                     className="flex items-center justify-center gap-2.5 border border-zinc-800 py-2.5 text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 hover:bg-zinc-900/30 transition-all duration-200"
                     style={mono}

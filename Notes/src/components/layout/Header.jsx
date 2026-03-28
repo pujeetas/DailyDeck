@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import useUserStore from "../../hooks/useUserStore";
 import UserDropdownMenu from "@/constants/UserDropdownMenu";
 import { ConfigProvider, theme } from "antd";
+import { API_BASE_URL } from "@/config/api";
 
 const mono = { fontFamily: "'JetBrains Mono', monospace" };
 
@@ -19,7 +20,11 @@ const Header = ({ color, border, margin, padding }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("/api/logout", {}, { withCredentials: true });
+      await axios.post(
+        `${API_BASE_URL}/api/logout`,
+        {},
+        { withCredentials: true },
+      );
       logout();
       navigate("/login");
     } catch (error) {
