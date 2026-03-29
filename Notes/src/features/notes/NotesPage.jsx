@@ -1,6 +1,6 @@
 import Header from "@/components/layout/Header";
 import { UI_TEXT } from "@/config/constants";
-import { AntdDarkProvider } from "@/config/theme";
+import { AntdDarkProvider } from "@/config/theme.jsx";
 import useUserStore from "@/hooks/useUserStore";
 import debounce from "lodash.debounce";
 import { useCallback, useEffect, useMemo } from "react";
