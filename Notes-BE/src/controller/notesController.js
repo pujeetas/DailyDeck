@@ -5,6 +5,7 @@ import { NotesModel } from "../schema/notesSchema.js";
 import {
   addNoteEmbedding,
   searchNotes,
+  searchNotesWithFallback,
 } from "../services/mongoVectorService.js";
 import { extractPlainTextFromBlockNote } from "../services/extractPlainTextFromEditor.js";
 import {
@@ -113,6 +114,31 @@ export const deleteNote = async (req, res) => {
     res.json({ message: "Note Deleted", _id: deleteNoteId, totalNotes });
   } catch (error) {
     res.status(400).send("Something went wrong: " + error.message);
+  }
+};
+
+//search notes (sidebar live search)
+export const searchNotesByQuery = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const q = (req.query.q || "").trim();
+
+    if (!q) {
+      return res.status(200).json({ notes: [] });
+    }
+
+    const notes = await searchNotesWithFallback(q, userId, 8);
+
+    res.status(200).json({
+      notes: notes.map((n) => ({
+        _id: n._id,
+        title: n.title,
+        updatedAt: n.updatedAt,
+        pinned: n.pinned,
+      })),
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Something went wrong: " + error.message });
   }
 };
 

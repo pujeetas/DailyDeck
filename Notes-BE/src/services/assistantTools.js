@@ -1,7 +1,6 @@
 import { TodoModel } from "../schema/todoSchema.js";
-import { NotesModel } from "../schema/notesSchema.js";
 import { createTodoValidations } from "../validation/todoValidations.js";
-import { searchNotes } from "./mongoVectorService.js";
+import { searchNotesWithFallback } from "./mongoVectorService.js";
 
 export const tools = [
   {
@@ -79,25 +78,7 @@ async function searchUserNotes(input, userId) {
   const query = input.query?.trim();
   if (!query) return "No search query provided.";
 
-  let notes = [];
-  try {
-    const results = await searchNotes(query, 5, userId);
-    if (results.ids.length > 0) {
-      notes = await NotesModel.find({ _id: { $in: results.ids }, userId });
-    }
-  } catch (err) {
-    console.error(
-      "search_notes: vector search failed, falling back to title match:",
-      err.message,
-    );
-  }
-
-  if (notes.length === 0) {
-    notes = await NotesModel.find({
-      userId,
-      title: { $regex: query, $options: "i" },
-    }).limit(5);
-  }
+  const notes = await searchNotesWithFallback(query, userId, 5);
 
   if (notes.length === 0) return "No notes found matching that search.";
   return notes.map((n) => `• ${n.title || "Untitled"} (id ${n._id})`).join("\n");

@@ -32,6 +32,13 @@ export const deleteNoteRequest = (id) => {
   return api.delete(`/deleteNote/${id}`);
 };
 
+export const searchNotesRequest = (query) => {
+  if (!query || !query.trim()) {
+    return Promise.resolve({ data: { notes: [] } });
+  }
+  return api.get("/searchNotes", { params: { q: query.trim() } });
+};
+
 export const question = (questionText) => {
   if (!questionText || !questionText.trim()) {
     return Promise.reject(new Error("Question cannot be empty"));

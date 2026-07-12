@@ -1,10 +1,12 @@
 import useUserStore from "@/hooks/useUserStore";
 import { DeleteOutlined, PushpinOutlined } from "@ant-design/icons";
-import { ArrowLeft, PanelRightClose } from "lucide-react";
+import { ArrowLeft, PanelRightClose, Search, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../utils/formatDate";
 import { ROUTES, UI_TEXT } from "@/config/constants";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import debounce from "lodash.debounce";
+import { searchNotesRequest } from "./services/notesService";
 
 export default function NotesList({
   notes,
@@ -26,6 +28,51 @@ export default function NotesList({
     [],
   );
   const navigate = useNavigate();
+
+  const [query, setQuery] = useState("");
+  const [searchResultIds, setSearchResultIds] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const runSearch = useMemo(
+    () =>
+      debounce(async (q) => {
+        try {
+          const res = await searchNotesRequest(q);
+          setSearchResultIds(res.data.notes.map((n) => n._id));
+        } catch (error) {
+          console.error("Error searching notes:", error);
+          setSearchResultIds([]);
+        } finally {
+          setIsSearching(false);
+        }
+      }, 350),
+    [],
+  );
+
+  useEffect(() => {
+    return () => runSearch.cancel();
+  }, [runSearch]);
+
+  const handleQueryChange = (value) => {
+    setQuery(value);
+    if (!value.trim()) {
+      setIsSearching(false);
+      setSearchResultIds(null);
+      runSearch.cancel();
+      return;
+    }
+    setIsSearching(true);
+    runSearch(value);
+  };
+
+  const notesById = useMemo(
+    () => new Map(notes.map((n) => [n._id, n])),
+    [notes],
+  );
+
+  const displayedNotes = searchResultIds
+    ? searchResultIds.map((id) => notesById.get(id)).filter(Boolean)
+    : notes;
 
   return (
     <section className="w-72 bg-[#262626] h-full p-4 flex flex-col overflow-y-auto">
@@ -52,15 +99,46 @@ export default function NotesList({
       {/* New Note Button */}
       <button
         onClick={onNew}
-        className="cursor-pointer w-full bg-[#333333] text-gray-200 py-2 rounded-md text-sm 
+        className="cursor-pointer w-full bg-[#333333] text-gray-200 py-2 rounded-md text-sm
         hover:bg-[#3f3f3f] transition-colors mb-4"
       >
         {UI_TEXT.NEW_NOTE}
       </button>
 
+      {/* Search */}
+      <div className="relative mb-4">
+        <Search
+          size={14}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
+        />
+        <input
+          value={query}
+          onChange={(e) => handleQueryChange(e.target.value)}
+          placeholder="Search notes…"
+          className="w-full bg-[#1e1e1e] border border-[#333333] rounded-md text-sm text-gray-200
+          placeholder:text-gray-500 pl-8 pr-8 py-2 focus:outline-none focus:border-gray-500 transition-colors"
+        />
+        {query && (
+          <button
+            onClick={() => handleQueryChange("")}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+          >
+            <X size={14} />
+          </button>
+        )}
+      </div>
+
       {/* Notes */}
       <div className="flex flex-col gap-2 flex-1">
-        {notes.map((n) => {
+        {isSearching && (
+          <div className="text-[11px] text-gray-500 px-1 pb-1">Searching…</div>
+        )}
+        {!isSearching && searchResultIds && displayedNotes.length === 0 && (
+          <div className="text-[12px] text-gray-500 px-1">
+            No notes found for "{query}"
+          </div>
+        )}
+        {displayedNotes.map((n) => {
           const isActive = activeId === n._id;
           const isPinned = n.pinned;
 

@@ -13,6 +13,32 @@ export async function addNoteEmbedding(noteId, title, plainText) {
   await NotesModel.findByIdAndUpdate(noteId, { embedding });
 }
 
+export async function searchNotesWithFallback(queryText, userId, limit = 5) {
+  let notes = [];
+  try {
+    const results = await searchNotes(queryText, limit, userId);
+    if (results.ids.length > 0) {
+      const found = await NotesModel.find({ _id: { $in: results.ids }, userId });
+      const byId = new Map(found.map((n) => [n._id.toString(), n]));
+      notes = results.ids.map((id) => byId.get(id)).filter(Boolean);
+    }
+  } catch (err) {
+    console.error(
+      "searchNotesWithFallback: vector search failed, falling back to title match:",
+      err.message,
+    );
+  }
+
+  if (notes.length === 0) {
+    notes = await NotesModel.find({
+      userId,
+      title: { $regex: queryText, $options: "i" },
+    }).limit(limit);
+  }
+
+  return notes;
+}
+
 export async function searchNotes(queryText, limit = 5, userId) {
   try {
     const queryEmbeddings = await embeddingFunction.generate([queryText]);
