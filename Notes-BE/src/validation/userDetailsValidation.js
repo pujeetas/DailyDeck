@@ -1,6 +1,8 @@
 import Joi from "joi";
 
 export const userDetailsValidation = Joi.object({
+  avatarId: Joi.number().integer().min(1).max(100).optional(),
+
   firstName: Joi.string().min(3).max(50).optional(),
 
   lastName: Joi.string().min(3).max(50).optional(),

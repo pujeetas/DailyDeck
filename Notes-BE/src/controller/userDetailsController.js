@@ -1,6 +1,7 @@
 import { NotesModel } from "../schema/notesSchema.js";
 import { TodoModel } from "../schema/todoSchema.js";
 import { UserModel } from "../schema/userSchema.js";
+import { userDetailsValidation } from "../validation/userDetailsValidation.js";
 
 export const getUserDetailsController = async (req, res) => {
   try {
@@ -36,32 +37,12 @@ export const getUserDetailsController = async (req, res) => {
 
 export const updateUserDetailsController = async (req, res) => {
   try {
-    const {
-      firstName,
-      userName,
-      jobTitle,
-      bio,
-      emailNotification,
-      browserNotification,
-      avatarId,
-      gitHub,
-    } = req.body;
-
-    const updateData = {
-      firstName,
-      userName,
-      jobTitle,
-      bio,
-      emailNotification,
-      browserNotification,
-      avatarId,
-    };
-
-    if (gitHub) {
-      updateData.gitHub = gitHub;
+    const { error, value } = userDetailsValidation.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
     }
 
-    const user = await UserModel.findByIdAndUpdate(req.user.id, updateData, {
+    const user = await UserModel.findByIdAndUpdate(req.user.id, value, {
       new: true,
     }).select("-password");
     const totalNotes = await NotesModel.countDocuments({ userId: req.user.id });
