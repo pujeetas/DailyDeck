@@ -38,7 +38,8 @@ cd DailyDeck
 
 # Add your environment variables
 cp Notes-BE/.env.example Notes-BE/.env
-# Edit Notes-BE/.env with your MongoDB URI, API keys, etc.
+# Edit Notes-BE/.env with your MongoDB URI, JWT secret, Google OAuth
+# credentials, and AI keys (Anthropic, Cohere, Chroma)
 
 # Start everything with one command
 docker-compose up
@@ -83,7 +84,7 @@ DailyDeck/
 * **Styling:** Tailwind CSS + Ant Design (Custom Dark Theme Config)
 * **State Management:** Zustand (Global Store)
 * **Forms & Dates:** Ant Design Form + Dayjs + Date-fns
-* **Editor:** Tiptap (Headless Rich Text)
+* **Editor:** BlockNote (block-based rich text, built on ProseMirror/Tiptap)
 
 ### Backend (API)
 * **Runtime:** Node.js & Express
@@ -122,7 +123,6 @@ DailyDeck/
 
 ## 🔐 Authentication
 
-### Multi-Provider OAuth Support
 DailyDeck supports multiple authentication methods for seamless access:
 
 #### **Email/Password Authentication**
@@ -135,10 +135,7 @@ DailyDeck supports multiple authentication methods for seamless access:
 - Automatic user provisioning on first login
 - Passport.js integration for secure token exchange
 
-#### **GitHub OAuth**
-- Developer-friendly authentication
-- Access using existing GitHub credentials
-- Perfect for engineering-focused workflows
+> GitHub sign-in is on the roadmap (Passport's GitHub strategy is a listed dependency, not yet wired up server-side) — the profile page's GitHub integration is a read-only public-API lookup, not an auth provider.
 
 ### Security Features
 - **HttpOnly Cookies:** JWT tokens stored in secure, HttpOnly cookies to prevent XSS attacks
@@ -150,11 +147,9 @@ DailyDeck supports multiple authentication methods for seamless access:
 
 ## 🧪 Testing
 
-![Tests](https://img.shields.io/badge/tests-5%20passing-brightgreen?style=for-the-badge)
-![Coverage](https://img.shields.io/badge/coverage-68.96%25-yellow?style=for-the-badge)
 ![Vitest](https://img.shields.io/badge/tested%20with-Vitest-729B1B?style=for-the-badge)
 
-Comprehensive testing using **Vitest** and **React Testing Library** to ensure production-grade quality.
+Component tests using **Vitest** and **React Testing Library**, covering the Login flow and the Task Drawer (create/edit task) flow.
 
 ### Run Tests
 ```bash
@@ -163,12 +158,10 @@ npm run test:ui       # Interactive test UI
 npm run test:coverage # Generate coverage report
 ```
 
-### Test Coverage
-**Login Component** - 68.96% coverage
-- ✅ Form rendering and input validation
+### What's Covered
+- ✅ Form rendering and input validation (Login, Task Drawer)
 - ✅ User interactions (typing, clicking, submitting)
-- ✅ Complete authentication flow with API mocking
-- ✅ Navigation handling after successful login
+- ✅ Authentication flow with API mocking
 - ✅ External dependencies mocked (Axios, React Router, Zustand)
 
 ### Testing Philosophy
@@ -217,15 +210,17 @@ I utilized a **Feature-Based Architecture** to ensure scalability. Instead of gr
 src/
 ├── features/
 │   ├── auth/           # Login/Signup Logic
-│   ├── notes/          # Rich Text Editor & Note Logic
-│   └── todo/           # The Core Task Engine
-│       ├── components/ 
-│       │   ├── CalendarBoard.jsx   # Time-based Logic
-│       │   ├── KanbanBoard.jsx     # Drag-and-drop Logic
-│       │   └── TaskDrawer.jsx      # Form Logic
-│       └── store/      # Zustand Slice for Tasks
-├── components/         # Shared UI (Layouts, Buttons)
-└── services/           # API Integration Layer
+│   ├── notes/          # BlockNote Editor & Note Logic (Sidebar, NoteList)
+│   ├── todo/            # The Core Task Engine
+│   │   ├── components/
+│   │   │   ├── CalendarBoard.jsx        # Time-based view
+│   │   │   ├── KanbanColumn.jsx         # Drag-and-drop board
+│   │   │   └── TaskDrawer/TaskDrawer.jsx # Task create/edit form
+│   │   └── store/       # Zustand Slice for Tasks
+│   └── mockLab/         # Schema-driven fake JSON/data generator
+├── landingPage/          # Marketing/onboarding page
+├── components/           # Shared UI (Layouts, Profile)
+└── features/*/services/  # API Integration Layer (per-feature)
 ```
 
 ---
