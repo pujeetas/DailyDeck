@@ -7,6 +7,7 @@ import { authRoute } from "./src/route/authRoute.js";
 import { userRoute } from "./src/route/userRoute.js";
 import { notesRoute } from "./src/route/notesRoute.js";
 import { todoRoute } from "./src/route/todoRoute.js";
+import { assistantRoute } from "./src/route/assistantRoute.js";
 import MongoStore from "connect-mongo";
 
 import session from "express-session";
@@ -73,6 +74,7 @@ app.use("/api", authRoute);
 app.use("/api", userRoute);
 app.use("/api", notesRoute);
 app.use("/api", todoRoute);
+app.use("/api", assistantRoute);
 
 // 404 handler
 app.use((req, res) => {

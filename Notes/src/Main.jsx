@@ -19,6 +19,7 @@ const DashboardRouter = lazy(
 );
 const Dashboard = lazy(() => import("./features/todo/pages/Dashboard"));
 const FocusList = lazy(() => import("./features/todo/components/FocusList"));
+const AssistantPage = lazy(() => import("./features/assistant/AssistantPage"));
 
 const router = createBrowserRouter([
   { path: "/", element: <LandingPage /> },
@@ -60,6 +61,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <FakeJsonGenerator />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/assistant",
+    element: (
+      <ProtectedRoute>
+        <AssistantPage />
       </ProtectedRoute>
     ),
   },

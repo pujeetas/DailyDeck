@@ -1,4 +1,4 @@
-import { Code2, Calendar, Database, Zap, Terminal } from "lucide-react";
+import { Code2, Calendar, Database, Zap, Terminal, Sparkles } from "lucide-react";
 
 export const mainMenuItems = [
   {
@@ -33,5 +33,16 @@ export const mainMenuItems = [
     color: "text-emerald-400",
     accentColor: "border-emerald-500/20",
     bgGradient: "from-emerald-500/5 to-transparent",
+  },
+  {
+    id: "ai-assistant",
+    name: "AI Assistant",
+    description:
+      "Natural-language agent that creates tasks, searches your notes, and generates standups on request",
+    icon: <Sparkles className="w-full h-full" />,
+    path: "/assistant",
+    color: "text-amber-400",
+    accentColor: "border-amber-500/20",
+    bgGradient: "from-amber-500/5 to-transparent",
   },
 ];
