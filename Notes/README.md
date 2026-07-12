@@ -1,39 +1,42 @@
-📝 React Notes App
-Organize your thoughts effortlessly!
-A sleek, user-friendly React app to create, edit, delete, and search notes — all saved locally for your convenience.
+# DailyDeck — Frontend
 
-🚀 Features
-✍️ Add Notes: Quickly jot down titles and details
-✏️ Edit Notes: Seamless modal editing for your entries
-❌ Delete Notes: Remove unwanted notes with a click
-🔍 Live Search: Instantly filter notes as you type
-💾 Persistence: Notes saved in your browser via localStorage
-🧩 Modular Components: Clean, reusable React components for maintainability
-👩‍💻SignIn/SignUp and also Rest password
+React client for **DailyDeck**, an EngOps productivity platform that unifies notes, task management, and an AI assistant in one workspace. See the [root README](../README.md) for the full architecture, AI/RAG pipeline, and Docker setup.
 
-🛠️ Tech Stack
-React (Hooks & Functional Components)
-localStorage for data persistence
-Lucide Icons for sleek UI icons
-Ant Design for Icons
+This package is the Vite + React 19 client. It talks to the [`Notes-BE`](../Notes-BE) Express API for auth, persistence, and the AI assistant.
 
-🗂️ Project Structure Overview
-Body.js — Main container & state manager
-Search.js — Live search input and filtering logic
-AddNotes.js — Note creation form
-Edit.js — Modal popup to edit notes
-DeleteNotes.js — Button component for note deletion
-RefreshSearch.js — Reset and refresh search results
+## Features
 
-💡 How It Works
-Notes are stored in React state and synced with your browser's localStorage.
-The live search uses a controlled input that filters notes instantly as you type, powered by a React useEffect hook.
-Editing a note opens a modal with editable fields — save your changes instantly.
-Delete notes easily, and all changes reflect immediately and persist between sessions.
+- **Rich-text notes** — block-based editor (BlockNote/Tiptap) with markdown support, organized in a sidebar with live search
+- **Task board** — Kanban board with drag-and-drop (`@dnd-kit`), calendar view, focus list, subtasks, and filtering
+- **Auth** — email/password signup & login, password reset, and OAuth (Google/GitHub) via the backend, with protected routes
+- **Activity stats** — tracked totals for notes, completed tasks, AI searches, and streaks
+- **Mock Lab** — a schema-driven fake JSON/data generator with a visual schema builder and export options
+- **Landing page** — marketing/onboarding page describing the product
 
-🌟 Future Improvements
-Create different productivity apps for different app cards
-Add note categories and tags for better organization
-Sort notes by date or title
-User authentication and cloud sync for cross-device access
-Mobile-friendly responsive design enhancements
+## Tech Stack
+
+- **Framework:** React 19 + Vite 7
+- **Routing:** React Router (lazy-loaded routes, protected routes)
+- **State:** Zustand
+- **UI:** Tailwind CSS 4 + Ant Design, Framer Motion, Lucide icons
+- **Editor:** BlockNote / Tiptap
+- **Testing:** Vitest + React Testing Library
+
+## Getting Started
+
+```bash
+npm install
+npm run dev
+```
+
+Requires the backend (`Notes-BE`) running and a `VITE_BACKEND_URL` env var pointing at it. See the [root README](../README.md) for the one-command Docker setup that runs both services together.
+
+## Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Production build |
+| `npm run preview` | Preview the production build locally |
+| `npm test` | Run tests with Vitest |
+| `npm run test:coverage` | Run tests with coverage report |
