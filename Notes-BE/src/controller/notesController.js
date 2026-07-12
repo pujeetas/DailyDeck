@@ -7,6 +7,10 @@ import {
   searchNotes,
 } from "../services/mongoVectorService.js";
 import { extractPlainTextFromBlockNote } from "../services/extractPlainTextFromEditor.js";
+import {
+  createNoteValidations,
+  updateNoteValidations,
+} from "../validation/notesValidations.js";
 
 import { Anthropic } from "@anthropic-ai/sdk";
 import { UserModel } from "../schema/userSchema.js";
@@ -18,20 +22,16 @@ const anthropic = new Anthropic({
 //create note
 export const createNote = async (req, res) => {
   try {
-    const noteDetails = req.body;
-    if (!Array.isArray(noteDetails.body)) {
-      return res.status(400).send("Invalid body format: expected an array.");
-    }
-
-    if (typeof noteDetails.pinned !== "boolean") {
-      return res.status(400).send("Invalid pinned format: expected a boolean.");
+    const { error, value } = createNoteValidations.validate(req.body);
+    if (error) {
+      return res.status(400).send(error.details[0].message);
     }
 
     const newNote = new NotesModel({
       userId: req.user.id,
-      title: noteDetails.title || "",
-      body: noteDetails.body,
-      pinned: noteDetails.pinned,
+      title: value.title || "",
+      body: value.body,
+      pinned: value.pinned,
     });
 
     await newNote.save();
@@ -68,31 +68,31 @@ export const getAllNotes = async (req, res) => {
 export const updateNote = async (req, res) => {
   try {
     const noteId = req.params.id;
-    const detailsToUpdate = req.body;
 
-    if (detailsToUpdate.title === undefined) {
-      delete detailsToUpdate.title;
+    const { error, value } = updateNoteValidations.validate(req.body);
+    if (error) {
+      return res.status(400).send(error.details[0].message);
     }
+    ["_id", "createdAt", "updatedAt", "__v"].forEach((key) => delete value[key]);
 
-    const noteInDB = await NotesModel.findByIdAndUpdate(
-      noteId,
-      detailsToUpdate,
-      { new: true, runValidators: true },
-    );
+    const noteInDB = await NotesModel.findByIdAndUpdate(noteId, value, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!noteInDB) {
       return res.status(404).send("Note not found");
     }
 
-    if (detailsToUpdate.body) {
+    if (value.body) {
       const plainText = extractPlainTextFromBlockNote(noteInDB.body);
 
       if (plainText.trim()) {
         await addNoteEmbedding(noteId, noteInDB.title, plainText);
       }
-
-      res.json(noteInDB);
     }
+
+    res.json(noteInDB);
   } catch (error) {
     res.status(400).send("Something went wrong: " + error.message);
   }
@@ -123,7 +123,6 @@ export const getQuestion = async (req, res) => {
     const userId = req.user.id;
 
     if (!question || question.trim() === "") {
-      console.log("2. Question validation failed");
       return res.status(400).json({
         error: "Question is required and cannot be empty",
       });

@@ -63,9 +63,8 @@ export const deleteTodo = async (req, res) => {
 export const getAllTodo = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log(userId);
     const allTodo = await TodoModel.find({ userId: userId });
-    +res.send(allTodo);
+    res.send(allTodo);
   } catch (error) {
     res.status(400).send("Cannot get all todo. " + error);
   }
