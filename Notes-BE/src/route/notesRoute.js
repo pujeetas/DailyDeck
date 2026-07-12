@@ -7,6 +7,7 @@ import {
   deleteNote,
   getQuestion,
   searchNotesByQuery,
+  getRelatedNotes,
 } from "../controller/notesController.js";
 
 import { auth } from "../middleware/authMiddleware.js";
@@ -26,3 +27,5 @@ notesRoute.delete("/deleteNote/:id", auth, deleteNote);
 notesRoute.post("/question", auth, questionLimiter, getQuestion);
 
 notesRoute.get("/searchNotes", auth, searchNotesLimiter, searchNotesByQuery);
+
+notesRoute.get("/relatedNotes/:id", auth, getRelatedNotes);

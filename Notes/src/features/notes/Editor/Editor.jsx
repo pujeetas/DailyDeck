@@ -9,6 +9,7 @@ import { BlockNoteSchema, createCodeBlockSpec } from "@blocknote/core";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { DRAWER_TEXT, UI_TEXT } from "@/config/constants";
 import { handleQues } from "../utils/editorUtils";
+import RelatedNotes from "../RelatedNotes";
 
 const schema = BlockNoteSchema.create().extend({
   blockSpecs: {
@@ -22,7 +23,9 @@ const Editor = ({
   onTitleChange,
   title,
   activeId,
+  updatedAt,
   onAskQuestion,
+  onSelectRelated,
 }) => {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [localTitle, setLocalTitle] = useState(title || "");
@@ -101,6 +104,12 @@ const Editor = ({
           </div>
         )}
       </div>
+
+      <RelatedNotes
+        noteId={activeId}
+        updatedAt={updatedAt}
+        onSelect={onSelectRelated}
+      />
 
       <div className="w-full max-w-3xl mb-4">
         <Divider style={{ borderColor: "#333333" }} />

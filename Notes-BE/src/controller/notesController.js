@@ -6,6 +6,7 @@ import {
   addNoteEmbedding,
   searchNotes,
   searchNotesWithFallback,
+  findRelatedNotes,
 } from "../services/mongoVectorService.js";
 import { extractPlainTextFromBlockNote } from "../services/extractPlainTextFromEditor.js";
 import {
@@ -135,6 +136,26 @@ export const searchNotesByQuery = async (req, res) => {
         title: n.title,
         updatedAt: n.updatedAt,
         pinned: n.pinned,
+      })),
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Something went wrong: " + error.message });
+  }
+};
+
+//related notes (editor panel)
+export const getRelatedNotes = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const noteId = req.params.id;
+
+    const related = await findRelatedNotes(noteId, userId, 3);
+
+    res.status(200).json({
+      notes: related.map((n) => ({
+        _id: n._id,
+        title: n.title,
+        updatedAt: n.updatedAt,
       })),
     });
   } catch (error) {

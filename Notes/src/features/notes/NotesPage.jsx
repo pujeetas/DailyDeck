@@ -99,10 +99,12 @@ export default function NotesPage() {
                 debouncedUpdate(activeId, updates);
               }}
               title={activeNote.title}
+              updatedAt={activeNote.updatedAt}
               onTitleChange={(newTitle) => {
                 debouncedUpdate(activeId, { title: newTitle });
               }}
               onAskQuestion={handleAskQuestion}
+              onSelectRelated={setActiveId}
             />
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-gray-400">

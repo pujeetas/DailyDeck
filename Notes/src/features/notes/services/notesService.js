@@ -39,6 +39,13 @@ export const searchNotesRequest = (query) => {
   return api.get("/searchNotes", { params: { q: query.trim() } });
 };
 
+export const getRelatedNotesRequest = (id) => {
+  if (!isValidId(id)) {
+    return Promise.resolve({ data: { notes: [] } });
+  }
+  return api.get(`/relatedNotes/${id}`);
+};
+
 export const question = (questionText) => {
   if (!questionText || !questionText.trim()) {
     return Promise.reject(new Error("Question cannot be empty"));

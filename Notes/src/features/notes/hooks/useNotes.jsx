@@ -64,7 +64,15 @@ export function useNotes() {
       prev.map((n) => (n._id === id ? { ...n, ...update } : n)),
     );
     try {
-      return await updateNoteRequest(id, update);
+      const res = await updateNoteRequest(id, update);
+      if (res?.data?.updatedAt) {
+        setNotes((prev) =>
+          prev.map((n) =>
+            n._id === id ? { ...n, updatedAt: res.data.updatedAt } : n,
+          ),
+        );
+      }
+      return res;
     } catch (error) {
       console.error("Error updating note:", error);
 

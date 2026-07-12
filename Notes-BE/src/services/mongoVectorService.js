@@ -39,6 +39,41 @@ export async function searchNotesWithFallback(queryText, userId, limit = 5) {
   return notes;
 }
 
+export async function findRelatedNotes(noteId, userId, limit = 3) {
+  const note = await NotesModel.findOne({ _id: noteId, userId });
+  if (!note || !note.embedding || note.embedding.length === 0) {
+    return [];
+  }
+
+  const results = await NotesModel.aggregate([
+    {
+      $vectorSearch: {
+        index: "notes_vector_index",
+        path: "embedding",
+        queryVector: note.embedding,
+        numCandidates: 100,
+        limit: limit + 10,
+      },
+    },
+    {
+      $project: {
+        userId: 1,
+        title: 1,
+        updatedAt: 1,
+        score: { $meta: "vectorSearchScore" },
+      },
+    },
+    {
+      $match: {
+        userId: userId,
+        _id: { $ne: note._id },
+      },
+    },
+  ]);
+
+  return results.slice(0, limit);
+}
+
 export async function searchNotes(queryText, limit = 5, userId) {
   try {
     const queryEmbeddings = await embeddingFunction.generate([queryText]);
